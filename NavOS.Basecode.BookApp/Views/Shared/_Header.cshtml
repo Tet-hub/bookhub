@@ -1,9 +1,23 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
-<header class="@((ViewBag.LoginView == true) ? "hide-navbar" : "")">
-    <div class="logosec hover-pointer">
-        <img src="~/img/asi-logo-invert.svg"
-             style="width: 185px;" alt="logo"
-             onclick="window.location.href = '@Url.Action("Index", "Home")';">
+<nav class="navbar navbar-expand-lg navbar-dark @((ViewBag.LoginView == true) ? "hide-navbar" : "")" style="background-color:#111111">
+    <div class="container-fluid">
+        <a class="navbar-brand me-5" asp-action="Index" asp-controller="Home">NavOS - Book Review App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item me-5">
+                    <a class="nav-link" asp-action="Index" asp-controller="Home">Home</a>
+                </li>
+                <li class="nav-item me-5">
+                    <a class="nav-link" asp-action="Index" asp-controller="Book">Book</a>
+                </li>
+                <li class="nav-item me-5">
+                    <a class="nav-link" asp-action="ViewBooks" asp-controller="Book">Genre</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</header>
+</nav>
