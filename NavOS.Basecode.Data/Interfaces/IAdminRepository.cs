@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace NavOS.Basecode.Data.Interfaces
 {
-    public interface IUserRepository
+    public interface IAdminRepository
     {
-        IQueryable<User> GetUsers();
-        bool UserExists(string userId);
-        void AddUser(User user);
+        public IQueryable<Admin> GetAdmins();
+        public void AddAdmin(Admin admin);
+        public bool AdminExists(string email);
     }
 }

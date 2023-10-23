@@ -27,6 +27,6 @@ namespace NavOS.Basecode.BookApp.Models
         /// <summary>
         /// User Data
         /// </summary>
-        public User userData { get; set; }
+        public Admin userData { get; set; }
     }
 }
