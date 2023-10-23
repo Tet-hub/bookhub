@@ -61,6 +61,15 @@ namespace NavOS.Basecode.Resources.Views {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Admin Email.
+        /// </summary>
+        public static string AdminEmail {
+            get {
+                return ResourceManager.GetString("AdminEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ©2023 Alliance Software Inc. All rights reserved..
         /// </summary>
         public static string Copyright {
@@ -111,15 +120,6 @@ namespace NavOS.Basecode.Resources.Views {
         public static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UserId.
-        /// </summary>
-        public static string UserId {
-            get {
-                return ResourceManager.GetString("UserId", resourceCulture);
             }
         }
     }

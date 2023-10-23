@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace NavOS.Basecode.Services.ServiceModels
 {
-    public class UserViewModel
+    public class AdminViewModel
     {
-        [Required(ErrorMessage = "Username is required.")]
-        public string UserId { get; set; }
+        [Required(ErrorMessage = "Admin Name is required.")]
+        public string AdminName { get; set; }
 
-        [Required(ErrorMessage = "Name is required.")]
-        public string Name { get; set; }
+        [Required(ErrorMessage = "Email is required.")]
+        public string AdminEmail { get; set; }
 
         [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
@@ -21,5 +21,11 @@ namespace NavOS.Basecode.Services.ServiceModels
         [Required(ErrorMessage = "Confirmation Password is required.")]
         [Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "Contact Number is required.")]
+        public string ContactNo { get; set; }
+
+        [Required(ErrorMessage = "Date of Birth is required.")]
+        public DateTime Dob { get; set; }
     }
 }
