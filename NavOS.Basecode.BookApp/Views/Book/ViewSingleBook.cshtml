@@ -1,6 +1,75 @@
-﻿@{
-    ViewData["Title"] = "BookSingleDetails";
-}
-@{
-    <p class="text-white">Test page</p>
-}
+﻿@model NavOS.Basecode.Services.ServiceModels.BookViewModel
+<div class="container-fluid d-flex justify-content-center align-items-center mt-5">
+    <div class="edit-profile row">
+        <div class="col">
+            <div class="navBorder">
+                <div class="navSelect">
+                    <a asp-action="Index" asp-controller="Book" class="text-decoration-none text-dark">Name</a> |
+                    <a>Ratings</a> |
+                    <a style="color:#DA1B60">@Model.Genre</a> |
+                    <a style="color:#DA1B60">@Model.BookTitle</a>
+                    <a class="float-end me-2 text-dark text-decoration-none" href="javascript:history.back()">Back</a>
+                </div>
+                <div class="details">
+                    <div class="flexbox">
+                        <div class="imgPoster">
+                            <img src="~/img/default-book.jpg" height="200" width="350">
+                        </div>
+                        <div class="bookInfo">
+                            <p id="book1">@Model.BookTitle</p>
+                            <p>Author: @Model.Author</p>
+                            <p>Status: @Model.Status</p>
+                            <p>Genre: @Model.Genre</p>
+                            <p>Volume: @Model.Volume</p>
+                        </div>
+                        <div class="rate">
+                            <div>
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <div id="rate-review">
+                                <p id="pTopPadding"><b>8.5</b>/10</p>
+                                <p id="starReviews">666 Reviews</p>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <h7>SUMMARY</h7>
+                    <br><br>
+                    <div class="summary">
+                        <p>@Model.Summary</p>
+                    </div>
+                    <br><br>
+                    <h7 id="reviews">REVIEWS</h7>
+                    <br><br><br>
+                    <div class="reviews1">
+                        <span id="reviewHere">Review here</span>
+                        <button><i class="bi bi-star-fill"></i></button>
+                        <button><i class="bi bi-star-fill"></i></button>
+                        <button><i class="bi bi-star-fill"></i></button>
+                        <button><i class="bi bi-star-fill"></i></button>
+                        <button><i class="bi bi-star-fill"></i></button>
+                        <div class="reviewInput">
+                            <textarea rows="5">Ea voluptatem voluptate et ducimus quia aut similique cumque nam ullam nihil qui optio quia et praesentium fugit. Sit consequuntur cupiditate quo aliquid recusandae et tempore natus hic velit libero non totam architecto sit voluptatibus debitis sit galisum quod.</textarea>
+                        </div>
+                        <br>
+                        <input type="text" placeholder="NAME (Required)" required></input>
+                        <input type="email" placeholder="EMAIL (Required)" required></input>
+                        <button id="send">SEND</button>
+                    </div>
+                    <br><br>
+                    <div class="reviews2">
+                        <div class="reviewOutput">
+                            <span id="reviewName">Review Name</span>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <p>Ea voluptatem voluptate et ducimus quia aut similique cumque nam ullam nihil qui optio quia et praesentium fugit. Sit consequuntur cupiditate quo aliquid recusandae et tempore natus hic velit libero non totam architecto sit voluptatibus debitis sit galisum quod. </p>
+                        </div>
+                        <br><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

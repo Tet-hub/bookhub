@@ -30,10 +30,12 @@ namespace NavOS.Basecode.BookApp
 
             // Services
             this._services.AddScoped<IUserService, UserService>();
+            this._services.AddScoped<IBookService, BookService>();
           
 
             // Repositories
             this._services.AddScoped<IUserRepository, UserRepository>();
+            this._services.AddScoped<IBookRepository, BookRepository>();
 
             this._services.AddHttpClient();
         }
