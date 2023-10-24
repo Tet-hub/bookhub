@@ -38,7 +38,7 @@ namespace NavOS.Basecode.BookApp.Controllers
             return View(data);
         }
         [HttpGet]
-        public IActionResult ViewNewBooks()
+        public IActionResult ViewNewBooks(string searchQuery)
         {
             var currentDate = DateTime.Now;
 
@@ -52,20 +52,53 @@ namespace NavOS.Basecode.BookApp.Controllers
                 // Sort by AddedTime in descending order
                 .OrderByDescending(book => book.AddedTime)
                 .ToList();
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                // If a search query is provided, filter the books based on the query
+                data = data.Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
 
             return View(data);
         }
 
         [HttpGet]
-        public IActionResult ViewTopBooks()
+        public IActionResult ViewTopBooks(string searchQuery)
         {
-            // Filter and sort the books
-            var data = _bookService.GetBooks()
-                // Sort by AddedTime in descending order
-                .OrderBy(book => book.AddedTime)
-                .ToList();
+            // Get all books from your service
+            var data = _bookService.GetBooks();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                // If a search query is provided, filter the books based on the query
+                data = data.Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            // Sort the filtered books by AddedTime in descending order
+            data = data.OrderByDescending(book => book.AddedTime).ToList();
+
             return View(data);
         }
+        [HttpGet]
+        public IActionResult Search(string query)
+        {
+            var books = _bookService.GetBooks();
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                query = query.Trim().ToLower();
+                books = books.Where(book => book.BookTitle.ToLower().Contains(query)).ToList();
+            }
+
+            if (books.Any())
+            {
+                return PartialView("_SearchResultsPartial", books);
+            }
+            else
+            {
+                return Content("No books found");
+            }
+        }
+
         public IActionResult ViewSingleBook(string BookId)
         {
             var book = _bookService.GetBook(BookId);

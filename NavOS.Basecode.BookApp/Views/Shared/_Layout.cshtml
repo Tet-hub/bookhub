@@ -22,11 +22,26 @@
             @RenderBody()
         </main>
     </div>
-@*     <footer class="border-top footer text-muted">
-        <div class="container">
-            @Copyright
-        </div> 
-    </footer> *@
+    <!-- Script for search-->
+    <script>
+        $(document).ready(function () {
+            const searchInput = $('input[name="searchQuery"]');
+            const searchForm = searchInput.closest('form');
+
+            // Function to perform the search
+            const performSearch = function () {
+                searchForm.submit();
+            };
+
+            // Automatically submit the form as the user types
+            searchInput.on('input', function () {
+                performSearch();
+            });
+
+            // Trigger the search on page load
+            performSearch();
+        });
+    </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

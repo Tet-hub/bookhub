@@ -28,18 +28,23 @@
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
                 @foreach (var book in Model.OrderByDescending(book => book.AddedTime).Where(book => (DateTime.Now - book.AddedTime).TotalDays <= 14).Take(5))
                 {
-                    <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
-                        <div class="card w-100">
-                           <a asp-action="ViewSingleBook" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
-                               <img class="card-img-top" height="250" width="100" src="~/img/default-book.jpg" alt="Card image cap">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title">@book.BookTitle</h5>
-                                    <p class="card-text ellipsis">@book.AddedTime.ToString("MM/dd/yyyy")</p>
-                                     <input type="hidden" name="BookId" value="@book.BookId" />
-                                </div>
-                            </a>
-                        </div>
-                    </li>
+                <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
+                    <div class="card w-100" style="height: 100%;">
+                        <a asp-action="ViewSingleBook" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                            <img class="card-img-top" height="250" width="100" src="~/img/default-book.jpg" alt="Card image cap">
+                            <div class="card-body text-center" style="height:60px;">
+                                <h6 class="card-title ellipsis">@book.BookTitle</h6>
+                            </div>
+                            <div class="text-left mx-3 mb-2">
+                                <hr style="margin-bottom:1px;">
+                                <span class="text-dark" style="font-size:12px;">
+                                    Author:
+                                    <span class="text-muted">@book.Author </span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
                 }
             </ul>
         </div>
@@ -60,17 +65,23 @@
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
                 @foreach (var book in Model.OrderBy(book => book.AddedTime).Take(5))
                 {
-                    <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
-                        <div class="card w-100">
-                            <a asp-action="ViewSingleBook" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
-                                <img class="card-img-top" height="250" width="100" src="~/img/default-book.jpg" alt="Card image cap">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title">@book.BookTitle</h5>
-                                    <p class="card-text ellipsis">@book.AddedTime.ToString("MM/dd/yyyy")</p>
-                                </div>
-                            </a>
-                        </div>
-                    </li>
+                <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
+                    <div class="card w-100" style="height: 100%;">
+                        <a asp-action="ViewSingleBook" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                            <img class="card-img-top" height="250" width="100" src="~/img/default-book.jpg" alt="Card image cap">
+                            <div class="card-body text-center" style="height:60px;">
+                                <h6 class="card-title ellipsis">@book.BookTitle</h6>
+                            </div>
+                            <div class="text-left mx-3 mb-2">
+                                <hr style="margin-bottom:1px;">
+                                <span class="text-dark" style="font-size:12px;">
+                                    Author:
+                                    <span class="text-muted">@book.Author </span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
                 }
             </ul>
         </div>
