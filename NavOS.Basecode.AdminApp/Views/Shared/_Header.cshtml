@@ -7,7 +7,7 @@
              onclick="window.location.href = '@Url.Action("Index", "Home")';">
     </div>
     <div class="logosec">
-        @HttpContextAccessor.HttpContext.Session.GetString("UserName")
+        @HttpContextAccessor.HttpContext.Session.GetString("AdminName")
         <div class="mr-20 hover-pointer" style="position: relative">
             <div class="dp">
                 <img src="~/img/profile-logo.png"

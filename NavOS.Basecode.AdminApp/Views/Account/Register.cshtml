@@ -1,5 +1,5 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels
-@model UserViewModel
+@model AdminViewModel
 @{
     ViewBag.LoginView = true;
     ViewData["Title"] = "Register Page";
@@ -21,20 +21,32 @@
 
                         <form method="post" action="/Account/Register">
                             <div class="form-outline mb-4">
-                                <label class="form-label" for="userId">UserId</label>
-                                <input type="text" id="userId" class="form-control"
-                                       asp-for="UserId" placeholder="Enter userid" />
-                                <span asp-validation-for="UserId" class="text-danger"></span>
+                                <label class="form-label" for="AdminName">Admin Name</label>
+                                <input type="text" class="form-control"
+                                       asp-for="AdminName" placeholder="Enter Admin Name" />
+                                <span asp-validation-for="AdminName" class="text-danger"></span>
                             </div>
                             <div class="form-outline mb-4">
-                                <label class="form-label" for="name">Name</label>
-                                <input type="text" id="name" class="form-control"
-                                       asp-for="Name" placeholder="Enter name" />
-                                <span asp-validation-for="Name" class="text-danger"></span>
+                                <label class="form-label" for="ContactNo">Contact Number</label>
+                                <input type="number" class="form-control"
+                                       asp-for="ContactNo" placeholder="Enter Admin Contact" />
+                                <span asp-validation-for="ContactNo" class="text-danger"></span>
                             </div>
                             <div class="form-outline mb-4">
-                                <label class="form-label" for="password">Password</label>
-                                <input type="password" id="password" class="form-control"
+                                <label class="form-label" for="ContactNo">Date Of Birth</label>
+                                <input type="date" class="form-control"
+                                       asp-for="Dob" placeholder="Enter Date Of Birth" />
+                                <span asp-validation-for="Dob" class="text-danger"></span>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="AdminEmail">Admin Email</label>
+                                <input type="text" class="form-control"
+                                       asp-for="AdminEmail" placeholder="Enter Admin Email" />
+                                <span asp-validation-for="AdminEmail" class="text-danger"></span>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="Password">Password</label>
+                                <input type="password" class="form-control"
                                        asp-for="Password" placeholder="Enter password" />
                                 <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
