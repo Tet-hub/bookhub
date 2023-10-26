@@ -12,5 +12,7 @@ namespace NavOS.Basecode.Data.Interfaces
         public IQueryable<Admin> GetAdmins();
         public void AddAdmin(Admin admin);
         public bool AdminExists(string email);
+        public void DeleteAdmin(Admin admin);
+        public void UpdateAdmin(Admin admin);
     }
 }

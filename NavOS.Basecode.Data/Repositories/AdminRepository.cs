@@ -21,6 +21,7 @@ namespace NavOS.Basecode.Data.Repositories
             return this.GetDbSet<Admin>();
         }
 
+
         public bool AdminExists(string email)
         {
             return this.GetDbSet<Admin>().Any(x => x.AdminEmail == email);
@@ -29,6 +30,18 @@ namespace NavOS.Basecode.Data.Repositories
         public void AddAdmin(Admin admin) 
         {
             this.GetDbSet<Admin>().Add(admin);
+            UnitOfWork.SaveChanges();
+        }
+
+        public void DeleteAdmin(Admin admin)
+        {
+            this.GetDbSet<Admin>().Remove(admin);
+            UnitOfWork.SaveChanges();   
+        }
+
+        public void UpdateAdmin(Admin admin)
+        {
+            this.GetDbSet<Admin>().Update(admin);
             UnitOfWork.SaveChanges();
         }
     }

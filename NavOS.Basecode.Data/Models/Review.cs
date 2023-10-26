@@ -11,6 +11,7 @@ namespace NavOS.Basecode.Data.Models
         public string UserEmail { get; set; }
         public string ReviewText { get; set; }
         public int Rate { get; set; }
+        public DateTime DateReviewed { get; set; }
 
         public virtual Book Book { get; set; }
     }

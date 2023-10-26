@@ -90,12 +90,13 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 // 認証OK
                 await this._signInManager.SignInAsync(admin);
                 this._session.SetString("AdminName", admin.AdminName);
+                this._session.SetString("Role", admin.Role);
                 return RedirectToAction("Index", "Home");
             }
             else
             {
                 // 認証NG
-                TempData["ErrorMessage"] = "Incorrect UserId or Password";
+                TempData["ErrorMessage"] = "Incorrect Email Address or Password";
                 return View();
             }
         }

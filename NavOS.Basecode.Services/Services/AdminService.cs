@@ -32,6 +32,8 @@ namespace NavOS.Basecode.Services.Services
             return admin != null ? LoginResult.Success : LoginResult.Failed;
         }
 
+
+
         public void AddAdmin(AdminViewModel model) 
         {
             var admin = new Admin();
@@ -42,7 +44,7 @@ namespace NavOS.Basecode.Services.Services
                 admin.AdminName = model.AdminName;
                 admin.AdminEmail = model.AdminEmail;
                 admin.Password = PasswordManager.EncryptPassword(model.Password);
-                admin.Role = "Master Admin";
+                admin.Role = "Admin";
                 admin.Dob = model.Dob;
                 admin.ContactNo = model.ContactNo;
                 
@@ -52,6 +54,48 @@ namespace NavOS.Basecode.Services.Services
             {
                 throw new InvalidDataException(Resources.Messages.Errors.AdminExists);
             }
+        }
+
+        public List<Admin> GetAllAdmins()
+        {
+            var admins = _adminRepository.GetAdmins().ToList();
+
+            return admins;
+        }
+
+        public Admin GetAdmin(string adminId)
+        {
+            var admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminId).FirstOrDefault();
+
+            return admin;
+        }
+
+        public bool DeleteAdmin(AdminViewModel adminViewModel)
+        {
+            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
+            if (admin != null)
+            {
+                _adminRepository.DeleteAdmin(admin);
+                return true;
+            }
+            return false;
+        }
+
+        public bool EditAdmin(AdminViewModel adminViewModel)
+        {
+            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
+            if (admin != null)
+            {
+                admin.AdminName = adminViewModel.AdminName;
+                admin.ContactNo = adminViewModel.ContactNo;
+                admin.Dob = adminViewModel.Dob;
+                admin.AdminEmail = adminViewModel.AdminEmail;
+                admin.Role = adminViewModel.Role;
+
+                _adminRepository.UpdateAdmin(admin);
+                return true;
+            }
+            return false;
         }
     }
 }

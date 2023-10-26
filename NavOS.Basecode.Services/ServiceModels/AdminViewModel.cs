@@ -9,6 +9,7 @@ namespace NavOS.Basecode.Services.ServiceModels
 {
     public class AdminViewModel
     {
+        public string AdminId {  get; set; }
         [Required(ErrorMessage = "Admin Name is required.")]
         public string AdminName { get; set; }
 
@@ -27,5 +28,8 @@ namespace NavOS.Basecode.Services.ServiceModels
 
         [Required(ErrorMessage = "Date of Birth is required.")]
         public DateTime Dob { get; set; }
+
+		[Required(ErrorMessage = "Role is required.")]
+		public string Role { get; set; }
     }
 }

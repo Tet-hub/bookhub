@@ -80,7 +80,7 @@ namespace NavOS.Basecode.Data
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Date).HasColumnType("date");
+                entity.Property(e => e.DateReleased).HasColumnType("date");
 
                 entity.Property(e => e.Genre)
                     .IsRequired()
@@ -93,10 +93,6 @@ namespace NavOS.Basecode.Data
                 entity.Property(e => e.Summary).IsRequired();
 
                 entity.Property(e => e.UpdatedBy)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Volume)
                     .IsRequired()
                     .HasMaxLength(50);
             });
