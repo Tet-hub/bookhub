@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NavOS.Basecode.BookApp.Mvc;
+using NavOS.Basecode.Data.Models;
 using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.ServiceModels;
 using System;
@@ -14,6 +15,7 @@ namespace NavOS.Basecode.BookApp.Controllers
     public class BookController : ControllerBase<BookController>
     {
         private readonly IBookService _bookService;
+        private readonly IReviewService _reviewService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -23,12 +25,14 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// <param name="localizer"></param>
         /// <param name="mapper"></param>
         public BookController(IBookService bookService,
+                              IReviewService reviewService,
                               IHttpContextAccessor httpContextAccessor,
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
                               IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
             _bookService = bookService;
+            _reviewService = reviewService;
 
         }
         [HttpGet]
@@ -98,15 +102,31 @@ namespace NavOS.Basecode.BookApp.Controllers
                 return Content("No books found");
             }
         }
-
         public IActionResult ViewSingleBook(string BookId)
         {
             var book = _bookService.GetBook(BookId);
             if (book != null)
             {
+                var reviews = _reviewService.GetReviews();
+
+                // Store reviews in ViewData
+                ViewData["Reviews"] = reviews;
+
                 return View(book);
             }
             return NotFound();
+        }
+
+        public IActionResult GetReviews()
+        {
+            var data = _reviewService.GetReviews();
+            return RedirectToAction("ViewSingleBook", new { data });
+        }
+
+        public IActionResult AddReview(ReviewViewModel review)
+        {
+            _reviewService.AddReview(review);
+            return RedirectToAction("ViewSingleBook", new { review.BookId });
         }
 
     }

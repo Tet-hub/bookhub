@@ -1,164 +1,105 @@
-﻿body {
-    background-color: #212529F5 !important;
+﻿#navDemo {
+    background-color: #FFC119;
+    font-weight: bold;
+    width: auto !important;
 }
 
-.navBorder {
-    border: 1px solid #FFFFFF;
-    margin: 15px;
+#ratings i {
+    color: #FFC119;
+    font-size: 50px;
+    margin-right: 5px;
+}
+
+#rate-review p {
+    margin: 0;
 }
 
 .navSelect {
-    text-indent: 30px;
     background-color: #FFC119;
-    padding: 8px;
-    margin: 0;
     font-weight: bolder;
 }
 
-    .navSelect button, .reviews1 button {
-        text-decoration: none;
-        background-color: transparent;
-        border: 0;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-.reviews1 button, .reviews2 button {
-    padding: 0;
-    color: #D5D5D5;
+body {
+    background-color: #212529F5;
 }
 
-#book1 {
-    color: #FF8A00;
-    padding-bottom: 13px;
+#bgColor {
+    border: 1px solid white;
 }
 
-.details {
-    font-family: 'Inter';
-    color: #FFFFFF;
-    margin: 40px;
+#details {
+    color: white;
+    padding: 20px;
 }
 
-.flexbox {
+#ratings {
     display: flex;
 }
 
-    .flexbox img {
-        max-width: 100%;
-        height: auto;
-    }
-
-.imgPoster {
-    flex: 1;
+#leftRightPadding {
+    padding-left: 32px;
+    padding-right: 32px;
 }
 
-.bookInfo {
-    flex: 2;
-    margin-left: 50px;
+textarea {
+    width: 100%;
+    background-color: transparent;
+    resize: none;
+    padding: 12px;
+    border: 0;
 }
 
-.rate {
-    flex: 1;
-    display: flex;
-    justify-content: right;
-}
-
-    .rate i {
-        color: #FFC119;
-        font-size: 40px;
-        margin-right: 5px;
-        margin-top: 10px;
-    }
-
-    .rate p {
-        margin-bottom: 0;
-    }
-
-#starReviews {
-    font-size: 8px;
-}
-
-h7 {
+#summaryLabel, #reviewsLabel {
+    display: inline-block;
     padding: 12px;
     background-color: #FFC119;
     color: #212529;
-    display: inline;
     font-weight: bold;
 }
 
-#reviewHere, #reviewName {
-    margin-right: 15px;
-}
-
-.reviewOutput p {
-    padding: 10px;
-}
-
-.summary, .reviewInput, .reviewOutput {
-    border: 1px solid #FFFFFF;
-    text-align: justify;
-    padding: 10px;
-}
-
-.reviews1, .reviews2 {
-    border: 1px solid #FFFFFF;
-    padding: 40px;
-}
-
-#reviews {
+#reviewsLabel {
     background-color: #DA1B60;
     color: white;
 }
 
-textarea {
-    resize: none !important;
-    background-color: transparent;
+#send {
+    background-color: #3A6073;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
     border: 0;
-    color: #FFFFFF;
-    width: 100%;
-    font-family: 'Inter';
 }
 
 input {
-    padding: 12px;
+    padding: 10px;
     background-color: #D9D9D9;
-    color: #212529;
-    display: inline;
-    font-weight: bold;
     border: 0;
-    font-family: 'Inter';
 }
 
-    input[type="text"] {
-        margin-right: 35px;
-    }
-
 ::placeholder {
-    font-family: 'Inter';
     color: black;
 }
 
-#send {
-    justify-content: right;
-    padding: 12px;
-    background-color: #3A6073;
-    color: white;
-    font-weight: bold;
-    float: right;
+#buttonIcon button {
+    padding: 0;
+    text-decoration: none;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
 }
 
-#pTopPadding {
-    margin-top: 10px;
+#buttonIcon i {
+    color: lightgray;
 }
 
-#starReviews {
-    margin-top: 0;
-}
-
-@media screen and (max-width: 768px) {
-    .edit-profile {
+@media screen and (max-width: 600px) {
+    #inputForm input {
         width: 100%;
-        height: 1000px;
-        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 733px) {
+    #ratings {
+        float: left !important;
     }
 }
