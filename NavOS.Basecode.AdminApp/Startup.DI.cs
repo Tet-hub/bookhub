@@ -37,12 +37,14 @@ namespace NavOS.Basecode.AdminApp
             this._services.AddScoped<IAdminService, AdminService>();
             this._services.AddScoped<IBookService, BookService>();
             this._services.AddScoped<IGenreService, GenreService>();
-          
+            this._services.AddScoped<IReviewService, ReviewService>();
+
 
             // Repositories
             this._services.AddScoped<IAdminRepository, AdminRepository>();
             this._services.AddScoped<IBookRepository, BookRepository>();
             this._services.AddScoped<IGenreRepository, GenreRepository>();
+            this._services.AddScoped<IReviewRepository, ReviewRepository>();
 
             // Manager Class
             this._services.AddScoped<SignInManager>();
