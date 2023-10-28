@@ -14,6 +14,10 @@
     margin: 0;
 }
 
+#bookInfo p, #summary p, #userReview {
+    overflow-wrap: break-word;
+}
+
 .navSelect {
     background-color: #FFC119;
     font-weight: bolder;
@@ -34,6 +38,11 @@ body {
 
 #ratings {
     display: flex;
+}
+
+#userReviewDate {
+    display: flex;
+    justify-content: right;
 }
 
 #leftRightPadding {
@@ -100,6 +109,12 @@ input {
 
 @media screen and (max-width: 733px) {
     #ratings {
+        float: left !important;
+    }
+}
+
+@media screen and (max-width: 445px) {
+    #userReviewDate {
         float: left !important;
     }
 }
