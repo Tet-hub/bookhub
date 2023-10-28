@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="~/css/review.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
     @RenderSection("Styles", required: false)
 </head>
 <body>
@@ -31,17 +32,14 @@
             const searchInput = $('input[name="searchQuery"]');
             const searchForm = searchInput.closest('form');
 
-            // Function to perform the search
             const performSearch = function () {
                 searchForm.submit();
             };
 
-            // Automatically submit the form as the user types
             searchInput.on('input', function () {
                 performSearch();
             });
 
-            // Trigger the search on page load
             performSearch();
         });
     </script>
@@ -67,6 +65,19 @@
                 ratingInput.value = value;
             });
         });
+    </script>
+    <!--Script for stars-->
+    <script>
+        function highlightStars(count) {
+            const stars = document.querySelectorAll('.star-rating');
+            for (let i = 0; i < count; i++) {
+                stars[i].classList.add('yellow-star');
+            }
+            for (let i = count; i < stars.length; i++) {
+                stars[i].classList.remove('yellow-star');
+            }
+        }
+
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

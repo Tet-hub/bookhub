@@ -35,30 +35,38 @@ namespace NavOS.Basecode.BookApp.Controllers
             _reviewService = reviewService;
 
         }
+        /// <summary>
+        /// Homepage
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Index()
         {
-            var data = _bookService.GetBooks();
-            return View(data);
+            var reviews = _reviewService.GetReviews();
+            ViewData["Reviews"] = reviews;
+
+            var book = _bookService.GetBooks();
+            ViewData["Books"] = book;
+
+            return View();
         }
+        /// <summary>
+        /// NewBooks
+        /// </summary>
+        /// <param name="searchQuery"></param>
+        /// <returns></returns>
         [HttpGet]
-        public IActionResult ViewNewBooks(string searchQuery)
+        public IActionResult NewBooks(string searchQuery)
         {
             var currentDate = DateTime.Now;
-
-            // Calculate the date two weeks ago
             var twoWeeksAgo = currentDate.AddDays(-14);
 
-            // Filter and sort the books
             var data = _bookService.GetBooks()
-                // Filter books added in the last two weeks
                 .Where(book => book.AddedTime >= twoWeeksAgo)
-                // Sort by AddedTime in descending order
                 .OrderByDescending(book => book.AddedTime)
                 .ToList();
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                //Search the book by Genre or Author Name
                 data = data.Where(book =>
                     book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                     book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
@@ -69,36 +77,42 @@ namespace NavOS.Basecode.BookApp.Controllers
             return View(data);
         }
 
+        /// <summary>
+        /// TopBooks
+        /// </summary>
+        /// <param name="searchQuery"></param>
+        /// <returns></returns>
         [HttpGet]
-        public IActionResult ViewTopBooks(string searchQuery)
+        public IActionResult TopBooks(string searchQuery)
         {
-            // Get all books from your service
             var data = _bookService.GetBooks();
 
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                //Search the book by Genre or Author Name
                 data = data.Where(book =>
                     book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                     book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
                 ).ToList();
             }
+            var reviews = _reviewService.GetReviews();
+            ViewData["Reviews"] = reviews;
+            ViewData["TopBooks"] = data;
 
-            // Sort the filtered books by AddedTime in descending order
-            data = data.OrderByDescending(book => book.AddedTime).ToList();
-
-            return View(data);
+            return View();
         }
-        public IActionResult ViewSingleBook(string BookId)
+        /// <summary>
+        /// BookDetails
+        /// </summary>
+        /// <param name="BookId"></param>
+        /// <returns></returns>
+        public IActionResult BookDetails(string BookId)
         {
             var book = _bookService.GetBook(BookId);
             if (book != null)
             {
                 var reviews = _reviewService.GetReviews();
 
-                // Store reviews in ViewData
                 ViewData["Reviews"] = reviews;
-                //Store book in ViewData
                 ViewData["Book"] = book;
 
                 return View();
@@ -108,8 +122,12 @@ namespace NavOS.Basecode.BookApp.Controllers
 
         public IActionResult AddReview(ReviewViewModel review)
         {
+            if (string.IsNullOrEmpty(review.ReviewText))
+            {
+                review.ReviewText = string.Empty;
+            }
             _reviewService.AddReview(review);
-            return RedirectToAction("ViewSingleBook", new { review.BookId });
+            return RedirectToAction("BookDetails", new { review.BookId });
         }
 
     }
