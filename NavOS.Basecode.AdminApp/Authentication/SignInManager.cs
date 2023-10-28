@@ -58,7 +58,7 @@ namespace NavOS.Basecode.AdminApp.Authentication
         public Task<ClaimsIdentity> GetClaimsIdentity(string username, string password)
         {
             ClaimsIdentity claimsIdentity = null;
-            User userData = new User();
+            Admin adminData = new Admin();
 
             user.loginResult = LoginResult.Success;//TODO this._accountService.AuthenticateUser(username, password, ref userData);
 
@@ -67,8 +67,8 @@ namespace NavOS.Basecode.AdminApp.Authentication
                 return Task.FromResult<ClaimsIdentity>(null);
             }
 
-            user.userData = userData;
-            claimsIdentity = CreateClaimsIdentity(userData);
+            user.adminData = adminData;
+            claimsIdentity = CreateClaimsIdentity(adminData);
             return Task.FromResult(claimsIdentity);
         }
 
@@ -77,17 +77,17 @@ namespace NavOS.Basecode.AdminApp.Authentication
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>Instance of ClaimsIdentity</returns>
-        public ClaimsIdentity CreateClaimsIdentity(User user)
+        public ClaimsIdentity CreateClaimsIdentity(Admin admin)
         {
             var token = _configuration.GetTokenAuthentication();
             //TODO
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId, ClaimValueTypes.String, Const.Issuer),
-                new Claim(ClaimTypes.Name, user.Name, ClaimValueTypes.String, Const.Issuer),
+                new Claim(ClaimTypes.NameIdentifier, admin.AdminId, ClaimValueTypes.String, Const.Issuer),
+                new Claim(ClaimTypes.Name, admin.AdminName, ClaimValueTypes.String, Const.Issuer),
 
-                new Claim("UserId", user.UserId, ClaimValueTypes.String, Const.Issuer),
-                new Claim("UserName", user.Name, ClaimValueTypes.String, Const.Issuer),
+                new Claim("AdminId", admin.AdminId, ClaimValueTypes.String, Const.Issuer),
+                new Claim("AdminName", admin.AdminName, ClaimValueTypes.String, Const.Issuer),
             };
             return new ClaimsIdentity(claims, Const.AuthenticationScheme);
         }
@@ -120,9 +120,9 @@ namespace NavOS.Basecode.AdminApp.Authentication
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="isPersistent">if set to <c>true</c> [is persistent].</param>
-        public async Task SignInAsync(User user, bool isPersistent = false)
+        public async Task SignInAsync(Admin admin, bool isPersistent = false)
         {
-            var claimsIdentity = this.CreateClaimsIdentity(user);
+            var claimsIdentity = this.CreateClaimsIdentity(admin);
             var principal = this.CreateClaimsPrincipal(claimsIdentity);
             await this.SignInAsync(principal, isPersistent);
         }

@@ -29,15 +29,21 @@ namespace NavOS.Basecode.BookApp
             this._services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Services
-            this._services.AddScoped<IUserService, UserService>();
+//<<<<<<< Rebanda
             this._services.AddScoped<IBookService, BookService>();
             this._services.AddScoped<IReviewService, ReviewService>();
           
 
             // Repositories
-            this._services.AddScoped<IUserRepository, UserRepository>();
             this._services.AddScoped<IBookRepository, BookRepository>();
             this._services.AddScoped<IReviewRepository, ReviewRepository>();
+//=======
+            this._services.AddScoped<IAdminService, AdminService>();
+          
+
+            // Repositories
+            this._services.AddScoped<IAdminRepository, AdminRepository>();
+//>>>>>>> main
 
             this._services.AddHttpClient();
         }

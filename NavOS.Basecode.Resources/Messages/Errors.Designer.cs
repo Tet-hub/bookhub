@@ -61,6 +61,15 @@ namespace NavOS.Basecode.Resources.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email Address already exists!.
+        /// </summary>
+        public static string AdminExists {
+            get {
+                return ResourceManager.GetString("AdminExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server error occured!.
         /// </summary>
         public static string ServerError {

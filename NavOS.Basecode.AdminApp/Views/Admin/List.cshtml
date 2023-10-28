@@ -1,0 +1,56 @@
+﻿@model List<NavOS.Basecode.Data.Models.Admin>
+
+@{
+	ViewData["Title"] = "Admin List";
+
+}
+
+
+<div style="margin-top: 40px; text-align: right">
+    <h3><a asp-controller="Admin" asp-action="Add" style="text-decoration: none; font-weight: bold;color: #FFC119">+ ADD ADMIN</a></h3>
+</div>
+
+<table class="table table-dark" style="margin-top: 40px;border: .5px solid #fff;">
+    <thead>
+        <tr>
+            <th style="background-color: #FFC119;color: black;">Admin ID</th>
+            <th style="background-color: #FFC119;color: black;">Name</th>
+            <th style="background-color: #FFC119;color: black;">Email</th>
+            <th style="background-color: #FFC119;color: black;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var admin in Model)
+        {
+            <tr>
+                <td>@admin.AdminId</td>
+                <td>@admin.AdminName</td>
+                <td>@admin.AdminEmail</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <form asp-action="Edit" method="get">
+                            <input type="hidden" name="AdminId" value="@admin.AdminId">
+                            <button type="submit" class="btn btn-outline-success"><i class="fas fa-edit"></i></button>
+                        </form>
+                        &nbsp;
+                        <form asp-action="Delete" method="post">
+                            <input type="hidden" name="AdminId" value="@admin.AdminId">
+                            <button type="submit" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <script>
+        // Check for error message and display Toastr notification
+        var errorMessage = '@TempData["ErrorMessage"]';
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+        
+    </script>
+}

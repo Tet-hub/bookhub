@@ -25,14 +25,14 @@ namespace NavOS.Basecode.AdminApp.Controllers
         private readonly TokenValidationParametersFactory _tokenValidationParametersFactory;
         private readonly TokenProviderOptionsFactory _tokenProviderOptionsFactory;
         private readonly IConfiguration _appConfiguration;
-        private readonly IUserService _userService;
+        private readonly IAdminService _adminService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
         /// </summary>
         /// <param name="signInManager">The sign in manager.</param>
         /// <param name="localizer">The localizer.</param>
-        /// <param name="userService">The user service.</param>
+        /// <param name="adminService">The user service.</param>
         /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="configuration">The configuration.</param>
@@ -45,7 +45,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                             ILoggerFactory loggerFactory,
                             IConfiguration configuration,
                             IMapper mapper,
-                            IUserService userService,
+                            IAdminService adminService,
                             TokenValidationParametersFactory tokenValidationParametersFactory,
                             TokenProviderOptionsFactory tokenProviderOptionsFactory) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
@@ -54,7 +54,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
             this._tokenProviderOptionsFactory = tokenProviderOptionsFactory;
             this._tokenValidationParametersFactory = tokenValidationParametersFactory;
             this._appConfiguration = configuration;
-            this._userService = userService;
+            this._adminService = adminService;
         }
 
         /// <summary>
@@ -83,22 +83,22 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
             this._session.SetString("HasSession", "Exist");
 
-            User user = null;
-            var loginResult = _userService.AuthenticateUser(model.UserId, model.Password, ref user);
+            Admin admin = null;
+            var loginResult = _adminService.AuthenticateAdmin(model.AdminEmail, model.Password, ref admin);
             if (loginResult == LoginResult.Success)
             {
                 // 認証OK
-                await this._signInManager.SignInAsync(user);
-                this._session.SetString("UserName", user.Name);
+                await this._signInManager.SignInAsync(admin);
+                this._session.SetString("AdminName", admin.AdminName);
+                this._session.SetString("Role", admin.Role);
                 return RedirectToAction("Index", "Home");
             }
             else
             {
                 // 認証NG
-                TempData["ErrorMessage"] = "Incorrect UserId or Password";
+                TempData["ErrorMessage"] = "Incorrect Email Address or Password";
                 return View();
             }
-            return View();
         }
 
         [HttpGet]
@@ -110,22 +110,12 @@ namespace NavOS.Basecode.AdminApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Register(UserViewModel model)
+        public IActionResult Register(AdminViewModel model)
         {
-            try
-            {
-                _userService.AddUser(model);
-                return RedirectToAction("Login", "Account");
-            }
-            catch(InvalidDataException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-            }
-            catch(Exception ex)
-            {
-                TempData["ErrorMessage"] = Resources.Messages.Errors.ServerError;
-            }
-            return View();
+
+            _adminService.AddAdmin(model);
+            return RedirectToAction("Login", "Account");
+
         }
 
         /// <summary>

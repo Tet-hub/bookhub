@@ -1,4 +1,4 @@
-﻿using NavOS.Basecode.Data.Models;
+using NavOS.Basecode.Data.Models;
 using NavOS.Basecode.Services.ServiceModels;
 using System;
 using System.Collections.Generic;
