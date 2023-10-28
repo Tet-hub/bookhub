@@ -1,0 +1,32 @@
+﻿@model NavOS.Basecode.Services.ServiceModels.GenreViewModel
+
+
+<h2>Add New Genre</h2>
+
+<form method="post" enctype="multipart/form-data" asp-action="AddGenre">
+
+    <div class="form-group">
+        <label>Title</label>
+        <input class="form-control" asp-for="GenreName" />
+        <span asp-validation-for="GenreName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <input class="form-control" asp-for="GenreDescription" />
+        <span asp-validation-for="GenreDescription" class="text-danger"></span>
+
+    </div>
+
+    @* <div>
+    <small class="text-muted">UpdatedBy</small>
+    </div>
+
+    <div>
+    <small class="text-muted">AddedBy</small>
+    </div> *@
+
+
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
