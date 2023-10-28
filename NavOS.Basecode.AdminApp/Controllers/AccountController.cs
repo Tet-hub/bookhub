@@ -91,7 +91,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 await this._signInManager.SignInAsync(admin);
                 this._session.SetString("AdminName", admin.AdminName);
                 this._session.SetString("Role", admin.Role);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
             else
             {
