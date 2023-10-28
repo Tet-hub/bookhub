@@ -58,8 +58,12 @@ namespace NavOS.Basecode.BookApp.Controllers
                 .ToList();
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                // If a search query is provided, filter the books based on the query
-                data = data.Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+                //Search the book by Genre or Author Name
+                data = data.Where(book =>
+                    book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+
             }
 
             return View(data);
@@ -73,34 +77,17 @@ namespace NavOS.Basecode.BookApp.Controllers
 
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                // If a search query is provided, filter the books based on the query
-                data = data.Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+                //Search the book by Genre or Author Name
+                data = data.Where(book =>
+                    book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
             }
 
             // Sort the filtered books by AddedTime in descending order
             data = data.OrderByDescending(book => book.AddedTime).ToList();
 
             return View(data);
-        }
-        [HttpGet]
-        public IActionResult Search(string query)
-        {
-            var books = _bookService.GetBooks();
-
-            if (!string.IsNullOrWhiteSpace(query))
-            {
-                query = query.Trim().ToLower();
-                books = books.Where(book => book.BookTitle.ToLower().Contains(query)).ToList();
-            }
-
-            if (books.Any())
-            {
-                return PartialView("_SearchResultsPartial", books);
-            }
-            else
-            {
-                return Content("No books found");
-            }
         }
         public IActionResult ViewSingleBook(string BookId)
         {
@@ -111,16 +98,12 @@ namespace NavOS.Basecode.BookApp.Controllers
 
                 // Store reviews in ViewData
                 ViewData["Reviews"] = reviews;
+                //Store book in ViewData
+                ViewData["Book"] = book;
 
-                return View(book);
+                return View();
             }
             return NotFound();
-        }
-
-        public IActionResult GetReviews()
-        {
-            var data = _reviewService.GetReviews();
-            return RedirectToAction("ViewSingleBook", new { data });
         }
 
         public IActionResult AddReview(ReviewViewModel review)

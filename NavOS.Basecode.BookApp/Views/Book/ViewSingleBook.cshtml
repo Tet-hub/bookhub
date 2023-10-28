@@ -1,14 +1,24 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels;
-@model NavOS.Basecode.Services.ServiceModels.BookViewModel
 @{
     var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
+    var book = ViewData["Book"] as NavOS.Basecode.Services.ServiceModels.BookViewModel;
+
+    // Convert bookId to string
+    string bookId = book.BookId.ToString();
+    //Calculate the avg. rate & count no. of reviews where BookId = currentBookId
+    double averageRate = reviews
+        .Where(r => r.BookId == bookId)
+        .Select(r => (double?)r.Rate) // Convert to double
+        .Average() ?? 0.0; //Default value
+    int reviewCount = reviews
+        .Count(r => r.BookId == bookId);
 }
 <div class="container mt-5">
     <div class="w3-margin" id="bgColor">
         <!-- Header Container -->
         <div class="col-md-12 d-flex justify-content-between align-items-center"style="background-color: #FFC119; height: 35px;">
             <div class="float-start">
-                <a class="text-center text-decoration-none ms-3">@Model.BookTitle</a>
+                <span class="float-start text-center ms-3 fst-italic">Date | @book.DateReleased.ToString("MMMM dd, yyyy")</span>
             </div>
             <div class="float-end">
                 <a class="text-dark text-decoration-none fw-bold me-2" href="javascript:history.back()">Back</a>
@@ -20,20 +30,20 @@
                 <div class="w3-col w3-padding-30" style="width:230px">
                     <img src="~/img/default-book.jpg" class="w3-margin-bottom" height="250" width="210">
                 </div>
-                <div class="w3-col w3-padding-30" style="width:230px">
-                    <p id="book1" class="w3-margin-bottom w3-text-orange">@Model.BookTitle</p>
-                    <p>Author: @Model.Author</p>
-                    <p>Status: @Model.Status</p>
-                    <p>Genre: @Model.Genre</p>
-                    <p>Volume: @Model.Volume</p><br>
+                <div id="bookInfo" class="w3-col w3-padding-30" style="width:230px">
+                    <p id="book1" class="w3-margin-bottom w3-text-orange">@book.BookTitle</p>
+                    <p>Author: @book.Author</p>
+                    <p>Status: @book.Status</p>
+                    <p>Genre: @book.Genre</p>
+                    <p>Volume: @book.Volume</p><br>
                 </div>
                 <div id="ratings" class="w3-right w3-padding-30 w3-col" style="width:200px">
                     <div>
                         <i class="fa fa-star"></i>
                     </div>
                     <div id="rate-review">
-                        <p id="pTopPadding"><b>8.5</b>/10</p>
-                        <small id="starReviews">666 Reviews</small>
+                        <p id="pTopPadding"><b>@averageRate.ToString("0.0")</b>/5</p>
+                        <small id="starReviews">@reviewCount.ToString("N0") Reviews</small>
                     </div>
                 </div>
             </div><br>
@@ -41,16 +51,16 @@
             <h6 id="summaryLabel" class="w3-margin-bottom">SUMMARY</h6>
 
             <div id="summary" class="w3-justify w3-border w3-padding">
-                <p>@Model.Summary</p>
+                <p>@book.Summary</p>
             </div><br><br>
             <!--REVIEWS PARTIAL VIEW-->
-            @Html.Partial("AddReview", new ReviewViewModel { BookId = Model.BookId })
+            @Html.Partial("AddReview", new ReviewViewModel { BookId = book.BookId })
 
             <!-- USER REVIEW LIST-->
             <div id="leftRightPadding" class="w3-border w3-padding-32">
-                @if (reviews.Any(r => r.BookId == Model.BookId))
+                @if (reviews.Any(r => r.BookId == book.BookId))
                 {
-                    @foreach (var review in reviews.Where(r => r.BookId == Model.BookId).OrderByDescending(r => r.DateReviewed))
+                    @foreach (var review in reviews.Where(r => r.BookId == book.BookId).OrderByDescending(r => r.DateReviewed))
                     {
                         <div class="w3-border w3-padding">
                             <div class="w3-row">
@@ -69,7 +79,7 @@
                                     }
                                 </div>
                             </div>
-                            <p class="w3-justify w3-text-white">@review.ReviewText</p>
+                            <p id="userReview" class="w3-text-white">@review.ReviewText</p>
                         </div>
                         <br>
                     }

@@ -1,4 +1,5 @@
-﻿using NavOS.Basecode.Services.ServiceModels;
+using NavOS.Basecode.Data.Models;
+using NavOS.Basecode.Services.ServiceModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace NavOS.Basecode.Services.Interfaces
 {
     public interface IReviewService
     {
-        public void AddReview(ReviewViewModel review);
-        public List<ReviewViewModel> GetReviews();
+        void AddReview(ReviewViewModel review);
+        List<ReviewViewModel> GetReviews();
     }
 }
