@@ -1,27 +1,50 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels;
 @{
+    ViewData["Title"] = "Book Details";
     var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
     var book = ViewData["Book"] as NavOS.Basecode.Services.ServiceModels.BookViewModel;
 
-    // Convert bookId to string
     string bookId = book.BookId.ToString();
-    //Calculate the avg. rate & count no. of reviews where BookId = currentBookId
+    // Calculate the avg. rate & count no. of reviews where BookId = currentBookId
     double averageRate = reviews
         .Where(r => r.BookId == bookId)
-        .Select(r => (double?)r.Rate) // Convert to double
-        .Average() ?? 0.0; //Default value
+        .Select(r => (double?)r.Rate)
+        .Average() ?? 0.0;
     int reviewCount = reviews
         .Count(r => r.BookId == bookId);
+
+
 }
+<Style>
+    .rating {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+
+    .stars {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top:-17px;
+    }
+
+    .star {
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(90deg, yellow 0%, gray 0%);
+        clip-path: polygon(50% 0%, 61.8% 38.2%, 100% 38.2%, 69.1% 61.8%, 80.3% 100%, 50% 77.3%, 19.7% 100%, 30.9% 61.8%, 0% 38.2%, 38.2% 38.2%);
+    }
+</Style>
 <div class="container mt-5">
     <div class="w3-margin" id="bgColor">
         <!-- Header Container -->
         <div class="col-md-12 d-flex justify-content-between align-items-center"style="background-color: #FFC119; height: 35px;">
             <div class="float-start">
-                <span class="float-start text-center ms-3 fst-italic">Date | @book.DateReleased.ToString("MMMM dd, yyyy")</span>
+                <span class="float-start text-center ms-3 fst-italic">Released | @book.DateReleased.ToString("MMMM dd, yyyy")</span>
             </div>
-            <div class="float-end">
-                <a class="text-dark text-decoration-none fw-bold me-2" href="javascript:history.back()">Back</a>
+            <div class="float-end py-2">
+                <a class="text-dark text-decoration-none fw-bold me-2 btn btn-dark text-white" style="font-size:12px; box-shadow:none;" href="javascript:history.back()" type="button"><i class="bi bi-backspace"></i></a>
             </div>
         </div>
         <!--Book Info/Ratings-->
@@ -37,19 +60,36 @@
                     <p>Genre: @book.Genre</p>
                     <p>Volume: @book.Volume</p><br>
                 </div>
-                <div id="ratings" class="w3-right w3-padding-30 w3-col" style="width:200px">
-                    <div>
-                        <i class="fa fa-star"></i>
-                    </div>
+                <div class="w3-right w3-col" style="width: 258px">
                     <div id="rate-review">
-                        <p id="pTopPadding"><b>@averageRate.ToString("0.0")</b>/5</p>
-                        <small id="starReviews">@reviewCount.ToString("N0") Reviews</small>
+                        <p class="font-italic">
+                            <b>@(averageRate % 1 == 0 ? averageRate.ToString("0") : averageRate.ToString("0.0")) / 5 </b>-
+                            <span>@reviewCount.ToString("N0") Reviews</span>
+                        </p>
+                    </div>
+                    <div class="rating">
+                        <p>Ratings:</p>
+                        <div class="stars ms-2">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                double starColorPercentage = 0.0;
+
+                                if (i < Math.Floor(averageRate))
+                                {
+                                    starColorPercentage = 100.0;
+                                }
+                                else if (i == Math.Floor(averageRate) && averageRate % 1 > 0)
+                                {
+                                    starColorPercentage = (averageRate % 1) * 100;
+                                }
+
+                                <div class="star" style="background: linear-gradient(90deg, yellow @(starColorPercentage)%, gray @(starColorPercentage)%);"></div>
+                            }
+                        </div>
                     </div>
                 </div>
             </div><br>
-            <!--SUMMARY-->
-            <h6 id="summaryLabel" class="w3-margin-bottom">SUMMARY</h6>
-
+                <h6 id="summaryLabel" class="w3-margin-bottom">SUMMARY</h6>
             <div id="summary" class="w3-justify w3-border w3-padding">
                 <p>@book.Summary</p>
             </div><br><br>

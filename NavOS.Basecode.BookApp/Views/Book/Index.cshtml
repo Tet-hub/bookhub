@@ -1,6 +1,22 @@
-﻿@model List<NavOS.Basecode.Services.ServiceModels.BookViewModel>
+﻿@using NavOS.Basecode.Services.ServiceModels;
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Home Page";
+    var model = ViewData["Books"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
+    var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
+
+    //sort the books according to reviews
+    var reviewsCountByBookId = reviews
+    .GroupBy(r => r.BookId)
+    .ToDictionary(g => g.Key, g => g.Count());
+
+    var sortedBooks = model.OrderByDescending(book => reviewsCountByBookId.ContainsKey(book.BookId) ? reviewsCountByBookId[book.BookId] : 0);
+    
+    //filter new books according to addedtime for the past 2 weeks
+    var filteredBooks = model
+    .OrderByDescending(book => book.AddedTime)
+    .Where(book => (DateTime.Now - book.AddedTime).TotalDays <= 14)
+    .Take(5);
+
 }
 <style>
     .ellipsis {
@@ -15,7 +31,7 @@
 <div class="row mt-4 mx-1">
     <!-- Latest Books-->
     <div class="col-9 col-md-11 ms-5 px-2">
-        <a asp-action="ViewNewBooks" asp-controller="Book" class="btn btn-warning text-dark float-end mt-2" style="box-shadow:none;">View New Books</a>
+        <a asp-action="NewBooks" asp-controller="Book" class="btn btn-warning text-dark float-end mt-2" style="box-shadow:none;">View New Books</a>
     </div>
     <div class="col-md-3 d-flex justify-content-between">
         <span class="h4" style="color:#FFC119; margin-top:-28px;">LATEST BOOKS</span>
@@ -26,11 +42,11 @@
         <!-- Book List -->
         <div class="col-md-12 mx-2">
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
-                @foreach (var book in Model.OrderByDescending(book => book.AddedTime).Where(book => (DateTime.Now - book.AddedTime).TotalDays <= 14).Take(5))
+                @foreach (var book in filteredBooks)
                 {
                 <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                     <div class="card w-100" style="height: 100%;">
-                        <a asp-action="ViewSingleBook" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                        <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
                             <img class="card-img-top" height="250" width="100" src="~/img/default-book.jpg" alt="Card image cap">
                             <div class="card-body text-center" style="height:60px;">
                                 <h6 class="card-title ellipsis">@book.BookTitle</h6>
@@ -52,7 +68,7 @@
     <div class="row mt-2 mx-1">
         <!--View Top Books-->
         <div class="col-9 col-md-11 ms-5 px-2">
-            <a asp-action="ViewTopBooks" asp-controller="Book" class="btn btn-warning text-dark float-end mt-2" style="box-shadow:none;">View Top Books</a>
+            <a asp-action="TopBooks" asp-controller="Book" class="btn btn-warning text-dark float-end mt-2" style="box-shadow:none;">View Top Books</a>
         </div>
         <div class="col-md-3 d-flex justify-content-between">
             <span class="h4" style="color:#FFC119; margin-top:-28px;">TOP BOOKS</span>
@@ -62,25 +78,33 @@
         <!-- Book List -->
         <div class="col-md-12 mx-2">
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
-                @foreach (var book in Model.OrderBy(book => book.AddedTime).Take(5))
+                @foreach (var book in sortedBooks.Take(5))
                 {
-                <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
-                    <div class="card w-100" style="height: 100%;">
-                        <a asp-action="ViewSingleBook" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
-                            <img class="card-img-top" height="250" width="100" src="~/img/default-book.jpg" alt="Card image cap">
-                            <div class="card-body text-center" style="height:60px;">
-                                <h6 class="card-title ellipsis">@book.BookTitle</h6>
-                            </div>
-                            <div class="text-left mx-3 mb-2">
-                                <hr style="margin-bottom:1px;">
-                                <span class="text-dark" style="font-size:12px;">
-                                    Author:
-                                    <span class="text-muted">@book.Author </span>
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-                </li>
+                    <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
+                        <div class="card w-100" style="height: 100%;">
+                            <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                                <img class="card-img-top" height="250" width="100" src="~/img/default-book.jpg" alt="Card image cap">
+                                <div class="card-body text-center" style="height:60px;">
+                                    <h6 class="card-title ellipsis">@book.BookTitle</h6>
+                                </div>
+                                <div class="text-left mx-3 mb-2">
+                                    <hr style="margin-bottom:1px;">
+                                    <span class="text-dark" style="font-size:12px;">
+                                        Author:
+                                        <span class="text-muted">@book.Author</span>
+                                    </span>
+                                </div>
+                                <div class="text-left mx-3 mb-2">
+                                    <span class="text-dark" style="font-size:12px;">
+                                        Reviews:
+                                        <span class="fw-bold">
+                                            @(reviewsCountByBookId.ContainsKey(book.BookId) ? reviewsCountByBookId[book.BookId] : 0)
+                                        </span>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
                 }
             </ul>
         </div>
