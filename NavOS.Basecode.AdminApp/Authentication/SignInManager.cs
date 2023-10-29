@@ -75,8 +75,8 @@ namespace NavOS.Basecode.AdminApp.Authentication
         /// <summary>
         /// Creates the claims identity.
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns>Instance of ClaimsIdentity</returns>
+        /// <param name="admin">The admin.</param>
+        /// <returns></returns>
         public ClaimsIdentity CreateClaimsIdentity(Admin admin)
         {
             var token = _configuration.GetTokenAuthentication();
@@ -116,9 +116,9 @@ namespace NavOS.Basecode.AdminApp.Authentication
         }
 
         /// <summary>
-        /// Signs in user asynchronously
+        /// Signs the in asynchronous.
         /// </summary>
-        /// <param name="user">The user.</param>
+        /// <param name="admin">The admin.</param>
         /// <param name="isPersistent">if set to <c>true</c> [is persistent].</param>
         public async Task SignInAsync(Admin admin, bool isPersistent = false)
         {

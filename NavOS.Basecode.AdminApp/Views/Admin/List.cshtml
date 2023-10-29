@@ -1,56 +1,133 @@
-﻿@model List<NavOS.Basecode.Data.Models.Admin>
+﻿@model List<NavOS.Basecode.Services.ServiceModels.AdminViewModel>
 
 @{
-	ViewData["Title"] = "Admin List";
-
+    ViewData["Title"] = "Admin List";
 }
 
+@section styles {
+    <link rel="stylesheet" type="text/css" href="~/css/list.css">
+}
 
 <div style="margin-top: 40px; text-align: right">
     <h3><a asp-controller="Admin" asp-action="Add" style="text-decoration: none; font-weight: bold;color: #FFC119">+ ADD ADMIN</a></h3>
 </div>
 
-<table class="table table-dark" style="margin-top: 40px;border: .5px solid #fff;">
-    <thead>
-        <tr>
-            <th style="background-color: #FFC119;color: black;">Admin ID</th>
-            <th style="background-color: #FFC119;color: black;">Name</th>
-            <th style="background-color: #FFC119;color: black;">Email</th>
-            <th style="background-color: #FFC119;color: black;">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var admin in Model)
-        {
+<form asp-controller="Admin" asp-action="List" method="get" class="form-inline my-2 my-lg-0" style="margin-top: 20px">
+    <div class="input-group">
+        <input class="form-control mr-sm-2" data-val="true" data-val-required="Please enter a name or email to search." name="searchQuery" id="searchQuery" type="search" placeholder="Search Admin By Name or Email" aria-label="Search" style="border-radius: 5px;">&nbsp;
+        <div class="input-group-append">
+            <button class="btn my-2 my-sm-0" type="submit" style="background-color: #FFC119;color: black;">Search</button>
+        </div>
+    </div>
+    <span class="text-danger field-validation-valid" data-valmsg-for="searchQuery" data-valmsg-replace="true"></span>
+</form>
+
+@if (Model.Any())
+{
+    <table class="table table-dark" style="margin-top: 20px;border: .5px solid #fff;">
+        <thead>
             <tr>
-                <td>@admin.AdminId</td>
-                <td>@admin.AdminName</td>
-                <td>@admin.AdminEmail</td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <form asp-action="Edit" method="get">
-                            <input type="hidden" name="AdminId" value="@admin.AdminId">
-                            <button type="submit" class="btn btn-outline-success"><i class="fas fa-edit"></i></button>
-                        </form>
-                        &nbsp;
-                        <form asp-action="Delete" method="post">
-                            <input type="hidden" name="AdminId" value="@admin.AdminId">
-                            <button type="submit" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
-                        </form>
-                    </div>
-                </td>
+                <th style="background-color: #FFC119;color: black;">Name</th>
+                <th style="background-color: #FFC119;color: black;">Email</th>
+                <th style="background-color: #FFC119;color: black;">Role</th>
+                <th style="background-color: #FFC119;color: black;">Actions</th>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var admin in Model)
+            {
+                <tr>
+                    <td>@admin.AdminName</td>
+                    <td>@admin.AdminEmail</td>
+                    <td>@admin.Role</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form asp-action="Edit" method="get">
+                                <input type="hidden" name="AdminId" value="@admin.AdminId">
+                                <button type="submit" class="btn btn-outline-success"><i class="fas fa-edit"></i></button>
+                            </form>
+                            &nbsp;
+                            <button class="btn btn-outline-danger rounded" onclick="openModalSet('@admin.AdminId')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <span class="text-white w3-display-middle">No Admin found </span>
+}
+
+@* Pagination *@
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-end">
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)" style="background-color: #FFC119;color: black;" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
         }
-    </tbody>
-</table>
+        @for (int i = ViewBag.CurrentPage - 2; i <= ViewBag.CurrentPage + 2; i++)
+        {
+            if (i >= 1 && i <= ViewBag.TotalPages)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" style="background-color: #FFC119;color: black;"
+                       asp-controller="Admin" asp-action="List" asp-route-page="@i">@i</a>
+                </li>
+            }
+        }
+        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)" style="background-color: #FFC119;color: black;" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@* Modal Area *@
+<div class="w3-modal" id="deleteModal">
+    <div class="w3-modal-content w3-animate-top w3-round-xlarge" style="background-color: #212529;width: 40%;">
+        <div class="w3-container w3-padding-large">
+            <p>
+                <h3 class="w3-center">Are you sure you want</h3>
+                <h3 class="w3-center">to delete the admin</h3>
+                
+            </p>
+            <div class="row text-center">
+                <div id="AdminId" style="display: none"></div>
+                <div class="col-md-6">
+                    <button class="btn btn-outline-danger" style="width: 200px" onclick="deleteAdmin()"><h3>YES</h3></button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-outline-success" style="width: 200px" onclick="modal_control('deleteModal','none')"><h3>NO</h3></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script>
         // Check for error message and display Toastr notification
         var errorMessage = '@TempData["ErrorMessage"]';
+        var successMessage = '@TempData["SuccessMessage"]';
+        
         if (errorMessage) {
             toastr.error(errorMessage);
         }
-        
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+
     </script>
+    <script src="~/js/modal.js"></script>
 }

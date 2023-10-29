@@ -64,7 +64,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 return View(genre);
             }
             //_genreService.AddGenre(genre, this._session.GetString("ÄdminName"));
-            _genreService.AddGenre(genre, this.UserId);
+            _genreService.AddGenre(genre, this.UserName);
             return RedirectToAction("ViewGenre");
         }
     }

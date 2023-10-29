@@ -36,8 +36,9 @@ namespace NavOS.Basecode.Data.Repositories
         public void DeleteAdmin(Admin admin)
         {
             this.GetDbSet<Admin>().Remove(admin);
-            UnitOfWork.SaveChanges();   
+            UnitOfWork.SaveChanges();
         }
+
 
         public void UpdateAdmin(Admin admin)
         {
