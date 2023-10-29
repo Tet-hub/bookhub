@@ -1,0 +1,26 @@
+﻿.pagination {
+    text-align: right; /* Optional: Align the pagination to the right */
+}
+
+::placeholder {
+    color: white;
+}
+
+.pagination-list {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end; /* Aligns items to the end (right) of the flex container */
+    padding: 0;
+    margin: 0;
+}
+
+.page-item {
+    margin: 0 5px; /* Adjust spacing between pagination items */
+}
+
+.page-link {
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    /* Other styling properties */
+}

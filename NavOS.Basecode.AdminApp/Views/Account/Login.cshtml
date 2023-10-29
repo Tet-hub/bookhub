@@ -13,7 +13,7 @@
 <div class="container py-5" style="display:flex; align-content:center;height:calc(100vh - 64px)">
     <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-10">
-            <div class="card rounded-3 text-black">
+            <div class="card rounded-3 text-black"> 
                 <div class="row g-0 w-1000px">
                     <div class="col-lg-6">
                         <div class="card-body p-md-5 mx-md-4">
@@ -42,10 +42,6 @@
                                         <a class="text-muted" href="#!">@ForgotPass</a>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center justify-content-center pb-4">
-                                    <p class="mb-0 me-2 mr-1">@DontHaveAcc</p>
-                                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-danger">@CreateNew</a>
-                                </div>
                             </form>
                         </div>
                     </div>
@@ -62,8 +58,15 @@
     <script>
         // Check for error message and display Toastr notification
         var errorMessage = '@TempData["ErrorMessage"]';
+        // Check for success message and display Toastr notification
+        var successMessage = '@TempData["SuccessMessage"]';
+
         if (errorMessage) {
             toastr.error(errorMessage);
+        }
+
+        if (successMessage) {
+            toastr.success(successMessage);
         }
     </script>
 }

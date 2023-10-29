@@ -65,6 +65,11 @@ namespace NavOS.Basecode.AdminApp.Controllers
         [AllowAnonymous]
         public ActionResult Login()
         {
+            if (!string.IsNullOrEmpty(this._session.GetString("HasSession")))
+            {
+                // If "HasSession" exists, redirect to Home/Index
+                return RedirectToAction("Index", "Home");
+            }
             TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
             this._sessionManager.Clear();
             this._session.SetString("SessionId", System.Guid.NewGuid().ToString());
@@ -91,7 +96,8 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 await this._signInManager.SignInAsync(admin);
                 this._session.SetString("AdminName", admin.AdminName);
                 this._session.SetString("Role", admin.Role);
-                return RedirectToAction("Index", "Book");
+                TempData["SuccessMessage"] = "Welcome Admin!";
+                return RedirectToAction("Index", "Home");
             }
             else
             {
@@ -101,22 +107,22 @@ namespace NavOS.Basecode.AdminApp.Controllers
             }
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register()
-        {
-            return View();
-        }
+        //[HttpGet]
+        //[AllowAnonymous]
+        //public IActionResult Register()
+        //{
+        //    return View();
+        //}
 
-        [HttpPost]
-        [AllowAnonymous]
-        public IActionResult Register(AdminViewModel model)
-        {
+        //[HttpPost]
+        //[AllowAnonymous]
+        //public IActionResult Register(AdminViewModel model)
+        //{
 
-            _adminService.AddAdmin(model);
-            return RedirectToAction("Login", "Account");
+        //    _adminService.AddAdmin(model);
+        //    return RedirectToAction("Login", "Account");
 
-        }
+        //}
 
         /// <summary>
         /// Sign Out current account and return login view.
@@ -126,6 +132,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         public async Task<IActionResult> SignOutUser()
         {
             await this._signInManager.SignOutAsync();
+            TempData["SuccessMessage"] = "Bye " + this.UserName;
             return RedirectToAction("Login", "Account");
         }
     }

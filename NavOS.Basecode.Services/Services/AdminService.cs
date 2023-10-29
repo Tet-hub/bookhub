@@ -56,23 +56,65 @@ namespace NavOS.Basecode.Services.Services
             }
         }
 
-        public List<Admin> GetAllAdmins()
-        {
-            var admins = _adminRepository.GetAdmins().ToList();
+        //public List<Admin> GetAllAdmins()
+        //{
+        //    var admins = _adminRepository.GetAdmins()
+                //.OrderByDescending(admin => admin.Role == "Master Admin")
+                //.ThenBy(admin => admin.Role)
+                //.ThenBy(admin => admin.AdminName)
+                //.ToList();
 
-            return admins;
+        //    return admins;
+        //}
+
+        public List<AdminViewModel> GetAllAdmins()
+        {
+            var data = _adminRepository.GetAdmins().Select(s => new AdminViewModel
+            {
+                AdminId = s.AdminId,
+                AdminEmail = s.AdminEmail,
+                AdminName = s.AdminName,
+                Role = s.Role,
+                ContactNo = s.ContactNo,
+                Dob = s.Dob
+
+            }).OrderByDescending(admin => admin.Role == "Master Admin")
+              .ThenBy(admin => admin.Role)
+              .ThenBy(admin => admin.AdminName)
+              .ToList();
+            return data;
         }
 
-        public Admin GetAdmin(string adminId)
+        public AdminViewModel GetAdmin(string adminId)
         {
             var admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminId).FirstOrDefault();
 
-            return admin;
+            AdminViewModel adminViewModel = new AdminViewModel();
+            adminViewModel.AdminId = adminId;
+            adminViewModel.AdminName = admin.AdminName;
+            adminViewModel.AdminEmail = admin.AdminEmail;
+            adminViewModel.ContactNo = admin.ContactNo;
+            adminViewModel.Dob = admin.Dob;
+            adminViewModel.Role = admin.Role;
+
+            return adminViewModel;
+
         }
 
-        public bool DeleteAdmin(AdminViewModel adminViewModel)
+        //public bool DeleteAdmin(AdminViewModel adminViewModel)
+        //{
+        //    Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
+        //    if (admin != null)
+        //    {
+        //        _adminRepository.DeleteAdmin(admin);
+        //        return true;
+        //    }
+        //    return false;
+        //}
+
+        public bool DeleteAdmin(string adminId)
         {
-            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
+            Admin admin = _adminRepository.GetAdmins().FirstOrDefault(x => x.AdminId == adminId);
             if (admin != null)
             {
                 _adminRepository.DeleteAdmin(admin);

@@ -61,7 +61,7 @@ namespace NavOS.Basecode.Resources.Views {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Admin Email.
+        ///   Looks up a localized string similar to Email.
         /// </summary>
         public static string AdminEmail {
             get {
