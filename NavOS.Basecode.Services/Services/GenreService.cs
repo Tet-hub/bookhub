@@ -36,63 +36,89 @@ namespace NavOS.Basecode.Services.Services
         }
         public bool Validate(string title)
         {
-            //to confirm if it exist
-            //The LinQ is used below, retrieving data of All books in GetBooks(),
-            //then it is filtered in Where if x is same "title" parameter
+            
             var isExist = _genreRepository.GetGenre().Where(x => x.GenreName == title).Any();
+          
+
+            //    var isExist = _genreRepository.GetGenre()
+            //.Any(x => x.GenreName == title && x.GenreDescription == desc);
+
             return isExist;
         }
-        public void AddGenre(GenreViewModel genre, string user) // string user declared to retrieved the user in the controller
+        //public GenreViewModel GetGenre(string GenreId)
+        //{
+        //    var genre = _genreRepository.GetGenre().FirstOrDefault(s => s.GenreId == GenreId);
+
+        //    if (genre != null)
+        //    {
+        //        var genreViewModel = new GenreViewModel
+        //        {
+        //            GenreId = genre.GenreId,
+        //            GenreName = genre.GenreName,
+        //            GenreDescription = genre.GenreDescription,
+        //            AddedBy = genre.AddedBy,
+        //            UpdatedBy = genre.UpdatedBy,
+        //            AddedTime = genre.AddedTime,
+        //            UpdatedTime = genre.UpdatedTime,
+
+        //        };
+        //        return genreViewModel;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
+        public Genre GetGenre(string Genreid)
         {
-            //Create a logic to create a model that will communicate the backend or in repository
-            var model = new Genre(); // Why book is defined due to it is required to be placed in Db
-                                     //Next to mapped the values base in the viewmodel
-            model.GenreId = Guid.NewGuid().ToString(); // to generate random strings
+            var genre = _genreRepository.GetGenre(Genreid);
+
+            return genre;
+        }
+
+
+        public void AddGenre(GenreViewModel genre, string user)
+        {
+            
+            var model = new Genre(); 
+            model.GenreId = Guid.NewGuid().ToString(); 
             model.GenreName = genre.GenreName;
             model.GenreDescription = genre.GenreDescription;
-
-
-            //Refered in controller
             model.AddedBy = user;
             model.UpdatedBy = user;
             model.AddedTime = DateTime.Now;
             model.UpdatedTime = DateTime.Now;
 
-            //after setup model data, it is need to connect and pass into the repository
             _genreRepository.AddGenre(model);
 
-
-            //Since there is still few conflicts due to the BookId is not set into int and not automatically incremented, in order to use the BookId for other references,
-            //and also to make BookId generated in the Services
-            //To implement the GUID to produce random strings
-            // to create Guid declare the BookID pointed to GUID
-
         }
-
-        public GenreViewModel GetGenre(string GenreId)
+        public bool UpdateGenre(GenreViewModel genreViewModel, string user)
         {
-            var genre = _genreRepository.GetGenre().FirstOrDefault(s => s.GenreId == GenreId);
-
+            Genre genre = (Genre)_genreRepository.GetGenre(genreViewModel.GenreId);
             if (genre != null)
             {
-                var genreViewModel = new GenreViewModel
-                {
-                    GenreId = genre.GenreId,
-                    GenreName = genre.GenreName,
-                    GenreDescription = genre.GenreDescription,
-                    AddedBy = genre.AddedBy,
-                    UpdatedBy = genre.UpdatedBy,
-                    AddedTime = genre.AddedTime,
-                    UpdatedTime = genre.UpdatedTime,
-                    
-                };
-                return genreViewModel;
+                genre.GenreName = genreViewModel.GenreName;
+                genre.GenreDescription = genreViewModel.GenreDescription;
+                genre.UpdatedBy = user;
+                genre.UpdatedTime = System.DateTime.Now;
+
+                _genreRepository.UpdateGenre(genre);
+                return true;
             }
-            else
-            {
-                return null;
-            }
+
+            return false;
         }
 
+        public bool DeleteGenre(GenreViewModel genreViewModel)
+        {
+            Genre genre = _genreRepository.GetGenre(genreViewModel.GenreId);
+            if (genre != null)
+            {
+                _genreRepository.DeleteGenre(genre);
+                return true;
+            }
+
+            return false;
+        }
     }
 }

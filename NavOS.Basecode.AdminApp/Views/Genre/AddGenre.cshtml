@@ -1,9 +1,13 @@
 ﻿@model NavOS.Basecode.Services.ServiceModels.GenreViewModel
 
 
+@{
+	ViewData["Title"] = "Add Genre";
+}
+
 <h2>Add New Genre</h2>
 
-<form method="post" enctype="multipart/form-data" asp-action="AddGenre">
+<form enctype="multipart/form-data" asp-action="AddGenre">
 
     <div class="form-group">
         <label>Title</label>

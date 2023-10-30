@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using NavOS.Basecode.AdminApp.Mvc;
 using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.ServiceModels;
+using NavOS.Basecode.Services.Services;
 
 namespace NavOS.Basecode.AdminApp.Controllers
 {
@@ -50,22 +51,63 @@ namespace NavOS.Basecode.AdminApp.Controllers
         [HttpPost]
         public IActionResult AddGenre(GenreViewModel genre)
         {
-            //Before added, invoke the validation declared in the BookService Validate()
             var isExist = _genreService.Validate(genre.GenreName);
 
             if (isExist)
             {
-                //create a condition to avoid duplication
-                //AddModelError needs a "key" and "error message", key is the container of the message error
-                //in this part is "Title", then error message viewed by the user
                 ModelState.AddModelError("Title", "Title already exist.");
-                //here, below why book is returned,
-                //in order to avoid wiping out the data of other fields inputted along from the user
                 return View(genre);
             }
-            //_genreService.AddGenre(genre, this._session.GetString("ÄdminName"));
             _genreService.AddGenre(genre, this.UserName);
             return RedirectToAction("ViewGenre");
         }
+
+        [HttpGet] 
+
+        public IActionResult EditGenre(string Genreid)
+        {
+
+            var genre = _genreService.GetGenre(Genreid); 
+            if (genre != null)
+            {
+                GenreViewModel genreViewModel = new()
+                {
+                    GenreId = Genreid,
+                    GenreName = genre.GenreName,
+                    GenreDescription = genre.GenreDescription,
+                    
+                };
+
+                return View(genreViewModel);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public IActionResult EditGenre(GenreViewModel genreViewModel)
+        {
+            bool isUpdated = _genreService.UpdateGenre(genreViewModel, this.UserName);
+            if (isUpdated)
+            {
+                return RedirectToAction("ViewGenre");
+            }
+            return NotFound();
+        }
+
+       
+
+
+        [HttpPost]
+        public IActionResult Delete(GenreViewModel genreViewModel)
+        {
+            bool isDeleted = _genreService.DeleteGenre(genreViewModel);
+            if (isDeleted)
+            {
+                return RedirectToAction("ViewGenre");
+            }
+            return NotFound();
+        }
+
+
     }
 }

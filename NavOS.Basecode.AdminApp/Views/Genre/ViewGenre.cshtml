@@ -1,5 +1,6 @@
 ﻿@model List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>
 
+
 @{
     ViewData["Title"] = "Genre List";
 
@@ -19,19 +20,25 @@
                         <h4 class="card-text font-weight-bold">@genre.GenreName</h4>
                         <p class="card-text"><b>@genre.GenreDescription</b></p>
                         <div class="d-flex justify-content-between align-items-center">
-                            @*  <div class="btn-group">
-                        <form asp-controller="Book" asp-action="Edit" method="get">
-                        <input type="hidden" name="id" value="@book.Id" />
-                        <button type="submit" class="btn btn-sm btn-outline-secondary">Edit</button>
-                        </form>
-                        <form asp-controller="Book" asp-action="Delete" method="post">
-                        <input type="hidden" name="id" value="@book.Id" />
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                        </form>
-                        </div> *@
-                            <small class="text-muted">@genre.UpdatedBy</small>
-                            <small class="text-muted">@genre.AddedBy</small>
+                        <div class="btn-group">
+                            <form asp-controller="Genre" asp-action="EditGenre" method="get">
+                                    <input type="hidden" name="Genreid" value="@genre.GenreId" />
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Edit</button>
+                            </form>
+                            <form asp-controller="Genre" asp-action="Delete" method="post">
+                                <input type="hidden" name="Genreid" value="@genre.GenreId" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </div>
+                        <div>
+                            <small class="text-muted">Updated by: @genre.UpdatedBy</small>
+                            <br>
+                            <small class="text-muted">Added by: @genre.AddedBy</small>
+                        </div>
+                        
                             @*  <small class="text-muted">@book.CreatedDate.ToString("dd/MM/yyyy")</small> *@
+                        
+                        
                         </div>
                     </div>
                 </div>

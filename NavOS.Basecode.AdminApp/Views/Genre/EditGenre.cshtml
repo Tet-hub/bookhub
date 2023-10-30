@@ -1,0 +1,19 @@
+﻿@model NavOS.Basecode.Services.ServiceModels.GenreViewModel
+
+<div class="pt-5">
+    <h1>Edit Genre</h1>
+    <form asp-action="EditGenre">
+        <input type="hidden" class="form-control" asp-for="GenreId">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" asp-for="GenreName">
+            <span asp-validation-for="GenreName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea class="form-control" rows="3" asp-for="GenreDescription"></textarea>
+            <span asp-validation-for="GenreDescription" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
