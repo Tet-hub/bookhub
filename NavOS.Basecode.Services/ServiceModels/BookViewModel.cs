@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,12 +11,24 @@ namespace NavOS.Basecode.Services.ServiceModels
     public class BookViewModel
     {
         public string BookId { get; set; }
+        [Required(ErrorMessage = "Book Title is required")]
         public string BookTitle { get; set; }
+        [Required(ErrorMessage = "Summary is required")]
         public string Summary { get; set; }
+        [Required(ErrorMessage = "Author is required")]
         public string Author { get; set; }
+        [Required(ErrorMessage = "Status is required")]
         public string Status { get; set; }
+        [Required(ErrorMessage = "Genre is required")]
         public string Genre { get; set; }
+        [Required(ErrorMessage = "Please Choose a Genre")]
+        public List<string> SelectedGenres { get; set; }
+        [Required(ErrorMessage = "Volume is required")]
         public string Volume { get; set; }
+        [Required(ErrorMessage = "Please upload an image")]
+        public IFormFile ImageFile { get; set; }
+        public string ImageUrl { get; set; }
+        [Required(ErrorMessage = "Date Released is required")]
         public DateTime DateReleased { get; set; }
 
         public DateTime AddedTime { get; set; }
