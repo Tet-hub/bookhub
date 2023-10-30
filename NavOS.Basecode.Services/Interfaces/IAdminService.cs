@@ -12,12 +12,13 @@ namespace NavOS.Basecode.Services.Interfaces
     public interface IAdminService
     {
         public LoginResult AuthenticateAdmin(string email, string password, ref Admin admin);
-        public void AddAdmin(AdminViewModel model);
+        public void AddAdmin(AdminViewModel model, string user);
         public AdminViewModel GetAdmin(string adminId);
 
         public List<AdminViewModel> GetAllAdmins();
         public bool DeleteAdmin(string adminId);
-        public bool EditAdmin(AdminViewModel adminViewModel);
+        public bool EditAdmin(AdminViewModel adminViewModel, string user);
 
-	}
+
+    }
 }

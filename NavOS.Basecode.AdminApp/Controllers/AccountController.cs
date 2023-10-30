@@ -27,19 +27,18 @@ namespace NavOS.Basecode.AdminApp.Controllers
         private readonly IConfiguration _appConfiguration;
         private readonly IAdminService _adminService;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AccountController"/> class.
-        /// </summary>
-        /// <param name="signInManager">The sign in manager.</param>
-        /// <param name="localizer">The localizer.</param>
-        /// <param name="adminService">The user service.</param>
-        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
-        /// <param name="loggerFactory">The logger factory.</param>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="mapper">The mapper.</param>
-        /// <param name="tokenValidationParametersFactory">The token validation parameters factory.</param>
-        /// <param name="tokenProviderOptionsFactory">The token provider options factory.</param>
-        public AccountController(
+		/// <summary>
+		/// Initializes a new instance of the <see cref="AccountController"/> class.
+		/// </summary>
+		/// <param name="signInManager">The sign in manager.</param>
+		/// <param name="httpContextAccessor">The HTTP context accessor.</param>
+		/// <param name="loggerFactory">The logger factory.</param>
+		/// <param name="configuration">The configuration.</param>
+		/// <param name="mapper">The mapper.</param>
+		/// <param name="adminService">The admin service.</param>
+		/// <param name="tokenValidationParametersFactory">The token validation parameters factory.</param>
+		/// <param name="tokenProviderOptionsFactory">The token provider options factory.</param>
+		public AccountController(
                             SignInManager signInManager,
                             IHttpContextAccessor httpContextAccessor,
                             ILoggerFactory loggerFactory,
@@ -65,38 +64,36 @@ namespace NavOS.Basecode.AdminApp.Controllers
         [AllowAnonymous]
         public ActionResult Login()
         {
-            if (!string.IsNullOrEmpty(this._session.GetString("HasSession")))
-            {
-                // If "HasSession" exists, redirect to Home/Index
-                return RedirectToAction("Index", "Home");
-            }
             TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
             this._sessionManager.Clear();
             this._session.SetString("SessionId", System.Guid.NewGuid().ToString());
             return this.View();
         }
 
-        /// <summary>
-        /// Authenticate user and signs the user in when successful.
-        /// </summary>
-        /// <param name="model">The model.</param>
-        /// <param name="returnUrl">The return URL.</param>
-        /// <returns> Created response view </returns>
-        [HttpPost]
+		/// <summary>
+		/// Logins the specified model.
+		/// </summary>
+		/// <param name="model">The model.</param>
+		/// <param name="returnUrl">The return URL.</param>
+		/// <returns></returns>
+		[HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
             this._session.SetString("HasSession", "Exist");
 
-            Admin admin = null;
+            var imagePath = "https://127.0.0.1:8080";
+			Admin admin = null;
             var loginResult = _adminService.AuthenticateAdmin(model.AdminEmail, model.Password, ref admin);
             if (loginResult == LoginResult.Success)
             {
                 // 認証OK
                 await this._signInManager.SignInAsync(admin);
+                this._session.SetString("AdminId", admin.AdminId);
                 this._session.SetString("AdminName", admin.AdminName);
                 this._session.SetString("Role", admin.Role);
-                TempData["SuccessMessage"] = "Welcome Admin!";
+                this._session.SetString("AdminProfile", Path.Combine(imagePath, admin.AdminId + ".png"));
+                TempData["SuccessMessage"] = "Welcome " + admin.AdminName + "!";
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -107,23 +104,6 @@ namespace NavOS.Basecode.AdminApp.Controllers
             }
         }
 
-        //[HttpGet]
-        //[AllowAnonymous]
-        //public IActionResult Register()
-        //{
-        //    return View();
-        //}
-
-        //[HttpPost]
-        //[AllowAnonymous]
-        //public IActionResult Register(AdminViewModel model)
-        //{
-
-        //    _adminService.AddAdmin(model);
-        //    return RedirectToAction("Login", "Account");
-
-        //}
-
         /// <summary>
         /// Sign Out current account and return login view.
         /// </summary>
@@ -132,7 +112,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         public async Task<IActionResult> SignOutUser()
         {
             await this._signInManager.SignOutAsync();
-            TempData["SuccessMessage"] = "Bye " + this.UserName;
+            TempData["SuccessMessage"] = "Bye " + this.UserName + "!";
             return RedirectToAction("Login", "Account");
         }
     }

@@ -11,3 +11,10 @@ function deleteAdmin() {
     let AdminId = document.getElementById("AdminId").innerHTML;
     window.location.href = "/Admin/Delete?adminId=" + AdminId;
 }
+
+window.onclick = function(event) {
+    let modal = document.getElementById('deleteModal');
+  if (event.target == modal) {
+    modal.style.display = 'none';
+  }
+}

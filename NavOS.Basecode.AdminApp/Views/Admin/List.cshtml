@@ -1,4 +1,6 @@
-﻿@model List<NavOS.Basecode.Services.ServiceModels.AdminViewModel>
+﻿@using NavOS.Basecode.Data;
+@using System.IO;
+@model List<NavOS.Basecode.Services.ServiceModels.AdminViewModel>
 
 @{
     ViewData["Title"] = "Admin List";
@@ -24,36 +26,48 @@
 
 @if (Model.Any())
 {
-    <table class="table table-dark" style="margin-top: 20px;border: .5px solid #fff;">
-        <thead>
-            <tr>
-                <th style="background-color: #FFC119;color: black;">Name</th>
-                <th style="background-color: #FFC119;color: black;">Email</th>
-                <th style="background-color: #FFC119;color: black;">Role</th>
-                <th style="background-color: #FFC119;color: black;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var admin in Model)
-            {
+    <div class="table-responsive">
+        <table class="table table-dark table-borderless text-center" style="margin-top: 20px;">
+            <thead class="rounded">
                 <tr>
-                    <td>@admin.AdminName</td>
-                    <td>@admin.AdminEmail</td>
-                    <td>@admin.Role</td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <form asp-action="Edit" method="get">
-                                <input type="hidden" name="AdminId" value="@admin.AdminId">
-                                <button type="submit" class="btn btn-outline-success"><i class="fas fa-edit"></i></button>
-                            </form>
-                            &nbsp;
-                            <button class="btn btn-outline-danger rounded" onclick="openModalSet('@admin.AdminId')"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
+                    <th style="background-color: #FFC119;color: black;" scope="col">Admin Profile</th>
+                    <th style="background-color: #FFC119;color: black;" scope="col">Name</th>
+                    <th style="background-color: #FFC119;color: black;" scope="col">Email</th>
+                    <th style="background-color: #FFC119;color: black;" scope="col">Role</th>
+                    <th style="background-color: #FFC119;color: black;" scope="col">Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var admin in Model)
+                {
+                    <tr>
+                        <td class="align-middle">
+                            @{
+                                string AdminImg = admin.ImageUrl;
+                                string AdminPicDir = PathManager.DirectoryPath.CoverImagesDirectory;
+                                var AdminPicCheck = AdminPicDir + "\\" + admin.AdminId + ".png";
+                                string imageUrl = (AdminImg != null && File.Exists(AdminPicCheck)) ? AdminImg : "/img/admin_profile.svg";
+                            }
+                            <img src="@imageUrl" class="rounded-circle" alt="@admin.AdminName" width="80" height="80" style="object-fit: cover">
+                        </td>
+                        <td class="align-middle">@admin.AdminName</td>
+                        <td class="align-middle">@admin.AdminEmail</td>
+                        <td class="align-middle">@admin.Role</td>
+                        <td class="align-middle">
+                            <div class="btn-group" role="group">
+                                <form asp-action="Edit" method="get">
+                                    <input type="hidden" name="AdminId" value="@admin.AdminId">
+                                    <button type="submit" class="btn btn-outline-success"><i class="fas fa-edit"></i></button>
+                                </form>
+                                &nbsp;
+                                <button class="btn btn-outline-danger rounded" onclick="openModalSet('@admin.AdminId')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 else
 {
