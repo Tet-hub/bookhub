@@ -16,6 +16,7 @@ namespace NavOS.Basecode.Services.ServiceModels
         [Required(ErrorMessage = "Email is required")]
         public string UserEmail { get; set; }
         public string ReviewText { get; set; }
+        [Required(ErrorMessage = "Rate is required")]
         public int Rate { get; set; }
         public DateTime DateReviewed { get; set; }
     }

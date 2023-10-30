@@ -17,12 +17,15 @@ namespace NavOS.Basecode.Data.Repositories
         {
         
         }
-        //retrieve all books
         public IQueryable<Book> GetBooks()
         {
             return this.GetDbSet<Book>();
         }
-        //retrieve single book
+        public void AddBook(Book book)
+        {
+            this.GetDbSet<Book>().Add(book);
+            UnitOfWork.SaveChanges();
+        }
         public IQueryable<Book> GetBook(string BookId)
         {
             var book = this.GetDbSet<Book>().Where(x => x.BookId == BookId);

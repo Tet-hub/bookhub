@@ -1,9 +1,11 @@
-﻿using NavOS.Basecode.Data.Interfaces;
+﻿using NavOS.Basecode.Data;
+using NavOS.Basecode.Data.Interfaces;
 using NavOS.Basecode.Data.Models;
 using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.ServiceModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -18,9 +20,13 @@ namespace NavOS.Basecode.Services.Services
         {
             _bookRepository = bookRepository;
         }
-        //get specific book details based on the bookService models
+        /// <summary>
+        /// Gets the books.
+        /// </summary>
+        /// <returns></returns>
         public List<BookViewModel> GetBooks()
         {
+            var url = "https://127.0.0.1:8080/";
             var data = _bookRepository.GetBooks().Select(s => new BookViewModel
             {
                 BookId = s.BookId,
@@ -31,14 +37,21 @@ namespace NavOS.Basecode.Services.Services
                 Genre = s.Genre,
                 Volume = s.Volume,
                 DateReleased = s.DateReleased,
-                AddedTime = s.AddedTime
-            })
+                AddedTime = s.AddedTime,
+                ImageUrl = Path.Combine(url, s.BookId + ".png"),
+        })
             .ToList();
 
             return data;
         }
+        /// <summary>
+        /// Gets the book.
+        /// </summary>
+        /// <param name="BookId">The book identifier.</param>
+        /// <returns></returns>
         public BookViewModel GetBook(string BookId)
         {
+            var url = "https://127.0.0.1:8080/";
             var book = _bookRepository.GetBooks().FirstOrDefault(s => s.BookId == BookId);
 
             if (book != null)
@@ -53,7 +66,8 @@ namespace NavOS.Basecode.Services.Services
                     Genre = book.Genre,
                     Volume = book.Volume,
                     DateReleased = book.DateReleased,
-                    AddedTime = book.AddedTime
+                    AddedTime = book.AddedTime,
+                    ImageUrl = Path.Combine(url, book.BookId + ".png"),
                 };
                 return bookViewModel;
             }
@@ -61,6 +75,39 @@ namespace NavOS.Basecode.Services.Services
             {
                 return null;
             }
+        }
+
+        public void AddBook(BookViewModel book, string user)
+        {
+            var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
+
+            var model = new Book();
+            model.BookId = Guid.NewGuid().ToString();
+            model.BookTitle = book.BookTitle;
+            model.Summary = book.Summary;
+            model.Author = book.Author;
+            model.Status = book.Status;
+            model.Genre = book.Genre;
+            model.Volume = book.Volume;
+            model.DateReleased = book.DateReleased;
+            model.AddedBy = user;
+            model.UpdatedBy = user;
+            model.AddedTime = DateTime.Now;
+            model.UpdatedTime = DateTime.Now;
+
+            var coverImageFileName = Path.Combine(coverImagesPath, model.BookId) + ".png";
+            using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+            {
+                book.ImageFile.CopyTo(fileStream);
+            }
+
+            _bookRepository.AddBook(model);
+        }
+
+        public bool Validate(string BookTitle)
+        {
+            var isExist = _bookRepository.GetBooks().Where(x => x.BookTitle == BookTitle).Any();
+            return isExist;
         }
 
     }

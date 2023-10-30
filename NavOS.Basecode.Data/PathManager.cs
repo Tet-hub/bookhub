@@ -43,6 +43,11 @@ namespace NavOS.Basecode.Data
             {
                 return GetFolderPath(Path.Combine(LogDirectory, appName));
             }
+
+            public static string CoverImagesDirectory
+            {
+                get { return GetFolderPath(SetupRootDirectory, "coverImages"); }
+            }
         }
 
         /// <summary>
