@@ -9,9 +9,7 @@ namespace NavOS.Basecode.Data.Interfaces
 {
     public interface IReviewRepository
     {
-        //add review
         void AddReview(Review review);
-        //get all reviews with bookId
         IQueryable<Review> GetReviews();
     }
 }

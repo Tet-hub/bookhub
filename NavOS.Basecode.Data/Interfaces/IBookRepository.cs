@@ -9,9 +9,8 @@ namespace NavOS.Basecode.Data.Interfaces
 {
     public interface IBookRepository
     {
-        //get all books
         IQueryable<Book> GetBooks();
-        //get single book
         IQueryable<Book> GetBook(string BookId);
+        void AddBook(Book book);
     }
 }

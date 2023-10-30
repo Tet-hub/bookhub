@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using NavOS.Basecode.BookApp.Mvc;
+using NavOS.Basecode.AdminApp.Mvc;
 using NavOS.Basecode.Data.Models;
 using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.ServiceModels;
+using NavOS.Basecode.Services.Services;
 using System;
 using System.Linq;
 
@@ -16,6 +17,7 @@ namespace NavOS.Basecode.BookApp.Controllers
     {
         private readonly IBookService _bookService;
         private readonly IReviewService _reviewService;
+        private readonly IGenreService _genreService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -26,6 +28,7 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// <param name="mapper"></param>
         public BookController(IBookService bookService,
                               IReviewService reviewService,
+                              IGenreService genreService,
                               IHttpContextAccessor httpContextAccessor,
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
@@ -33,6 +36,7 @@ namespace NavOS.Basecode.BookApp.Controllers
         {
             _bookService = bookService;
             _reviewService = reviewService;
+            _genreService = genreService;
 
         }
         /// <summary>
@@ -75,7 +79,7 @@ namespace NavOS.Basecode.BookApp.Controllers
                 {
                     data = data
                         .Where(book =>
-                            (book.AddedTime >= twoWeeksAgo) && 
+                            (book.AddedTime >= twoWeeksAgo) &&
                             (book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                              book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                              book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
@@ -134,65 +138,21 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// <param name="searchQuery"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult TopBooks(string searchQuery, string filter, string sort)
+        public IActionResult TopBooks(string searchQuery)
         {
-            var currentDate = DateTime.Now;
-            var twoWeeksAgo = currentDate.AddDays(-14);
+            var data = _bookService.GetBooks();
 
-            var data = _bookService.GetBooks()
-                .Where(book => book.AddedTime >= twoWeeksAgo)
-                .OrderByDescending(book => book.AddedTime)
-                .ToList();
-
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                data = data.Where(book =>
+                    book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+            }
             var reviews = _reviewService.GetReviews();
-
-            if (string.IsNullOrEmpty(filter) || string.Equals(filter, "all", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(searchQuery))
-                {
-                    data = data
-                        .Where(book =>
-                            (book.AddedTime >= twoWeeksAgo) &&
-                            (book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                        )
-                        .ToList();
-                }
-            }
-            else if (!string.IsNullOrEmpty(searchQuery))
-            {
-                switch (filter.ToLower())
-                {
-                    case "title":
-                        data = data
-                            .Where(book => book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "author":
-                        data = data
-                            .Where(book => book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "genre":
-                        data = data
-                            .Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                }
-            }
-            if (string.Equals(sort, "title", StringComparison.OrdinalIgnoreCase))
-            {
-                data = data.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-            else if (string.Equals(sort, "author", StringComparison.OrdinalIgnoreCase))
-            {
-                data = data.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-
             ViewData["Reviews"] = reviews;
             ViewData["TopBooks"] = data;
-
 
             return View();
         }
@@ -224,6 +184,42 @@ namespace NavOS.Basecode.BookApp.Controllers
             }
             _reviewService.AddReview(review);
             return RedirectToAction("BookDetails", new { review.BookId });
+        }
+        [HttpGet]
+        public IActionResult AddBook()
+        {
+            var genre = _genreService.GetGenres();
+            ViewData["Genre"] = genre;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddBook(BookViewModel book)
+        {
+            var isExist = _bookService.Validate(book.BookTitle);
+            if (isExist)
+            {
+                if (!ModelState.IsValid)
+                {
+                    var genres = _genreService.GetGenres();
+                    ViewData["Genre"] = genres;
+                }
+                ModelState.AddModelError("BookTitle", "Title already exists");
+                return View();
+            }
+            if (book.SelectedGenres != null && book.SelectedGenres.Count > 0)
+            {
+                book.Genre = string.Join(", ", book.SelectedGenres);
+            }
+            else
+            {
+                if (!ModelState.IsValid)
+                {
+                    var genres = _genreService.GetGenres();
+                    ViewData["Genre"] = genres;
+                }
+            }
+            _bookService.AddBook(book, this.UserName);
+            return RedirectToAction("Index");
         }
 
     }

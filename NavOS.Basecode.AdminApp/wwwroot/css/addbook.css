@@ -1,0 +1,106 @@
+﻿.addNow {
+    background-color: #FFC119;
+    font-weight: bolder;
+    color:#000;
+    text-indent: 10px;
+}
+.addbtn {
+    background-color: transparent;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.addbtn:hover {
+    background-color: #00A651; 
+    color: white;
+    border:none;
+}
+
+.bodyDetails {
+    padding: 30px;
+    color: white;
+}
+
+.imgName {
+    overflow-wrap: break-word;
+}
+
+.imgPaddingRight {
+    margin-right: 60px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.form-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+    .form-row p {
+        margin: 0;
+        width: 75px;
+    }
+
+.form-container input, .genre-dropdown, .dropdown-content, select {
+    color: white;
+    width: 70%;
+    margin-bottom: 10px;
+    background-color: transparent;
+    border: 2px solid white;
+}
+
+.genre-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left:31px;
+}
+
+.dropdown-content {
+    width: 100%;
+    border: 1px solid white;
+    display: none;
+    position: absolute;
+    background-color: #212529F5;
+    z-index: 1;
+}
+
+.dropdown button {
+    color: white;
+    background-color: transparent;
+    border: 0;
+}
+
+.dropdown-content label {
+    display: block;
+    padding: 5px;
+}
+
+    .dropdown-content label input[type="checkbox"] {
+        margin-right: 5px;
+        width: auto;
+    }
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.summaryLabel {
+    display: inline-block;
+    padding: 15px;
+    background-color: #FFC119;
+    color: #212529;
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    background-color: transparent;
+    resize: none;
+    border: 0;
+}

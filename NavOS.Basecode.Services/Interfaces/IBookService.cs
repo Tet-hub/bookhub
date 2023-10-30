@@ -1,5 +1,4 @@
-﻿using NavOS.Basecode.Data.Models;
-using NavOS.Basecode.Services.ServiceModels;
+﻿using NavOS.Basecode.Services.ServiceModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +11,7 @@ namespace NavOS.Basecode.Services.Interfaces
     {
         List<BookViewModel> GetBooks();
         public BookViewModel GetBook(string BookId);
+        void AddBook(BookViewModel book, string user);
+        bool Validate(string BookTitle);
     }
 }
