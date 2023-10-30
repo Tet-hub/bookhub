@@ -5,58 +5,110 @@
 	ViewData["Title"] = "Add Admin";
 }
 
-<div class="row" style="margin-top:30px">
-	<div class="col-md-6"><h3 style="font-weight: bold;color: #FFC119">ADD ADMIN</h3></div>
-	<div class="col-md-6" style="text-align: right"><h3><a asp-controller="Admin" asp-action="List" style="text-decoration: none; font-weight: bold;color: #FFC119">BACK</a></h3></div>
+
+<div style="margin-top:30px">
+	<h3 style="font-weight: bold;color: #FFC119">ADD ADMIN</h3>
 </div>
 
-<style>
-	.btn:hover {
-		color: #212529;
-	}
-</style>
+@section styles {
+	<link rel="stylesheet" type="text/css" href="~/css/imageUploader.css" />
+}
 
-<form asp-action="Add" style="margin-top:30px">
+<form asp-action="Add" style="margin-top:30px" enctype="multipart/form-data">
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-sm-4">
 			<div class="form-outline mb-4">
-				<label class="form-label" for="AdminName">Admin Name</label>
-				<input type="text" class="form-control" asp-for="AdminName" />
-				<span asp-validation-for="AdminName" class="text-danger"></span>
+				<input type="file" accept=".png" asp-for="AdminProfile" class="AdminProfile" required>
+				<label for="AdminProfile" class="AdminProfileLabel">
+					<span class="UploadText">Upload Image</span>
+					<img id="imagePreview" src="#" alt="Preview" style="display: none;">
+				</label>
 			</div>
-			<div class="form-outline mb-4">
-				<label class="form-label" for="ContactNo">Contact Number</label>
-				<input type="number" class="form-control" asp-for="ContactNo" />
-				<span asp-validation-for="ContactNo" class="text-danger"></span>
+			<span asp-validation-for="AdminProfile" class="text-danger"></span>
+		</div>
+		<div class="col-sm-8">
+			<!--Admin Name-->
+			<div class="row mb-4 align-items-center">
+				<div class="col-sm-4">
+					<label class="form-label" for="AdminName">Admin Name</label>
+				</div>
+				<div class="col-sm-8">
+					<div class="form-outline">
+						<input type="text" class="form-control" id="AdminName" asp-for="AdminName" />
+						<span asp-validation-for="AdminName" class="text-danger"></span>
+					</div>
+				</div>
 			</div>
-			<div class="form-outline mb-4">
-				<label class="form-label" for="Dob">Date Of Birth</label>
-				<input type="date" class="form-control" asp-for="Dob" />
-				<span asp-validation-for="Dob" class="text-danger"></span>
+			<!--Contact Number-->
+			<div class="row mb-4 align-items-center">
+				<div class="col-sm-4">
+					<label class="form-label" for="ContactNo">Contact Number</label>
+				</div>
+				<div class="col-sm-8">
+					<div class="form-outline">
+						<input type="number" class="form-control" asp-for="ContactNo" />
+						<span asp-validation-for="ContactNo" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<!--DOB-->
+			<div class="row mb-4 align-items-center">
+				<div class="col-sm-4">
+					<label class="form-label" for="Dob">Date Of Birth</label>
+				</div>
+				<div class="col-sm-8">
+					<div class="form-outline">
+						<input type="date" class="form-control" asp-for="Dob" />
+						<span asp-validation-for="Dob" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<!--Admin Email-->
+			<div class="row mb-4 align-items-center">
+				<div class="col-sm-4">
+					<label class="form-label" for="AdminEmail">Admin Email</label>
+				</div>
+				<div class="col-sm-8">
+					<div class="form-outline">
+						<input type="text" class="form-control" asp-for="AdminEmail" />
+						<span asp-validation-for="AdminEmail" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<!--Password-->
+			<div class="row mb-4 align-items-center">
+				<div class="col-sm-4">
+					<label class="form-label" for="Password">Password</label>
+				</div>
+				<div class="col-sm-8">
+					<div class="form-outline">
+						<input type="password" class="form-control" asp-for="Password" />
+						<span asp-validation-for="Password" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<!--Confirm Password-->
+			<div class="row mb-4 align-items-center">
+				<div class="col-sm-4">
+					<label class="form-label" for="ConfirmPassword">Confirm Password</label>
+				</div>
+				<div class="col-sm-8">
+					<div class="form-outline">
+						<input type="password" class="form-control" asp-for="ConfirmPassword" />
+						<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="d-flex justify-content-end">
+				<div class="btn-group" role="group">
+					<a asp-controller="Admin" asp-action="List" class="btn btn-outline-warning rounded"><i class="fa fa-arrow-left" aria-hidden="true"></i> BACK</a>
+					<button class="btn btn-warning rounded" type="submit" style="margin-left: 20px">SUBMIT</button>
+				</div>
 			</div>
 		</div>
-		<div class="col-md-6">
-			<div class="form-outline mb-4">
-				<label class="form-label" for="AdminEmail">Admin Email</label>
-				<input type="text" class="form-control" asp-for="AdminEmail" />
-				<span asp-validation-for="AdminEmail" class="text-danger"></span>
-			</div>
-			<div class="form-outline mb-4">
-				<label class="form-label" for="Password">Password</label>
-				<input type="password" class="form-control" asp-for="Password" />
-				<span asp-validation-for="Password" class="text-danger"></span>
-			</div>
-			<div class="form-outline mb-4">
-				<label class="form-label" for="ConfirmPassword">Confirm Password</label>
-				<input type="password" class="form-control" asp-for="ConfirmPassword" />
-				<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-			</div>
-		</div>
-	</div>
-	<div style="text-align: right">
-		<button class="btn btn-outline-warning" type="submit" style="color: white">SUBMIT</button>
 	</div>
 </form>
+	
 
 @section scripts {
 	<script>
@@ -66,4 +118,6 @@
 			toastr.error(errorMessage);
 		}
 	</script>
+	<script src="~/js/imagePreview.js"></script>
+
 }

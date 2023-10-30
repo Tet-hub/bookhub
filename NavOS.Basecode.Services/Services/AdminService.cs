@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using NavOS.Basecode.Data;
 using NavOS.Basecode.Data.Interfaces;
 using NavOS.Basecode.Data.Models;
 using NavOS.Basecode.Services.Interfaces;
@@ -34,8 +35,9 @@ namespace NavOS.Basecode.Services.Services
 
 
 
-        public void AddAdmin(AdminViewModel model) 
+        public void AddAdmin(AdminViewModel model, string user) 
         {
+            var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
             var admin = new Admin();
             if(!_adminRepository.AdminExists(model.AdminEmail))
             {
@@ -47,7 +49,17 @@ namespace NavOS.Basecode.Services.Services
                 admin.Role = "Admin";
                 admin.Dob = model.Dob;
                 admin.ContactNo = model.ContactNo;
-                
+                admin.AddedBy = user;
+                admin.AddedTime = DateTime.Now;
+                admin.UpdatedBy = user;
+                admin.UpdatedTime = DateTime.Now;
+
+                var coverImageFileName = Path.Combine(coverImagesPath, admin.AdminId) + ".png";
+                using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+                {
+                    model.AdminProfile.CopyTo(fileStream);
+                }
+
                 _adminRepository.AddAdmin(admin);
             }
             else
@@ -56,19 +68,9 @@ namespace NavOS.Basecode.Services.Services
             }
         }
 
-        //public List<Admin> GetAllAdmins()
-        //{
-        //    var admins = _adminRepository.GetAdmins()
-                //.OrderByDescending(admin => admin.Role == "Master Admin")
-                //.ThenBy(admin => admin.Role)
-                //.ThenBy(admin => admin.AdminName)
-                //.ToList();
-
-        //    return admins;
-        //}
-
         public List<AdminViewModel> GetAllAdmins()
         {
+            var url = "https://127.0.0.1:8080";
             var data = _adminRepository.GetAdmins().Select(s => new AdminViewModel
             {
                 AdminId = s.AdminId,
@@ -76,9 +78,10 @@ namespace NavOS.Basecode.Services.Services
                 AdminName = s.AdminName,
                 Role = s.Role,
                 ContactNo = s.ContactNo,
-                Dob = s.Dob
+                Dob = s.Dob,
+                ImageUrl = Path.Combine(url, s.AdminId + ".png"),
 
-            }).OrderByDescending(admin => admin.Role == "Master Admin")
+        }).OrderByDescending(admin => admin.Role == "Master Admin")
               .ThenBy(admin => admin.Role)
               .ThenBy(admin => admin.AdminName)
               .ToList();
@@ -87,7 +90,8 @@ namespace NavOS.Basecode.Services.Services
 
         public AdminViewModel GetAdmin(string adminId)
         {
-            var admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminId).FirstOrDefault();
+			var url = "https://127.0.0.1:8080";
+			var admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminId).FirstOrDefault();
 
             AdminViewModel adminViewModel = new AdminViewModel();
             adminViewModel.AdminId = adminId;
@@ -96,36 +100,31 @@ namespace NavOS.Basecode.Services.Services
             adminViewModel.ContactNo = admin.ContactNo;
             adminViewModel.Dob = admin.Dob;
             adminViewModel.Role = admin.Role;
+            adminViewModel.ImageUrl = Path.Combine(url, admin.AdminId + ".png");
 
-            return adminViewModel;
+
+			return adminViewModel;
 
         }
 
-        //public bool DeleteAdmin(AdminViewModel adminViewModel)
-        //{
-        //    Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
-        //    if (admin != null)
-        //    {
-        //        _adminRepository.DeleteAdmin(admin);
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
         public bool DeleteAdmin(string adminId)
         {
+            var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
             Admin admin = _adminRepository.GetAdmins().FirstOrDefault(x => x.AdminId == adminId);
             if (admin != null)
             {
+                var image = Path.Combine(coverImagesPath, admin.AdminId) + ".png";
+                File.Delete(image);
                 _adminRepository.DeleteAdmin(admin);
                 return true;
             }
             return false;
         }
 
-        public bool EditAdmin(AdminViewModel adminViewModel)
+        public bool EditAdmin(AdminViewModel adminViewModel, string user)
         {
-            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
+			var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
+			Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
             if (admin != null)
             {
                 admin.AdminName = adminViewModel.AdminName;
@@ -133,7 +132,19 @@ namespace NavOS.Basecode.Services.Services
                 admin.Dob = adminViewModel.Dob;
                 admin.AdminEmail = adminViewModel.AdminEmail;
                 admin.Role = adminViewModel.Role;
+                admin.UpdatedBy = user;
+                admin.UpdatedTime = DateTime.Now;
 
+                if (adminViewModel.AdminProfile != null)
+                {
+					var coverImageFileName = Path.Combine(coverImagesPath, admin.AdminId) + ".png";
+					using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+					{
+						adminViewModel.AdminProfile.CopyTo(fileStream);
+					}
+					_adminRepository.UpdateAdmin(admin);
+					return true;
+				}
                 _adminRepository.UpdateAdmin(admin);
                 return true;
             }

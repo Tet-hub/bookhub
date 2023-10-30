@@ -34,13 +34,13 @@ namespace NavOS.Basecode.AdminApp.Controllers
         }
 
         /// <summary>
-        /// Lists the specified search string.
+        /// Lists the specified search query.
         /// </summary>
-        /// <param name="searchString">The search string.</param>
+        /// <param name="searchQuery">The search query.</param>
         /// <param name="page">The page.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <returns></returns>
-        public IActionResult List(string searchQuery, int page = 1, int pageSize = 6)
+        public IActionResult List(string searchQuery, int page = 1, int pageSize = 5)
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
@@ -93,10 +93,18 @@ namespace NavOS.Basecode.AdminApp.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            _adminService.AddAdmin(model);
-            TempData["SuccessMessage"] = "Admin added successfully.";
-            return RedirectToAction("List");
-		}
+            if (model.AdminProfile != null)
+            {
+				_adminService.AddAdmin(model, this.UserName);
+				TempData["SuccessMessage"] = "Admin added successfully.";
+				return RedirectToAction("List");
+			}
+            else
+            {
+                TempData["ErrorMessage"] = "Upload An Image";
+                return View(model);
+            }
+        }
 
         /// <summary>
         /// Deletes the specified model.
@@ -152,7 +160,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            bool _isAdminUpdated = _adminService.EditAdmin(model);
+            bool _isAdminUpdated = _adminService.EditAdmin(model, this.UserName);
             if (_isAdminUpdated)
             {
                 TempData["SuccessMessage"] = "Admin updated successfully.";
