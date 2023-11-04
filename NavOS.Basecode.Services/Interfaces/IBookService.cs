@@ -13,5 +13,7 @@ namespace NavOS.Basecode.Services.Interfaces
         public BookViewModel GetBook(string BookId);
         void AddBook(BookViewModel book, string user);
         bool Validate(string BookTitle);
+        bool DeleteBook(string bookId);
+        bool UpdateBook(BookViewModel bookViewModel, string user);
     }
 }

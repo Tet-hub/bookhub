@@ -43,10 +43,10 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// Homepage
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet] 
         public IActionResult Index()
         {
-            var reviews = _reviewService.GetReviews();
+			var reviews = _reviewService.GetReviews();
             ViewData["Reviews"] = reviews;
 
             var book = _bookService.GetBooks();
@@ -54,6 +54,74 @@ namespace NavOS.Basecode.BookApp.Controllers
 
             return View();
         }
+
+        /// <summary>
+        /// List of Books.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult BookList(string searchQuery, int page = 1, int pageSize = 5)
+        {
+            var books = _bookService.GetBooks();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                books = books.Where(a => a.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                                                 a.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                                                 a.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            string[] headers = new string[] { "Book Profile", "Title", "Author", "Reviews", "Actions" };
+            var paginatedBooks = books.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = (int)Math.Ceiling(books.Count / (double)pageSize);
+            ViewBag.headers = headers;
+            ViewBag.SearchString = searchQuery;
+            return View(paginatedBooks);
+        }
+
+        /// <summary>
+        /// Edits the book.
+        /// </summary>
+        /// <param name="BookId">The book identifier.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult EditBook(string BookId)
+        {
+            var book = _bookService.GetBook(BookId);
+            if (book == null)
+            {
+                TempData["ErrorMessage"] = "No Book Found";
+                return RedirectToAction("BookList");
+            }
+            var genre = _genreService.GetGenres();
+            ViewData["Genre"] = genre;
+            return View(book);
+        }
+
+        [HttpPost]
+        public IActionResult EditBook(BookViewModel book)
+        {
+            if (book.SelectedGenres != null && book.SelectedGenres.Count > 0)
+            {
+                book.Genre = string.Join(", ", book.SelectedGenres);
+            }
+            else
+            {
+                if (!ModelState.IsValid)
+                {
+                    var genres = _genreService.GetGenres();
+                    ViewData["Genre"] = genres;
+                }
+            }
+            _bookService.UpdateBook(book, this.UserName);
+            TempData["SuccessMessage"] = "Book Updated Successfully";
+            return RedirectToAction("BookList");
+
+        }
+
         /// <summary>
         /// Display new books.
         /// </summary>
@@ -156,6 +224,7 @@ namespace NavOS.Basecode.BookApp.Controllers
 
             return View();
         }
+        
         /// <summary>
         /// BookDetails
         /// </summary>
@@ -173,9 +242,15 @@ namespace NavOS.Basecode.BookApp.Controllers
 
                 return View();
             }
-            return NotFound();
+            TempData["ErrorMessage"] = "No Book Found";
+            return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Adds the review.
+        /// </summary>
+        /// <param name="review">The review.</param>
+        /// <returns></returns>
         public IActionResult AddReview(ReviewViewModel review)
         {
             if (string.IsNullOrEmpty(review.ReviewText))
@@ -185,6 +260,7 @@ namespace NavOS.Basecode.BookApp.Controllers
             _reviewService.AddReview(review);
             return RedirectToAction("BookDetails", new { review.BookId });
         }
+        
         [HttpGet]
         public IActionResult AddBook()
         {
@@ -192,6 +268,7 @@ namespace NavOS.Basecode.BookApp.Controllers
             ViewData["Genre"] = genre;
             return View();
         }
+        
         [HttpPost]
         public IActionResult AddBook(BookViewModel book)
         {
@@ -219,7 +296,21 @@ namespace NavOS.Basecode.BookApp.Controllers
                 }
             }
             _bookService.AddBook(book, this.UserName);
-            return RedirectToAction("Index");
+            TempData["SuccessMessage"] = "Book Added Successfully";
+            return RedirectToAction("BookList");
+        }
+
+        [HttpGet]
+        public IActionResult DeleteBook(string bookId)
+        {
+            bool _isBookDeleted = _bookService.DeleteBook(bookId);
+            if (_isBookDeleted)
+            {
+                TempData["SuccessMessage"] = "Book Deleted Successfully";
+                return RedirectToAction("BookList");
+            }
+            TempData["ErrorMessage"] = "No Book was Deleted";
+            return RedirectToAction("BookList");
         }
 
     }

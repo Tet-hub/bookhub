@@ -1,9 +1,8 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels;
 @{
-    ViewData["Title"] = "Book Details";
     var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
     var book = ViewData["Book"] as NavOS.Basecode.Services.ServiceModels.BookViewModel;
-
+    ViewData["Title"] = "Book Details - " + book.BookTitle;
     string bookId = book.BookId.ToString();
     // Calculate the avg. rate & count no. of reviews where BookId = currentBookId
     double averageRate = reviews
@@ -81,7 +80,7 @@
         <div id="details">
             <div class="w3-row w3-padding-30 w3-margin-bottom">
                 <div class="w3-col w3-padding-30" style="width:230px">
-                    <img src="@book.ImageUrl" class="w3-margin-bottom" height="250" width="210">
+                    <img src="@book.ImageUrl" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" class="w3-margin-bottom" height="250" width="210" style="object-fit: cover">
                 </div>
                 <div id="bookInfo" class="w3-col w3-padding-30" style="width:270px">
                     <p id="book1" class="w3-margin-bottom w3-text-orange">@book.BookTitle</p>

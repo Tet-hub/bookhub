@@ -1,6 +1,4 @@
-@using System.IO
 @using Microsoft.AspNetCore.Http
-@using NavOS.Basecode.Data;
 @inject IHttpContextAccessor HttpContextAccessor
                    
 @{
@@ -8,53 +6,56 @@
     string AdminName = HttpContextAccessor.HttpContext.Session.GetString("AdminName");
     string Role = HttpContextAccessor.HttpContext.Session.GetString("Role");
     string AdminProfile = HttpContextAccessor.HttpContext.Session.GetString("AdminProfile");
-
-    string AdminPicDir = PathManager.DirectoryPath.CoverImagesDirectory;
-    var AdminPicCheck = AdminPicDir + "\\" + AdminId + ".png";
-    string imageUrl = (AdminProfile != null && File.Exists(AdminPicCheck)) ? AdminProfile : "/img/admin_profile.svg";
 }
 
 @if (ViewBag.LoginView != true)
 {
-    <nav class="navbar navbar-expand-lg navbar-dark @((ViewBag.LoginView == true) ? "hide-navbar" : "")" style="background-color:#111111">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color:#111111">
         <div class="container-fluid">
-            <a class="navbar-brand me-5" asp-action="Index" asp-controller="Book">Bookhub</a>
+            <a asp-action="Index" asp-controller="Book">
+                <img src="~/img/bookhub-logo.png" style="width: 100px; height: auto; margin-right:85px;" />
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                <ul class="navbar-nav">
                   <li class="nav-item me-5">
-                      <a class="nav-link" asp-action="TopBooks" asp-controller="Book">Top Books</a>
+                      <a class="nav-link" asp-action="TopBooks" asp-controller="Book" id="TopBooks">Top Books</a>
                   </li>
                   <li class="nav-item me-5">
-                      <a class="nav-link" asp-action="AddBook" asp-controller="Book">Add Book</a>
+                      <a class="nav-link" asp-action="AddBook" asp-controller="Book" id="AddBook">Add Book</a>
                   </li>
                   <li class="nav-item me-5">
-                      <a class="nav-link" asp-action="ViewGenre" asp-controller="Genre">Genre</a>
+                      <a class="nav-link" asp-action="ViewGenre" asp-controller="Genre" id="Genre">Genre</a>
                   </li>
                 </ul>
               
-                <div class="logosec ms-auto">
+                <div class="logosec float-start ms-auto">
                     @AdminName
                     <div class="mr-20 hover-pointer" style="position: relative">
                         <div class="dp">
-                            <img src="@imageUrl"
+                            <img src="@AdminProfile"
                                  class="dpicn hover-pointer rounded-circle"
                                  alt="@AdminName"
+                                 onerror="this.src='@Url.Content("~/img/admin_profile.svg")'"
                                  style="object-fit: cover"
                                  height="80"
                                  width="80">
                         </div>
                         <div class="dropdown">
                             <ul>
-                                <li class="@((Role != "Master Admin") ? "d-none" : "")">
-                                    <a asp-action="List" asp-controller="Admin" title="Admin List">
-                                        <i class="fas fa-users me-3"></i>Admin List
+                                <li @((Role != "Master Admin") ? "class=\"d-none\"" : "")>
+                                    <a asp-action="List" asp-controller="Admin">
+                                        <i class="fas fa-user me-3"></i>Admin List
                                     </a>
                                 </li>
                                 <li>
-
+                                    <a asp-action="BookList" asp-controller="Book">
+                                        <i class="fas fa-book me-3"></i>Book List
+                                    </a>
+                                </li>
+                                <li>
                                     <a asp-action="SignOutUser" asp-controller="Account">
                                         <i class="fas fa-right-from-bracket me-3"></i>Logout
                                     </a>

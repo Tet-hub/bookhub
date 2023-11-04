@@ -33,8 +33,6 @@ namespace NavOS.Basecode.Services.Services
             return admin != null ? LoginResult.Success : LoginResult.Failed;
         }
 
-
-
         public void AddAdmin(AdminViewModel model, string user) 
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -54,18 +52,32 @@ namespace NavOS.Basecode.Services.Services
                 admin.UpdatedBy = user;
                 admin.UpdatedTime = DateTime.Now;
 
-                var coverImageFileName = Path.Combine(coverImagesPath, admin.AdminId) + ".png";
-                using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+                if (model.AdminProfile != null)
                 {
-                    model.AdminProfile.CopyTo(fileStream);
-                }
+					var coverImageFileName = Path.Combine(coverImagesPath, admin.AdminId) + ".png";
+					using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+					{
+						model.AdminProfile.CopyTo(fileStream);
+					}
 
-                _adminRepository.AddAdmin(admin);
-            }
+				}
+				_adminRepository.AddAdmin(admin);
+			}
             else
             {
                 throw new InvalidDataException(Resources.Messages.Errors.AdminExists);
             }
+        }
+
+        private static bool CheckAdminProfile(string adminId)
+        {
+            var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
+            var coverImageFileName = Path.Combine(coverImagesPath, adminId) + ".png";
+            if (File.Exists(coverImageFileName))
+            {
+                return true;
+            }
+            return false;
         }
 
         public List<AdminViewModel> GetAllAdmins()
@@ -79,9 +91,9 @@ namespace NavOS.Basecode.Services.Services
                 Role = s.Role,
                 ContactNo = s.ContactNo,
                 Dob = s.Dob,
-                ImageUrl = Path.Combine(url, s.AdminId + ".png"),
+                ImageUrl = (CheckAdminProfile(s.AdminId)) ? Path.Combine(url, s.AdminId + ".png") : Resources.Views.FileDir.AdminPicDefault,
 
-        }).OrderByDescending(admin => admin.Role == "Master Admin")
+            }).OrderByDescending(admin => admin.Role == "Master Admin")
               .ThenBy(admin => admin.Role)
               .ThenBy(admin => admin.AdminName)
               .ToList();
@@ -93,19 +105,22 @@ namespace NavOS.Basecode.Services.Services
 			var url = "https://127.0.0.1:8080";
 			var admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminId).FirstOrDefault();
 
-            AdminViewModel adminViewModel = new AdminViewModel();
-            adminViewModel.AdminId = adminId;
-            adminViewModel.AdminName = admin.AdminName;
-            adminViewModel.AdminEmail = admin.AdminEmail;
-            adminViewModel.ContactNo = admin.ContactNo;
-            adminViewModel.Dob = admin.Dob;
-            adminViewModel.Role = admin.Role;
-            adminViewModel.ImageUrl = Path.Combine(url, admin.AdminId + ".png");
+            if (admin != null)
+            {
+				AdminViewModel adminViewModel = new AdminViewModel();
+				adminViewModel.AdminId = adminId;
+				adminViewModel.AdminName = admin.AdminName;
+				adminViewModel.AdminEmail = admin.AdminEmail;
+				adminViewModel.ContactNo = admin.ContactNo;
+				adminViewModel.Dob = admin.Dob;
+				adminViewModel.Role = admin.Role;
+				adminViewModel.ImageUrl = (CheckAdminProfile(adminId)) ? Path.Combine(url, admin.AdminId + ".png") : "#";
 
+                return adminViewModel;
+			}
+			return null;
 
-			return adminViewModel;
-
-        }
+		}
 
         public bool DeleteAdmin(string adminId)
         {

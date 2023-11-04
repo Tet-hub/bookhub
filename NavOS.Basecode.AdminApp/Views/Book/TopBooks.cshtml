@@ -156,7 +156,7 @@
                                             <i class="fa fa-star checked"></i>
                                         </span>
                                     </div>
-                                    <img class="card-img-top" height="250" width="100" src="@book.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                    <img class="card-img-top" height="250" width="100" src="@book.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff; object-fit: cover">
                                     <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
                                         <h6 class="card-title ellipsis text-white">@book.BookTitle</h6>
                                     </div>
@@ -180,6 +180,12 @@
     </div>
 </div>
 
+@section scripts {
+    <script>
+        let nav = document.getElementById("TopBooks");
+        nav.classList.add("active");
+    </script>
+}
 
 
 

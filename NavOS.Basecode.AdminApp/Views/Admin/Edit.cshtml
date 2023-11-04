@@ -1,14 +1,12 @@
-﻿@using System.IO
-@using NavOS.Basecode.Data;
-@using NavOS.Basecode.Services.ServiceModels
+﻿@using NavOS.Basecode.Services.ServiceModels
 @model AdminViewModel
 
 @{
-	ViewData["Title"] = "Edit Admin";
+	ViewData["Title"] = "Edit Admin - " + Model.AdminName;
 }
 
 
-<div style="margin-top:30px">
+<div style ="margin-top:30px">
 	<h3 style="font-weight: bold;color: #FFC119">EDIT ADMIN</h3>
 </div>
 
@@ -21,16 +19,10 @@
 	<div class="row">
 		<div class="col-sm-4">
 			<div class="form-outline mb-4">
-				<input type="file" accept=".png" asp-for="AdminProfile" class="AdminProfile">
-				<label for="AdminProfile" class="AdminProfileLabel">
+				<input type="file" accept="image/*" asp-for="AdminProfile" class="AdminProfile">
+				<label for="AdminProfile" class="AdminProfileLabel" title="Upload Image">
 					<span class="UploadText"></span>
-					@{
-						string AdminImg = Model.ImageUrl;
-						string AdminPicDir = PathManager.DirectoryPath.CoverImagesDirectory;
-						var AdminPicCheck = AdminPicDir + "\\" + Model.AdminId + ".png";
-						string imageUrl = (AdminImg != null && File.Exists(AdminPicCheck)) ? AdminImg : "#";
-					}
-					<img id="imagePreview" src="@imageUrl" alt="Preview">
+					<img id="imagePreview" src="@Model.ImageUrl" alt="Preview" @((Model.ImageUrl == "#") ? "" : "onerror=errorImg(this)")>
 				</label>
 				<span asp-validation-for="AdminProfile" class="text-danger"></span>
 			</div>
@@ -117,6 +109,10 @@
 		var errorMessage = '@TempData["ErrorMessage"]';
 		if (errorMessage) {
 			toastr.error(errorMessage);
+		}
+
+		function errorImg(img) {
+			img.src = "@Url.Content("~/img/admin_profile.svg")";
 		}
 	</script>
 	<script src="~/js/imagePreview.js"></script>

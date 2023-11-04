@@ -33,7 +33,7 @@ namespace NavOS.Basecode.Services.ServiceModels
 		[Required(ErrorMessage = "Role is required.")]
 		public string Role { get; set; }
 
-		[Required(ErrorMessage = "Admin Profile is required.")]
+		//[Required(ErrorMessage = "Admin Profile is required.")]
 		public IFormFile AdminProfile { get; set; }
 
         public string ImageUrl { get; set; }

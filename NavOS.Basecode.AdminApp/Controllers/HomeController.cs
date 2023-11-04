@@ -12,15 +12,14 @@ namespace NavOS.Basecode.AdminApp.Controllers
     /// </summary>
     public class HomeController : ControllerBase<HomeController>
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="httpContextAccessor"></param>
-        /// <param name="loggerFactory"></param>
-        /// <param name="configuration"></param>
-        /// <param name="localizer"></param>
-        /// <param name="mapper"></param>
-        public HomeController(IHttpContextAccessor httpContextAccessor,
+		/// <summary>
+		/// Initializes a new instance of the <see cref="HomeController"/> class.
+		/// </summary>
+		/// <param name="httpContextAccessor">HTTP context accessor</param>
+		/// <param name="loggerFactory">Logger factory</param>
+		/// <param name="configuration">Configuration</param>
+		/// <param name="mapper">Mapper</param>
+		public HomeController(IHttpContextAccessor httpContextAccessor,
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
                               IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
@@ -34,7 +33,11 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// <returns> Home View </returns>
         public IActionResult Index()
         {
-            return View();
+			if (this._session.GetString("HasSession") != "Exist")
+			{
+				return RedirectToAction("Login", "Account");
+			}
+			return View();
         }
     }
 }

@@ -7,15 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\modal.js" />
+    <Content Remove="wwwroot\js\adminModal.js" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="appsettings.json.rej" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\js\modal.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,10 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\img\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\js\modal.js" />
+    <None Include="wwwroot\js\adminModal.js" />
   </ItemGroup>
 </Project>
