@@ -45,7 +45,7 @@
                         </div>
                         <div class="dropdown">
                             <ul>
-                                <li @((Role != "Master Admin") ? "class=\"d-none\"" : "")>
+                                <li class="@((Role != "Master Admin") ? "d-none" : "")">
                                     <a asp-action="List" asp-controller="Admin">
                                         <i class="fas fa-user me-3"></i>Admin List
                                     </a>

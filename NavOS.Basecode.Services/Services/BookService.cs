@@ -36,7 +36,7 @@ namespace NavOS.Basecode.Services.Services
                 Author = s.Author,
                 Status = s.Status,
                 Genre = s.Genre,
-                Volume = s.Volume,
+                Chapter = s.Chapter,
                 DateReleased = s.DateReleased,
                 AddedTime = s.AddedTime,
                 ImageUrl = Path.Combine(url, s.BookId + ".png"),
@@ -68,7 +68,7 @@ namespace NavOS.Basecode.Services.Services
                     Author = book.Author,
                     Status = book.Status,
                     Genre = book.Genre,
-                    Volume = book.Volume,
+                    Chapter = book.Chapter,
                     DateReleased = book.DateReleased,
                     AddedTime = book.AddedTime,
                     ImageUrl = Path.Combine(url, book.BookId + ".png"),
@@ -92,7 +92,7 @@ namespace NavOS.Basecode.Services.Services
             model.Author = book.Author;
             model.Status = book.Status;
             model.Genre = book.Genre;
-            model.Volume = book.Volume;
+            model.Chapter = book.Chapter;
             model.DateReleased = book.DateReleased;
             model.AddedBy = user;
             model.UpdatedBy = user;
@@ -134,7 +134,7 @@ namespace NavOS.Basecode.Services.Services
                 book.Author = bookViewModel.Author;
                 book.Status = bookViewModel.Status;
                 book.Genre = bookViewModel.Genre;
-                book.Volume = bookViewModel.Volume;
+                book.Chapter = bookViewModel.Chapter;
                 book.DateReleased = bookViewModel.DateReleased;
                 book.UpdatedBy = user;
                 book.UpdatedTime = DateTime.Now;

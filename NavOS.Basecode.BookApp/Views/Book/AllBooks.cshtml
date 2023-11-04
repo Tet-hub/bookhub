@@ -131,22 +131,22 @@
             <div class="col-12 mt-2 float-end">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-1 col-4 mt-3">
+                        <div class="col-md-2 col-6 mt-3">
                             <a href="?filter=all&sort=All" class="w-100 btn btn-outline-warning @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "all", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:5px;">
                                 All
                             </a>
                         </div>
-                        <div class="col-md-1 col-4 mt-3">
+                        <div class="col-md-2 col-6 mt-3">
                             <a href="?filter=title&sort=title" class="w-100 btn btn-outline-warning @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
                                 Title
                             </a>
                         </div>
-                        <div class="col-md-1 col-4 mt-3">
+                        <div class="col-md-2 col-6 mt-3">
                             <a href="?filter=author&sort=author" class="w-100 btn btn-outline-warning @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "author", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
                                 Author
                             </a>
                         </div>
-                        <div class="col-md-1 col-4 mt-3">
+                        <div class="col-md-2 col-6 mt-3">
                             <button type="button" style="box-shadow:none; text-decoration: none; color: inherit;" class="w-100 btn btn-outline-warning text-white" data-toggle="collapse" data-target="#genreFilter">Genre</button>
                         </div>
                     </div>
@@ -165,7 +165,7 @@
                                     var currentGenre = genre.GenreName;
                                     var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
 
-                                    <div class="col-md-1 col-4 mb-3">
+                                    <div class="col-md-2 col-6 mb-3">
                                         <button type="button" class="w-100 btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)&filter=genre'">@currentGenre</button>
                                     </div>
                                  }
