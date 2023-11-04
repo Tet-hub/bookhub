@@ -57,16 +57,21 @@ namespace NavOS.Basecode.AdminApp.Controllers
         }
 
         /// <summary>
-        /// Login Method
+        /// Logins this instance.
         /// </summary>
-        /// <returns>Created response view</returns>
+        /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
         public ActionResult Login()
         {
-            TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
-            this._sessionManager.Clear();
-            this._session.SetString("SessionId", System.Guid.NewGuid().ToString());
+            if (this._session.GetString("HasSession") == "Exist")
+            {
+                return RedirectToAction("Index", "Book");
+            }
+            ViewBag.LoginView = true;
+			ViewData["Title"] = "Login Page";
+			TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
+            
             return this.View();
         }
 
@@ -80,8 +85,6 @@ namespace NavOS.Basecode.AdminApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            this._session.SetString("HasSession", "Exist");
-
             var imagePath = "https://127.0.0.1:8080";
 			Admin admin = null;
             var loginResult = _adminService.AuthenticateAdmin(model.AdminEmail, model.Password, ref admin);
@@ -89,12 +92,14 @@ namespace NavOS.Basecode.AdminApp.Controllers
             {
                 // 認証OK
                 await this._signInManager.SignInAsync(admin);
+				this._session.SetString("HasSession", "Exist");
+                this._session.SetString("SessionId", Guid.NewGuid().ToString());
                 this._session.SetString("AdminId", admin.AdminId);
                 this._session.SetString("AdminName", admin.AdminName);
                 this._session.SetString("Role", admin.Role);
                 this._session.SetString("AdminProfile", Path.Combine(imagePath, admin.AdminId + ".png"));
                 TempData["SuccessMessage"] = "Welcome " + admin.AdminName + "!";
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
             else
             {
@@ -104,6 +109,15 @@ namespace NavOS.Basecode.AdminApp.Controllers
             }
         }
 
+		[HttpGet]
+		[AllowAnonymous]
+        public ActionResult ForgotPassword()
+        {
+			ViewData["Title"] = "Forgot Password";
+			ViewBag.LoginView = true;
+			return View();
+        }
+
         /// <summary>
         /// Sign Out current account and return login view.
         /// </summary>
@@ -111,6 +125,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignOutUser()
         {
+            this._sessionManager.Clear();
             await this._signInManager.SignOutAsync();
             TempData["SuccessMessage"] = "Bye " + this.UserName + "!";
             return RedirectToAction("Login", "Account");

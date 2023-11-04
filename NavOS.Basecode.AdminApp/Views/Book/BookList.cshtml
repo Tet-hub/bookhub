@@ -1,8 +1,8 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels
-@model List<AdminViewModel>
+@model List<BookViewModel>
 
 @{
-    ViewData["Title"] = "Admin List";
+    ViewData["Title"] = "Book List";
     string[] headers = ViewBag.headers as string[];
 }
 
@@ -10,13 +10,14 @@
     <link rel="stylesheet" type="text/css" href="~/css/list.css">
 }
 
+
 <div style="margin-top: 40px; text-align: right; margin-bottom: 40px">
-    <h3><a asp-controller="Admin" asp-action="Add" style="text-decoration: none; font-weight: bold;color: #FFC119">+ ADD ADMIN</a></h3>
+    <h3><a asp-controller="Book" asp-action="AddBook" style="text-decoration: none; font-weight: bold;color: #FFC119">+ ADD BOOK</a></h3>
 </div>
 
-<form asp-controller="Admin" asp-action="List" method="get" class="form-inline my-2 my-lg-0" style="margin-top: 40px">
+<form asp-controller="Book" asp-action="BookList" method="get" class="form-inline my-2 my-lg-0" style="margin-top: 40px">
     <div class="input-group">
-        <input class="form-control mr-sm-2" name="searchQuery" id="searchQuery" type="search" placeholder="Search Admin" style="border-radius: 5px;">&nbsp;
+        <input class="form-control mr-sm-2" name="searchQuery" id="searchQuery" type="search" placeholder="Search Book" aria-label="Search" style="border-radius: 5px;">&nbsp;
         <div class="input-group-append">
             <button class="btn my-2 my-sm-0" type="submit" style="background-color: #FFC119;color: black;">Search</button>
         </div>
@@ -29,34 +30,30 @@
         <table class="table table-dark table-borderless text-center" style="margin-top: 20px;">
             <thead class="rounded">
                 <tr>
-                    @foreach(var header in headers)
+                    @foreach (var header in headers)
                     {
                         <th style="background-color: #FFC119;color: black;" scope="col">@header</th>
                     }
                 </tr>
             </thead>
             <tbody>
-                @foreach (var admin in Model)
+                @foreach(var books in Model)
                 {
                     <tr>
-                        <td class="align-middle">
-                            @{ string AdminImg = admin.ImageUrl; }
-                            <img src="@AdminImg" class="rounded-circle" onerror="errorImg(this)" alt="@admin.AdminName" width="80" height="80" style="object-fit: cover">
+                        <td>
+                            <img src="@books.ImageUrl" class="rounded" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" alt="@books.BookTitle" height="125" width="100" style="object-fit: cover; cursor: pointer" onclick="location.href='/Book/BookDetails?BookId=@books.BookId'" title="View Book Detail">
                         </td>
-                        <td class="align-middle">@admin.AdminName</td>
-                        <td class="align-middle">@admin.AdminEmail</td>
-                        <td class="align-middle">@admin.Role</td>
+                        <td class="align-middle">@books.BookTitle</td>
+                        <td class="align-middle">@books.Author</td>
+                        <td class="align-middle">@((books.TotalRating % 2 == 0) ? books.TotalRating.ToString("0") : books.TotalRating.ToString("0.0")) Ratings / @books.ReviewCount Reviews</td>
                         <td class="align-middle">
                             <div class="btn-group" role="group">
-                                <form asp-action="Edit" method="get">
-                                    <input type="hidden" name="AdminId" value="@admin.AdminId">
+                                <form asp-action="EditBook" method="get">
+                                    <input type="hidden" name="BookId" value="@books.BookId">
                                     <button type="submit" class="btn btn-warning" title="Edit Admin"><i class="fas fa-edit"></i></button>
                                 </form>
                                 &nbsp;
-                                @{
-                                    string AdminName = HttpContextAccessor.HttpContext.Session.GetString("AdminName");
-                                }
-                                <button class="btn btn-outline-warning rounded" onclick="openModalSet('@admin.AdminId', '@((admin.AdminName == AdminName) ? "your account" : admin.AdminName)')" title="Delete Admin"><i class="fas fa-trash"></i></button>
+                                <button class="btn btn-outline-warning rounded" title="Delete Admin" onclick='openModalSet("@books.BookId", "@books.BookTitle")'><i class="fas fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -67,7 +64,7 @@
 }
 else
 {
-    <span class="text-white w3-display-middle">No Admin found </span>
+    <span class="text-white w3-display-middle">No Book found </span>
 }
 
 @* Pagination *@
@@ -87,7 +84,7 @@ else
             {
                 <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
                     <a class="page-link" style="background-color: #FFC119;color: black;"
-                       asp-controller="Admin" asp-action="List" asp-route-page="@i">@i</a>
+                       asp-controller="Book" asp-action="BookList" asp-route-page="@i">@i</a>
                 </li>
             }
         }
@@ -109,13 +106,13 @@ else
             <p>
                 <div class="text-center">
                     <h3 class="w3-center">Are you sure you want to delete</h3>
-                    <h3 class="w3-center" id="adminName"></h3>
+                    <h3 class="w3-center" id="BookTitle"></h3>
                 </div>
             </p>
             <div class="row text-center">
-                <div id="AdminId" style="display: none"></div>
+                <div id="BookId" style="display: none"></div>
                 <div class="col-md-6">
-                    <button class="btn btn-outline-warning" style="width: 200px" onclick="deleteAdmin()"><h3>YES</h3></button>
+                    <button class="btn btn-outline-warning" style="width: 200px" onclick="deleteBook()"><h3>YES</h3></button>
                 </div>
                 <div class="col-md-6">
                     <button class="btn btn-warning" style="width: 200px" onclick="modal_control('deleteModal','none')"><h3>NO</h3></button>
@@ -127,10 +124,9 @@ else
 
 @section scripts {
     <script>
-        // Check for error message and display Toastr notification
         var errorMessage = '@TempData["ErrorMessage"]';
         var successMessage = '@TempData["SuccessMessage"]';
-        
+
         if (errorMessage) {
             toastr.error(errorMessage);
         }
@@ -138,12 +134,7 @@ else
         if (successMessage) {
             toastr.success(successMessage);
         }
-
-        function errorImg(img) {
-            img.src = "@Url.Content("~/img/admin_profile.svg")";
-        }
-
     </script>
-    <script src="~/js/adminModal.js"></script>
+    <script src="~/js/bookModal.js"></script>
     <script src="~/js/getQueryParam.js"></script>
 }

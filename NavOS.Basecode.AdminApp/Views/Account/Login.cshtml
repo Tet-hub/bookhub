@@ -1,12 +1,10 @@
 ﻿@model LoginViewModel
 @using static NavOS.Basecode.Resources.Views.Screen
+
 @section styles {
     <link rel="stylesheet" href="~/css/login.css" />
 }
-@{
-    ViewBag.LoginView = true;
-    ViewData["Title"] = "Login Page";
-}
+
 <div>
     @Html.AntiForgeryToken()
 </div>
@@ -39,7 +37,7 @@
                                         @Login
                                     </button>
                                     <div>
-                                        <a class="text-muted" href="#!">@ForgotPass</a>
+                                        <a class="text-muted" asp-controller="Account" asp-action="ForgotPassword">@ForgotPass</a>
                                     </div>
                                 </div>
                             </form>

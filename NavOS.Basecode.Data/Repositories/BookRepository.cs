@@ -26,6 +26,19 @@ namespace NavOS.Basecode.Data.Repositories
             this.GetDbSet<Book>().Add(book);
             UnitOfWork.SaveChanges();
         }
+
+        public void DeleteBook(Book book) 
+        {
+            this.GetDbSet<Book>().Remove(book); 
+            UnitOfWork.SaveChanges();
+        }
+
+        public void UpdateBook(Book book)
+        {
+            this.GetDbSet<Book>().Update(book);
+            UnitOfWork.SaveChanges();
+        }
+
         public IQueryable<Book> GetBook(string BookId)
         {
             var book = this.GetDbSet<Book>().Where(x => x.BookId == BookId);

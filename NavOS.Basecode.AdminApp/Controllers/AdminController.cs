@@ -8,6 +8,7 @@ using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.Manager;
 using NavOS.Basecode.Services.ServiceModels;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace NavOS.Basecode.AdminApp.Controllers
@@ -33,14 +34,14 @@ namespace NavOS.Basecode.AdminApp.Controllers
 			_adminService = adminService;
         }
 
-        /// <summary>
-        /// Lists the specified search query.
-        /// </summary>
-        /// <param name="searchQuery">The search query.</param>
-        /// <param name="page">The page.</param>
-        /// <param name="pageSize">Size of the page.</param>
-        /// <returns></returns>
-        public IActionResult List(string searchQuery, int page = 1, int pageSize = 5)
+		/// <summary>
+		/// Lists the specified search query.
+		/// </summary>
+		/// <param name="searchQuery">The search query.</param>
+		/// <param name="page">The page.</param>
+		/// <param name="pageSize">Size of the page.</param>
+		/// <returns></returns>
+		public IActionResult List(string searchQuery, int page = 1, int pageSize = 5)
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
@@ -49,20 +50,22 @@ namespace NavOS.Basecode.AdminApp.Controllers
 
             var allAdmins = _adminService.GetAllAdmins();
 
-            // Filter by AdminName if searchString is provided
             if (!string.IsNullOrEmpty(searchQuery))
             {
                 allAdmins = allAdmins.Where(a => a.AdminName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                                                 a.AdminEmail.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+												 a.Role.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+												 a.AdminEmail.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            // Paginate the data
+            string[] headers = new string[] { "Admin Profile", "Name", "Email", "Role", "Actions" };
+
             var paginatedAdmins = allAdmins.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalPages = (int)Math.Ceiling(allAdmins.Count / (double)pageSize);
-            ViewBag.SearchString = searchQuery; // Pass the searchString to the view
+            ViewBag.SearchString = searchQuery;
+            ViewBag.headers = headers;
 
             return View(paginatedAdmins);
         }
@@ -93,17 +96,18 @@ namespace NavOS.Basecode.AdminApp.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            if (model.AdminProfile != null)
+
+			try
             {
 				_adminService.AddAdmin(model, this.UserName);
 				TempData["SuccessMessage"] = "Admin added successfully.";
 				return RedirectToAction("List");
 			}
-            else
-            {
-                TempData["ErrorMessage"] = "Upload An Image";
+            catch (InvalidDataException ex) {
+                TempData["ErrorMessage"] = ex.Message;
                 return View(model);
             }
+
         }
 
         /// <summary>
@@ -124,8 +128,9 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 TempData["SuccessMessage"] = "Admin deleted successfully.";
                 return RedirectToAction("List");
             }
-            return NotFound();
-        }
+			TempData["ErrorMessage"] = "No Admin was deleted.";
+			return RedirectToAction("List");
+		}
 
         /// <summary>
         /// Edits the specified admin identifier.
@@ -144,9 +149,10 @@ namespace NavOS.Basecode.AdminApp.Controllers
             {
                 return View(admin);
 			}
-            return NotFound();
-            
-        }
+			TempData["ErrorMessage"] = "Admin not found.";
+			return RedirectToAction("List");
+
+		}
 
         /// <summary>
         /// Edits the specified model.
@@ -166,7 +172,8 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 TempData["SuccessMessage"] = "Admin updated successfully.";
                 return RedirectToAction("List");
 			}
-            return NotFound();
-        }
+			TempData["ErrorMessage"] = "No Admin was updated.";
+			return RedirectToAction("List");
+		}
 	}
 }

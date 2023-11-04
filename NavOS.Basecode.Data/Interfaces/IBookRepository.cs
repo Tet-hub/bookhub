@@ -11,6 +11,8 @@ namespace NavOS.Basecode.Data.Interfaces
     {
         IQueryable<Book> GetBooks();
         IQueryable<Book> GetBook(string BookId);
+        void DeleteBook(Book book);
         void AddBook(Book book);
+        void UpdateBook(Book book);
     }
 }

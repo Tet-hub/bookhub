@@ -1,6 +1,7 @@
 ﻿using NavOS.Basecode.Data;
 using NavOS.Basecode.Data.Interfaces;
 using NavOS.Basecode.Data.Models;
+using NavOS.Basecode.Data.Repositories;
 using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.ServiceModels;
 using System;
@@ -16,7 +17,7 @@ namespace NavOS.Basecode.Services.Services
     public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
-        public BookService(IBookRepository bookRepository)
+        public BookService(IBookRepository bookRepository, NavosDBContext dbContext)
         {
             _bookRepository = bookRepository;
         }
@@ -39,11 +40,14 @@ namespace NavOS.Basecode.Services.Services
                 DateReleased = s.DateReleased,
                 AddedTime = s.AddedTime,
                 ImageUrl = Path.Combine(url, s.BookId + ".png"),
-        })
+                ReviewCount = s.Reviews.Count,
+                TotalRating = s.Reviews.Any() ? (double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count : 0
+            })
             .ToList();
 
             return data;
         }
+
         /// <summary>
         /// Gets the book.
         /// </summary>
@@ -104,6 +108,52 @@ namespace NavOS.Basecode.Services.Services
             _bookRepository.AddBook(model);
         }
 
+        public bool DeleteBook(string bookId)
+        {
+            var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
+            Book book = _bookRepository.GetBooks().FirstOrDefault(x => x.BookId == bookId);
+            if (book != null)
+            {
+                var image = Path.Combine(coverImagesPath, book.BookId) + ".png";
+                File.Delete(image);
+                _bookRepository.DeleteBook(book);
+                return true;
+            }
+            return false;
+
+        }
+
+        public bool UpdateBook(BookViewModel bookViewModel, string user)
+        {
+            var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
+            Book book = _bookRepository.GetBooks().Where(x => x.BookId == bookViewModel.BookId).FirstOrDefault();
+            if (book != null) 
+            {
+                book.BookTitle = bookViewModel.BookTitle;
+                book.Summary = bookViewModel.Summary;
+                book.Author = bookViewModel.Author;
+                book.Status = bookViewModel.Status;
+                book.Genre = bookViewModel.Genre;
+                book.Volume = bookViewModel.Volume;
+                book.DateReleased = bookViewModel.DateReleased;
+                book.UpdatedBy = user;
+                book.UpdatedTime = DateTime.Now;
+
+                if (bookViewModel.ImageFile != null)
+                {
+                    var coverImageFileName = Path.Combine(coverImagesPath, book.BookId) + ".png";
+                    using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+                    {
+                        bookViewModel.ImageFile.CopyTo(fileStream);
+                    }
+                    _bookRepository.UpdateBook(book);
+                    return true;
+                }
+                _bookRepository.UpdateBook(book);
+                return true;
+            }
+            return false;
+        }
         public bool Validate(string BookTitle)
         {
             var isExist = _bookRepository.GetBooks().Where(x => x.BookTitle == BookTitle).Any();

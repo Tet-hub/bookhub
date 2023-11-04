@@ -1,11 +1,11 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels;
-@model NavOS.Basecode.Services.ServiceModels.BookViewModel
+@model BookViewModel
 @{
-    ViewData["Title"] = "Add Book";
-    var genres = ViewData["Genre"] as List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>;
+    ViewData["Title"] = "Edit Book - " + Model.BookTitle;
+    var genres = ViewData["Genre"] as List<GenreViewModel>;
 
 }
-<!-- script for image--> 
+<!-- script for image-->
 <script>
     function displayImage(input) {
         var imageElement = document.getElementById("bookImage");
@@ -19,18 +19,19 @@
     }
 </script>
 
-<form method="post" enctype="multipart/form-data" asp-action="AddBook" onsubmit="return validateForm()">
+<form method="post" enctype="multipart/form-data" asp-action="EditBook" onsubmit="return validateForm()">
+    <input type="hidden" asp-for="BookId" />
     <div class="w3-margin">
-        <!--ADD BUTTON-->
+        <!--EDIT BUTTON-->
         <div class="addNow">
-            <button type="submit" class="addbtn text-dark">+ADD NOW</button>
+            <button type="submit" class="addbtn text-dark">+EDIT NOW</button>
         </div>
         <div class="bodyDetails">
             <div class="w3-row w3-margin-bottom">
 
                 <!--BOOK IMAGE-->
                 <div class="w3-col imgPaddingRight" style="width:230px">
-                    <img id="bookImage" src="~/img/default-book.jpg" style="width:100%; height:280px; object-fit: cover">
+                    <img id="bookImage" src="@Model.ImageUrl" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="width:100%; height:280px; object-fit: cover">
                     <input type="file" class="form-control mt-2" asp-for="ImageFile" accept="image/*" onchange="displayImage(this)">
                     <span asp-validation-for="ImageFile" class="text-warning" style="height:20px; margin-top:-10px; margin-bottom:10px;"></span>
                 </div>
@@ -60,7 +61,7 @@
                         <span asp-validation-for="Status" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
                         <div class="form-row">
                             <p>Volume:</p>
-                            <input type="number" class="form-control" asp-for="Volume" style="box-shadow:none;" />
+                            <input class="form-control" asp-for="Volume" style="box-shadow:none;" />
                         </div>
                         <span asp-validation-for="Volume" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
                         <div class="form-row">
@@ -73,16 +74,19 @@
                             <div class="dropdown genre-dropdown">
                                 <button id="genreDropdownBtn">Choose Genre</button>
                                 <div class="dropdown-content">
-                                @if (genres != null)
-                                 {
-                                    @foreach (var genre in genres)
-                                    {
-                                        <label>
-                                                <input type="checkbox" name="SelectedGenres" value="@genre.GenreName" required>
-                                            @genre.GenreName
-                                        </label>
+                                    @{
+                                        string[] separatedGenre = Model.Genre.Split(", ");
                                     }
-                                }
+                                    @if (genres != null)
+                                    {
+                                        @foreach (var genre in genres)
+                                        {
+                                            <label>
+                                                <input type="checkbox" name="SelectedGenres" value="@genre.GenreName" @((separatedGenre.Contains(genre.GenreName)) ? "checked" : "") required>
+                                                @genre.GenreName
+                                            </label>
+                                        }
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -103,7 +107,9 @@
 
 @section scripts {
     <script>
-        let nav = document.getElementById("AddBook");
-        nav.classList.add("active");
+        var errorMessage = '@TempData["ErrorMessage"]';
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
     </script>
 }
