@@ -7,6 +7,7 @@ using NavOS.Basecode.BookApp.Mvc;
 using NavOS.Basecode.Data.Models;
 using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.ServiceModels;
+using NavOS.Basecode.Services.Services;
 using System;
 using System.Linq;
 
@@ -16,6 +17,7 @@ namespace NavOS.Basecode.BookApp.Controllers
     {
         private readonly IBookService _bookService;
         private readonly IReviewService _reviewService;
+        private readonly IGenreService _genreService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -26,6 +28,7 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// <param name="mapper"></param>
         public BookController(IBookService bookService,
                               IReviewService reviewService,
+                              IGenreService genreService,
                               IHttpContextAccessor httpContextAccessor,
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
@@ -33,6 +36,7 @@ namespace NavOS.Basecode.BookApp.Controllers
         {
             _bookService = bookService;
             _reviewService = reviewService;
+            _genreService = genreService;
 
         }
         /// <summary>
@@ -124,6 +128,9 @@ namespace NavOS.Basecode.BookApp.Controllers
             ViewData["Books"] = data;
             ViewData["Reviews"] = reviews;
 
+            var genres = _genreService.GetGenres();
+            ViewData["Genre"] = genres;
+
 
             return View();
         }
@@ -136,14 +143,7 @@ namespace NavOS.Basecode.BookApp.Controllers
         [HttpGet]
         public IActionResult TopBooks(string searchQuery, string filter, string sort)
         {
-            var currentDate = DateTime.Now;
-            var twoWeeksAgo = currentDate.AddDays(-14);
-
-            var data = _bookService.GetBooks()
-                .Where(book => book.AddedTime >= twoWeeksAgo)
-                .OrderByDescending(book => book.AddedTime)
-                .ToList();
-
+            var data = _bookService.GetBooks();
             var reviews = _reviewService.GetReviews();
 
             if (string.IsNullOrEmpty(filter) || string.Equals(filter, "all", StringComparison.OrdinalIgnoreCase))
@@ -152,7 +152,6 @@ namespace NavOS.Basecode.BookApp.Controllers
                 {
                     data = data
                         .Where(book =>
-                            (book.AddedTime >= twoWeeksAgo) &&
                             (book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                              book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                              book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
@@ -193,6 +192,9 @@ namespace NavOS.Basecode.BookApp.Controllers
             ViewData["Reviews"] = reviews;
             ViewData["TopBooks"] = data;
 
+            var genres = _genreService.GetGenres();
+            ViewData["Genre"] = genres;
+
 
             return View();
         }
@@ -224,6 +226,34 @@ namespace NavOS.Basecode.BookApp.Controllers
             }
             _reviewService.AddReview(review);
             return RedirectToAction("BookDetails", new { review.BookId });
+        }
+        public IActionResult AllBooks(string searchQuery, string sort)
+        {
+            var data = _bookService.GetBooks();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                data = data.Where(book =>
+                    book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+            }
+            if (string.Equals(sort, "title", StringComparison.OrdinalIgnoreCase))
+            {
+                data = data.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
+            }
+            else if (string.Equals(sort, "author", StringComparison.OrdinalIgnoreCase))
+            {
+                data = data.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
+            }
+            var reviews = _reviewService.GetReviews();
+            var genres = _genreService.GetGenres();
+            ViewData["Genre"] = genres;
+            ViewData["Reviews"] = reviews;
+            ViewData["AllBooks"] = data;
+
+            return View();
         }
 
     }

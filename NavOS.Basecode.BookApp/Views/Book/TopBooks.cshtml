@@ -3,7 +3,8 @@
     ViewData["Title"] = "Top books";
     var model = ViewData["TopBooks"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
     var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
-
+    var genres = ViewData["Genre"] as List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>;
+ 
     int pageSize = 10;
     int currentPage = ViewContext.HttpContext.Request.Query["page"].FirstOrDefault() != null
         ? int.Parse(ViewContext.HttpContext.Request.Query["page"])
@@ -71,10 +72,10 @@
         border: none;
     }
 
-        .pagination .page-item a:hover {
-            background-color: #00A651;
-            color: white;
-        }
+    .pagination .page-item a:hover {
+        background-color: #00A651;
+        color: white;
+    }
 
     .rating-badge {
         position: absolute;
@@ -91,11 +92,17 @@
         align-items: center;
     }
 
-        .rating-badge .badge {
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 50%;
-        }
+    .rating-badge .badge {
+        display: inline-block;
+        padding: 8px 15px;
+        border-radius: 50%;
+    }
+
+    .scrollable-dropdown {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
 
 </style>
 
@@ -104,14 +111,27 @@
         <!-- Header Container -->
         <div class="col-md-12" style="background-color:#FFC119">
             <div class="d-flex justify-content-between align-items-center">
-                <span class="float-start text-center fst-italic my-2">List | Top Books</span>
+                <span class="float-start text-center fst-italic my-2 text-dark fw-bold" style="color: @(string.IsNullOrEmpty(Context.Request.Query["filter"]) && string.IsNullOrEmpty(Context.Request.Query["searchQuery"]) ? "#00A651" : "inherit"); font-style: @(string.IsNullOrEmpty(Context.Request.Query["filter"]) && string.IsNullOrEmpty(Context.Request.Query["searchQuery"]) ? "italic" : "normal");">
+                    @if (!string.IsNullOrEmpty(Context.Request.Query["filter"]))
+                    {
+                        @("LIST | TOP BOOKS | " + Context.Request.Query["filter"].ToString().ToUpper() + " | " + Context.Request.Query["searchQuery"])
+                    }
+                    else if (!string.IsNullOrEmpty(Context.Request.Query["searchQuery"]))
+                    {
+                        @("LIST | TOP BOOKS | " + Context.Request.Query["searchQuery"])
+                    }
+                    else
+                    {
+                        @("LIST | TOP BOOKS")
+                    }
+                </span>
                 <!-- Pagination -->
                 <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
                     <ul class="pagination">
                         @if (currentPage > 1)
                         {
                             <li class="page-item">
-                                <a class="page-link" href="?page=@(currentPage - 1)" aria-label="Previous">
+                                <a class="page-link" href="?filter=@Context.Request.Query["filter"]&sort=@Context.Request.Query["sort"]&searchQuery=@Context.Request.Query["searchQuery"]&page=@(currentPage - 1)" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
@@ -122,7 +142,7 @@
                             if (i >= 1 && i <= totalPages)
                             {
                                 <li class="page-item @(i == currentPage ? "active" : "")">
-                                    <a class="page-link" href="?page=@i">@i</a>
+                                    <a class="page-link" href="?filter=@Context.Request.Query["filter"]&sort=@Context.Request.Query["sort"]&searchQuery=@Context.Request.Query["searchQuery"]&page=@i">@i</a>
                                 </li>
                             }
                         }
@@ -130,7 +150,7 @@
                         @if (currentPage < totalPages)
                         {
                             <li class="page-item">
-                                <a class="page-link" href="?page=@(currentPage + 1)" aria-label="Next">
+                                <a class="page-link" href="?filter=@Context.Request.Query["filter"]&sort=@Context.Request.Query["sort"]&searchQuery=@Context.Request.Query["searchQuery"]&page=@(currentPage + 1)" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
@@ -140,23 +160,60 @@
             </div>
         </div>
         <!-- Search -->
-        <form asp-controller="Book" asp-action="TopBooks" method="get" class="mt-3">
-            <div class="input-group">
-                <input type="text" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow:none;">
-                <input type="hidden" name="filter" value="@ViewContext.HttpContext.Request.Query["filter"]" />
-            </div>
-        </form>
+        <div class="row mx-4">
+            <form asp-controller="Book" asp-action="TopBooks" method="get" class="mt-3">
+                <div class="input-group" style="width:93.6%;">
+                    <input type="text" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow:none;">
+                    <input type="hidden" name="filter" value="@ViewContext.HttpContext.Request.Query["filter"]" />
+                </div>
+            </form>
+        </div>
         <!-- Filter button -->
-        <div class="col-md-12 mt-3 ms-4">
-            <a href="?filter=title&sort=title" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
+        <div class="col-md-12 mt-3 ms-5" style="margin-left:-30px;">
+@*             <a href="?filter=title&sort=title" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
+                Title
+            </a> *@ 
+@*             <a href="?filter=genre" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "genre", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
+                Genre
+            </a> *@
+            <a href="?filter=title&sort=title" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:-10.5px;">
                 Title
             </a>
+@*             <button class="btn btn-outline-warning dropdown-toggle mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" type="button" id="genreDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="box-shadow:none; text-decoration: none; color: inherit;">
+                Title
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="genreDropdown">
+                <li><a class="dropdown-item" href="?filter=title">All Title</a></li>
+                @foreach (var title in model.Select(book => book.BookTitle).Distinct().OrderBy(title => title))
+                {
+                    <li><a class="dropdown-item" href="?searchQuery=@title&filter=title">@title</a></li>
+                }
+            </ul> *@
             <a href="?filter=author&sort=author" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "author", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
                 Author
             </a>
-            <a href="?filter=genre" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "genre", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
-                Genre
-            </a>
+            <a class="btn btn-outline-warning text-white mt-2" data-toggle="collapse" data-target="#genreFilter">Genre</a>
+        </div>
+        <!-- Genre list section -->
+        <div id="genreFilter" class="collapse">
+            <div class="col-12 mt-2 ms-4">
+                <div class="container">
+                    <div class="row">
+                        <h4 class="text-white font-weight-light mt-2">Genre</h4>
+                        @for (var i = 0; i < genres.Count; i++)
+                        {
+                            var genre = genres[i];
+                            var selectedGenres = ViewContext.HttpContext.Request.Query["searchQuery"];
+                            var currentGenre = genre.GenreName;
+                            var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
+
+                            <div class="col-md-1 col-4 mb-3">
+                                <button type="button" class="w-100 btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)&filter=genre'">@currentGenre</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- Book List -->
         <div class="col-md-12 mx-2">
