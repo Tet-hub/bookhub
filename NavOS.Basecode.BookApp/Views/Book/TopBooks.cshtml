@@ -207,7 +207,7 @@
                             var currentGenre = genre.GenreName;
                             var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
 
-                            <div class="col-md-1 col-4 mb-3">
+                            <div class="col-md-2 col-6 me-1 mb-3">
                                 <button type="button" class="w-100 btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)&filter=genre'">@currentGenre</button>
                             </div>
                         }

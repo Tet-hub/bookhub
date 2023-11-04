@@ -33,7 +33,7 @@
                 <div class="w3-col imgPaddingRight" style="width:230px">
                     <img id="bookImage" src="@Model.ImageUrl" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="width:100%; height:280px; object-fit: cover">
                     <input type="file" class="form-control mt-2" asp-for="ImageFile" accept="image/*" onchange="displayImage(this)">
-                    <span asp-validation-for="ImageFile" class="text-warning" style="height:20px; margin-top:-10px; margin-bottom:10px;"></span>
+                    @* <span asp-validation-for="ImageFile" class="text-warning" style="height:20px; margin-top:-10px; margin-bottom:10px;"></span> *@
                 </div>
 
                 <!--INPUT DETAILS-->
@@ -60,10 +60,10 @@
                         </div>
                         <span asp-validation-for="Status" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
                         <div class="form-row">
-                            <p>Volume:</p>
-                            <input class="form-control" asp-for="Volume" style="box-shadow:none;" />
+                            <p>Chapter:</p>
+                            <input class="form-control" asp-for="Chapter" style="box-shadow:none;" />
                         </div>
-                        <span asp-validation-for="Volume" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
+                        <span asp-validation-for="Chapter" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
                         <div class="form-row">
                             <p>Date:</p>
                             <input type="date" class="form-control" asp-for="DateReleased" style="box-shadow:none;" />
