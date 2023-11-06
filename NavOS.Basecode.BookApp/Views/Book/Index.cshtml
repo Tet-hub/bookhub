@@ -1,23 +1,17 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels;
 @{
     ViewData["Title"] = "Home Page";
-    var model = ViewData["Books"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
+    var books = ViewData["Books"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
     var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
+    var reviewsCountByBookId = ViewData["reviewsCountByBookId"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
 
-    //sort the books according to reviews
-    var reviewsCountByBookId = reviews
-    .GroupBy(r => r.BookId)
-    .ToDictionary(g => g.Key, g => g.Count());
-
-    var sortedBooks = model.OrderByDescending(book => reviewsCountByBookId.ContainsKey(book.BookId) ? reviewsCountByBookId[book.BookId] : 0);
-    
-    //filter new books according to addedtime for the past 2 weeks
-    var filteredBooks = model
+    var sortedBooks = books.OrderByDescending(book => reviewsCountByBookId.Any(review => review.BookId == book.BookId));
+  
+    var filteredBooks = books
     .OrderByDescending(book => book.AddedTime)
     .Where(book => (DateTime.Now - book.AddedTime).TotalDays <= 14)
     .Take(5);
-
-    // Calculate the avg. rate & count no. of reviews for each book
+    
     var bookAverages = sortedBooks.Select(book => new
     {
         BookId = book.BookId,
@@ -28,6 +22,7 @@
         ReviewCount = reviews
             .Count(r => r.BookId == book.BookId)
     });
+
 }
 <style>
     .ellipsis {
@@ -136,8 +131,10 @@
                                 </div>
                                 <div class="card-footer text-center d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
                                     <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
-                                        @(reviewsCountByBookId.ContainsKey(book.BookId) ? reviewsCountByBookId[book.BookId] : 0)
-                                            <i class="fas fa-book"></i>
+                                        @(
+                                            reviewsCountByBookId.FirstOrDefault(r => r.BookId == book.BookId)?.ReviewCount ?? 0
+                                          )
+                                           <i class="fas fa-book"></i>
                                     </span>
                                 </div>
                             </a>

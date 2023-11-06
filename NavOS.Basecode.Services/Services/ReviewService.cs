@@ -48,5 +48,43 @@ namespace NavOS.Basecode.Services.Services
 
             return data;
         }
+        public List<ReviewViewModel> GetBooksSortedByReviews()
+        {
+            var reviews = GetReviews();
+
+            var reviewsCountByBookId = reviews
+                .GroupBy(r => r.BookId)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var sortedBooks = reviews
+                .GroupBy(r => r.BookId)
+                .OrderByDescending(g => reviewsCountByBookId.ContainsKey(g.Key) ? reviewsCountByBookId[g.Key] : 0);
+
+            var bookAverages = sortedBooks.Select(g => new ReviewViewModel
+            {
+                BookId = g.Key,
+                AverageRate = g
+                    .Select(r => (double?)r.Rate)
+                    .Average() ?? 0.0,
+                ReviewCount = reviewsCountByBookId.ContainsKey(g.Key) ? reviewsCountByBookId[g.Key] : 0
+            });
+
+            return bookAverages.ToList();
+        }
+        public List<ReviewViewModel> GetReviewsCountByBookId()
+        {
+            var reviews = GetReviews();
+
+            var reviewsCountByBookId = reviews
+                .GroupBy(r => r.BookId)
+                .Select(group => new ReviewViewModel
+                {
+                    BookId = group.Key,
+                    ReviewCount = group.Count()
+                })
+                .ToList();
+
+            return reviewsCountByBookId;
+        }
     }
 }

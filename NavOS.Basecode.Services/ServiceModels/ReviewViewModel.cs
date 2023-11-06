@@ -19,5 +19,7 @@ namespace NavOS.Basecode.Services.ServiceModels
         [Required(ErrorMessage = "Rate is required")]
         public int Rate { get; set; }
         public DateTime DateReviewed { get; set; }
+        public int ReviewCount { get; set; }
+        public double AverageRate { get; set; }
     }
 }

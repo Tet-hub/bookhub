@@ -15,5 +15,7 @@ namespace NavOS.Basecode.Services.Interfaces
         bool Validate(string BookTitle);
         bool DeleteBook(string bookId);
         bool UpdateBook(BookViewModel bookViewModel, string user);
+        List<BookViewModel> FilterAndSortBooks(string searchQuery, string filter, string sort);
+        List<BookViewModel> FilterAndSortBooksTwoWeeks(string searchQuery, string filter, string sort, DateTime startDate, DateTime endDate);
     }
 }

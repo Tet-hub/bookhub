@@ -1,23 +1,17 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels;
 @{
     ViewData["Title"] = "Home Page";
-    var model = ViewData["Books"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
+    var books = ViewData["Books"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
     var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
+    var reviewsCountByBookId = ViewData["reviewsCountByBookId"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
 
-    //sort the books according to reviews
-    var reviewsCountByBookId = reviews
-    .GroupBy(r => r.BookId)
-    .ToDictionary(g => g.Key, g => g.Count());
+    var sortedBooks = books.OrderByDescending(book => reviewsCountByBookId.Any(review => review.BookId == book.BookId));
 
-    var sortedBooks = model.OrderByDescending(book => reviewsCountByBookId.ContainsKey(book.BookId) ? reviewsCountByBookId[book.BookId] : 0);
-
-    //filter new books according to addedtime for the past 2 weeks
-    var filteredBooks = model
+    var filteredBooks = books
     .OrderByDescending(book => book.AddedTime)
     .Where(book => (DateTime.Now - book.AddedTime).TotalDays <= 14)
     .Take(5);
 
-    // Calculate the avg. rate & count no. of reviews for each book
     var bookAverages = sortedBooks.Select(book => new
     {
         BookId = book.BookId,
@@ -28,6 +22,7 @@
         ReviewCount = reviews
             .Count(r => r.BookId == book.BookId)
     });
+
 }
 <style>
     .ellipsis {
@@ -63,15 +58,11 @@
 <div class="row mt-4 mx-1">
     <!-- Latest Books-->
     <div class="col-9 col-md-11 ms-5 px-2">
-        <a asp-action="NewBooks" asp-controller="Book" class="btn btn-warning text-dark float-end mt-2" style="box-shadow:none;">View New Books</a>
+        <a asp-action="NewBooks" asp-controller="Book" class="btn btn-warning text-dark float-end mt-2" style="box-shadow:none; margin-right:-4px;">View More Books</a>
     </div>
-    <div class="col-md-3 d-flex justify-content-between">
+    <div class="col-md-3 d-flex justify-content-between ms-3">
         <span class="h4" style="color:#FFC119; margin-top:-28px;">LATEST BOOKS</span>
     </div>
-</div>
-<!-- Loading animation container -->
-<div id="loading" class="loading-container">
-    <div class="loading-spinner"></div>
 </div>
 <div class="col-md-12">
     <div class="row">
@@ -93,7 +84,7 @@
                                         <i class="fa fa-star checked"></i>
                                     </span>
                                 </div>
-                                <img class="card-img-top" height="250" width="100" src="@book.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff; object-fit: cover">
+                                <img class="card-img-top" height="250" width="100" src="@book.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
                                 <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
                                     <h6 class="card-title ellipsis text-white">@book.BookTitle</h6>
                                 </div>
@@ -110,9 +101,9 @@
             </ul>
         </div>
     </div>
-    <div class="row mt-5 mx-1">
-        <!--View Top Books-->
-        <div class="col-md-12 d-flex justify-content-between">
+    <!--View Top Books-->
+    <div class="row mt-4 mx-1">
+        <div class="col-md-3 d-flex justify-content-between ms-3">
             <span class="h4" style="color:#FFC119; margin-top:-28px;">TOP BOOKS</span>
         </div>
     </div>
@@ -135,13 +126,15 @@
                                         <i class="fa fa-star checked"></i>
                                     </span>
                                 </div>
-                                <img class="card-img-top" height="250" width="100" src="@book.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff; object-fit: cover">
+                                <img class="card-img-top" height="250" width="100" src="@book.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
                                 <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
                                     <h6 class="card-title ellipsis text-white">@book.BookTitle</h6>
                                 </div>
                                 <div class="card-footer text-center d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
                                     <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
-                                        @(reviewsCountByBookId.ContainsKey(book.BookId) ? reviewsCountByBookId[book.BookId] : 0)
+                                        @(
+                                            reviewsCountByBookId.FirstOrDefault(r => r.BookId == book.BookId)?.ReviewCount ?? 0
+                                            )
                                         <i class="fas fa-book"></i>
                                     </span>
                                 </div>
@@ -153,20 +146,3 @@
         </div>
     </div>
 </div>
-
-@section scripts {
-    <script>
-        // Check for error message and display Toastr notification
-        var errorMessage = '@TempData["ErrorMessage"]';
-        var successMessage = '@TempData["SuccessMessage"]';
-
-        if (errorMessage) {
-            toastr.error(errorMessage);
-        }
-
-        if (successMessage) {
-            toastr.success(successMessage);
-        }
-
-    </script>
-}
