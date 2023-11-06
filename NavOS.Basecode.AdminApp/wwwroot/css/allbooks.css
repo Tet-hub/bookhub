@@ -1,0 +1,65 @@
+﻿.w3-col {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.bookLists {
+    color: white;
+    margin: 10px;
+}
+
+    .bookLists a {
+        text-decoration: none;
+    }
+
+    .bookLists img {
+        width: 85%;
+    }
+
+    .bookLists .wantToRead {
+        color: black;
+        background-color: #FFC119;
+        padding: 10px;
+    }
+
+.line {
+    border: 1px solid black;
+}
+
+.buttonFlex {
+    display: flex;
+    padding: 7px;
+}
+
+.wantToReadText {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.wantToReadIcon {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.bookLists button {
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+p.summary {
+    max-height: 100px;
+    overflow: hidden;
+}
+
+p.expanded {
+    max-height: none;
+}
+
+button.showMore {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-style: italic;
+}

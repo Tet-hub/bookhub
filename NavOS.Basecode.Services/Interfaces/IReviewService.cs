@@ -12,5 +12,7 @@ namespace NavOS.Basecode.Services.Interfaces
     {
         void AddReview(ReviewViewModel review);
         List<ReviewViewModel> GetReviews();
+        List<ReviewViewModel> GetReviewsCountByBookId();
+        List<ReviewViewModel> GetBooksSortedByReviews();
     }
 }

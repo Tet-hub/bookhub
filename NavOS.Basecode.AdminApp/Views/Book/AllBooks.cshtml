@@ -21,6 +21,7 @@
         -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
     }
+
     .pagination .page-item.active a {
         background-color: #00A651;
         box-shadow: none;
@@ -35,14 +36,14 @@
         border: none;
     }
 
-    .pagination .page-item a:hover {
-        background-color: #00A651;
-        color: white;
-    }
+        .pagination .page-item a:hover {
+            background-color: #00A651;
+            color: white;
+        }
 </style>
 
 <div class="container">
-    <div class="row mt-5" style="border: 1px solid #fff;"> 
+    <div class="row mt-5" style="border: 1px solid #fff;">
         <!-- Header Container -->
         <div class="col-md-12" style="background-color:#FFC119">
             <div class="d-flex justify-content-between align-items-center">
@@ -121,15 +122,15 @@
             <div id="genreFilter" class="collapse">
                 <div class="col-md-12 ms-4 mt-3">
                     <h4 class="text-white font-weight-light mt-2">Genre</h4>
-                        @for (var i = 0; i < genres.Count; i++)
-                        {
-                            var genre = genres[i];
-                            var selectedGenres = ViewContext.HttpContext.Request.Query["searchQuery"];
-                            var currentGenre = genre.GenreName;
-                            var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
+                    @for (var i = 0; i < genres.Count; i++)
+                    {
+                        var genre = genres[i];
+                        var selectedGenres = ViewContext.HttpContext.Request.Query["searchQuery"];
+                        var currentGenre = genre.GenreName;
+                        var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
 
-                            <button type="button" class="btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)&filter=genre'">@currentGenre</button>
-                        }
+                        <button type="button" class="btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)&filter=genre'">@currentGenre</button>
+                    }
                 </div>
             </div>
         </div>
@@ -137,25 +138,25 @@
         {
             @foreach (var book in pageData)
             {
-            <div class="w3-row w3-padding-30 bookLists ms-4" id="bookListContainer">
-                <div class="w3-row w3-margin-bottom w3-padding-16">
-                    <div class="w3-col" style="width: 250px;">
-                        <div class="animateZoom">
-                            <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
-                                <img src="@book.ImageUrl" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" alt="Title">
-                            </a>
+                <div class="w3-row w3-padding-30 bookLists ms-4" id="bookListContainer">
+                    <div class="w3-row w3-margin-bottom w3-padding-16">
+                        <div class="w3-col" style="width: 250px;">
+                            <div class="animateZoom">
+                                <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                                    <img src="@book.ImageUrl" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" alt="Title">
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="w3-twothird">
-@*                      <h3 class="w3-text-orange"><i>#@(bookNumber)</i></h3> *@
-                        <div class="animateZoom">
-                            <h3><a href="#">@book.BookTitle</a></h3>
-                        </div>
-                        <div class="animateZoom">
-                            <h4><a href="#">@book.Author</a></h4>
-                        </div>
-                        <small style="font-size: 13px;">
-                            <i class='fa fa-star w3-text-yellow'></i>
+                        <div class="w3-twothird">
+                            @*                      <h3 class="w3-text-orange"><i>#@(bookNumber)</i></h3> *@
+                            <div class="animateZoom">
+                                <h3><a href="#">@book.BookTitle</a></h3>
+                            </div>
+                            <div class="animateZoom">
+                                <h4><a href="#">@book.Author</a></h4>
+                            </div>
+                            <small style="font-size: 13px;">
+                                <i class='fa fa-star w3-text-yellow'></i>
                                 <b>
                                     @{
                                         var averageRate = averageRateByBookId.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0;
@@ -165,21 +166,21 @@
                                         @formattedRate
                                     }
                                 </b>Ratings . @(reviewsCountByBookId.FirstOrDefault(r => r.BookId == book.BookId)?.ReviewCount ?? 0) reviews
-                        </small><br><br>
-                        <div class="buttonFlex mb-3">
-                            <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
-                                <span class="animateZoom wantToRead wantToReadText">View Details</span>
-                            </a>
-                            <div class="line"></div>
-                            <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
-                                <span class="animateZoom wantToRead wantToReadIcon" style="margin-top:-10px;"><i class="fa fa-angle-down"></i></span>
-                            </a>
-                        </div>
+                            </small><br><br>
+                            <div class="buttonFlex mb-3">
+                                <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                                    <span class="animateZoom wantToRead wantToReadText">View Details</span>
+                                </a>
+                                <div class="line"></div>
+                                <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                                    <span class="animateZoom wantToRead wantToReadIcon" style="margin-top:-10px;"><i class="fa fa-angle-down"></i></span>
+                                </a>
+                            </div>
                             <p class="summary-truncate">@book.Summary </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            bookNumber++;
+                bookNumber++;
             }
         }
         else

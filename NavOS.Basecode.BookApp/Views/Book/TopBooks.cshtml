@@ -1,44 +1,17 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels;
+@using NavOS.Basecode.Services.Helper
 @{
     ViewData["Title"] = "Top books";
-    var model = ViewData["TopBooks"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
+
+    var book = ViewData["TopBooks"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
     var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
     var genres = ViewData["Genre"] as List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>;
+    var averageRateByBookId = ViewData["averageRateByBookId"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
+    var reviewsCountByBookId = ViewData["reviewsCountByBookId"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
  
     int pageSize = 10;
-    int currentPage = ViewContext.HttpContext.Request.Query["page"].FirstOrDefault() != null
-        ? int.Parse(ViewContext.HttpContext.Request.Query["page"])
-        : 1;
+    var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = PaginationHelper.GetPagination(pageSize, book, ViewContext.HttpContext.Request.Query["page"].FirstOrDefault());
 
-    int totalItems = model.Count;
-    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-    int startIndex = (currentPage - 1) * pageSize;
-    int endIndex = Math.Min(startIndex + pageSize, totalItems);
-
-    var averageRateByBookId = reviews
-        .GroupBy(r => r.BookId)
-        .ToDictionary(g => g.Key, g => g.Average(r => (double?)r.Rate) ?? 0.0);
-
-    model = model.OrderByDescending(book => averageRateByBookId.ContainsKey(book.BookId) ? averageRateByBookId[book.BookId] : 0.0).ToList();
-    List<BookViewModel> pageData = model.Skip(startIndex).Take(endIndex - startIndex).ToList();
-
-    var reviewsCountByBookId = reviews
-    .GroupBy(r => r.BookId)
-    .ToDictionary(g => g.Key, g => g.Count());
-
-    var sortedBooks = model.OrderByDescending(book => reviewsCountByBookId.ContainsKey(book.BookId) ? reviewsCountByBookId[book.BookId] : 0);
-
-    var bookAverages = sortedBooks.Select(book => new
-    {
-        BookId = book.BookId,
-        AverageRate = reviews
-            .Where(r => r.BookId == book.BookId)
-            .Select(r => (double?)r.Rate)
-            .Average() ?? 0.0,
-        ReviewCount = reviews
-            .Count(r => r.BookId == book.BookId)
-    });
 }
 
 <style>
@@ -170,25 +143,12 @@
         </div>
         <!-- Filter button -->
         <div class="col-md-12 mt-3 ms-5" style="margin-left:-30px;">
-@*             <a href="?filter=title&sort=title" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
-                Title
-            </a> *@ 
-@*             <a href="?filter=genre" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "genre", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
-                Genre
-            </a> *@
-            <a href="?filter=title&sort=title" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:-10.5px;">
+            <a href="?filter=all&sort=ratings" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "all", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:-10.5px;">
+                Rating
+            </a>
+            <a href="?filter=title&sort=title" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
                 Title
             </a>
-@*             <button class="btn btn-outline-warning dropdown-toggle mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" type="button" id="genreDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="box-shadow:none; text-decoration: none; color: inherit;">
-                Title
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="genreDropdown">
-                <li><a class="dropdown-item" href="?filter=title">All Title</a></li>
-                @foreach (var title in model.Select(book => book.BookTitle).Distinct().OrderBy(title => title))
-                {
-                    <li><a class="dropdown-item" href="?searchQuery=@title&filter=title">@title</a></li>
-                }
-            </ul> *@
             <a href="?filter=author&sort=author" class="btn btn-outline-warning mt-2 @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "author", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
                 Author
             </a>
@@ -196,22 +156,18 @@
         </div>
         <!-- Genre list section -->
         <div id="genreFilter" class="collapse">
-            <div class="col-12 mt-2 ms-4">
-                <div class="container">
-                    <div class="row">
-                        <h4 class="text-white font-weight-light mt-2">Genre</h4>
-                        @for (var i = 0; i < genres.Count; i++)
-                        {
-                            var genre = genres[i];
-                            var selectedGenres = ViewContext.HttpContext.Request.Query["searchQuery"];
-                            var currentGenre = genre.GenreName;
-                            var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
+            <div class="row ms-4">
+                <div class="col-md-12 mt-3">
+                    <h4 class="text-white font-weight-light mt-2">Genre</h4>
+                    @for (var i = 0; i < genres.Count; i++)
+                    {
+                        var genre = genres[i];
+                        var selectedGenres = ViewContext.HttpContext.Request.Query["searchQuery"];
+                        var currentGenre = genre.GenreName;
+                        var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
 
-                            <div class="col-md-2 col-6 me-1 mb-3">
-                                <button type="button" class="w-100 btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)&filter=genre'">@currentGenre</button>
-                            </div>
-                        }
-                    </div>
+                        <button type="button" class="btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)&filter=genre'">@currentGenre</button>
+                    }
                 </div>
             </div>
         </div>
@@ -220,30 +176,32 @@
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
                 @if (pageData.Any())
                 {
-                    @foreach (var book in pageData)
+                    @foreach (var books in pageData)
                     {
                         <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                             <div class="card w-100" style="height: 100%;">
-                                <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                                <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@books.BookId" class="text-decoration-none text-dark">
                                     <div class="rating-badge">
                                         <span class="badge badge-primary rounded-circle text-dark">
-                                            @(
-                                                (bookAverages.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0) % 1 == 0
-                                                ? (bookAverages.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0).ToString("0")
-                                                : (bookAverages.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0).ToString("0.0")
-                                                )
+                                            @{
+                                                var averageRate = averageRateByBookId.FirstOrDefault(b => b.BookId == books.BookId)?.AverageRate ?? 0.0;
+                                                var formattedRate = averageRate % 1 == 0
+                                                ? averageRate.ToString("0")
+                                                : averageRate.ToString("0.0");
+                                                @formattedRate
+                                            }
                                             <i class="fa fa-star checked"></i>
                                         </span>
                                     </div>
-                                    <img class="card-img-top" height="250" width="100" src="@book.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                    <img class="card-img-top" height="250" width="100" src="@books.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
                                     <div class="card-body text-center d-flex justify-content-center" style="height:110px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
                                         @if (string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase))
                                         {
-                                            <h6 class="card-title ellipsis text-white">@book.BookTitle</h6>
+                                            <h6 class="card-title ellipsis text-white">@books.BookTitle</h6>
                                         }
                                         else
                                         {
-                                            <h6 class="card-title ellipsis text-white">@book.BookTitle</h6>
+                                            <h6 class="card-title ellipsis text-white">@books.BookTitle</h6>
                                         }
                                     </div>
                                     <div class="card-footer text-start d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
@@ -251,28 +209,32 @@
                                         {
                                             <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
                                                 <i class="fas fa-book"></i>
-                                                @(reviewsCountByBookId.ContainsKey(book.BookId) ? reviewsCountByBookId[book.BookId] : 0)
+                                                @(
+                                                    reviewsCountByBookId.FirstOrDefault(r => r.BookId == books.BookId)?.ReviewCount ?? 0
+                                                 )
                                             </span>
                                         }
                                         else if (string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "author", StringComparison.OrdinalIgnoreCase))
                                         {
                                             <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
                                                 <i class="fas fa-user"></i>
-                                                @book.Author
+                                                @books.Author
                                             </span>
                                         }
                                         else if (string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "genre", StringComparison.OrdinalIgnoreCase))
                                         {
                                             <span class="card-title ellipsis-genre text-white" style="margin-top:-5px; font-size:12px;">
                                                 <i class="fas fa-folder"></i>
-                                                @book.Genre
+                                                @books.Genre
                                             </span>
                                         }
                                         else
                                         {
                                             <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
                                                 <i class="fas fa-book"></i>
-                                                @(reviewsCountByBookId.ContainsKey(book.BookId) ? reviewsCountByBookId[book.BookId] : 0)
+                                                @(
+                                                    reviewsCountByBookId.FirstOrDefault(r => r.BookId == books.BookId)?.ReviewCount ?? 0
+                                                 )
                                             </span>
                                         }
                                     </div>

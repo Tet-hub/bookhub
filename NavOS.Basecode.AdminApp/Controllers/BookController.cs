@@ -39,18 +39,32 @@ namespace NavOS.Basecode.BookApp.Controllers
             _genreService = genreService;
 
         }
+        private void CommonViewData()
+        {
+            var genres = _genreService.GetGenres();
+            var reviews = _reviewService.GetReviews();
+            var averageRateByBookId = _reviewService.GetBooksSortedByReviews();
+            var reviewsCountByBookId = _reviewService.GetReviewsCountByBookId();
+
+            ViewData["averageRateByBookId"] = averageRateByBookId;
+            ViewData["reviewsCountByBookId"] = reviewsCountByBookId;
+            ViewData["Genre"] = genres;
+            ViewData["Reviews"] = reviews;
+        }
         /// <summary>
         /// Homepage
         /// </summary>
         /// <returns></returns>
-        [HttpGet] 
+        [HttpGet]
         public IActionResult Index()
         {
-			var reviews = _reviewService.GetReviews();
-            ViewData["Reviews"] = reviews;
+            var reviews = _reviewService.GetReviews();
+            var books = _bookService.GetBooks();
+            var reviewsCountByBookId = _reviewService.GetReviewsCountByBookId();
 
-            var book = _bookService.GetBooks();
-            ViewData["Books"] = book;
+            ViewData["Reviews"] = reviews;
+            ViewData["Books"] = books;
+            ViewData["reviewsCountByBookId"] = reviewsCountByBookId;
 
             return View();
         }
@@ -134,68 +148,11 @@ namespace NavOS.Basecode.BookApp.Controllers
             var currentDate = DateTime.Now;
             var twoWeeksAgo = currentDate.AddDays(-14);
 
-            var data = _bookService.GetBooks()
-                .Where(book => book.AddedTime >= twoWeeksAgo)
-                .OrderByDescending(book => book.AddedTime)
-                .ToList();
+            var book = _bookService.FilterAndSortBooksTwoWeeks(searchQuery, filter, sort, twoWeeksAgo, currentDate);
 
-            var reviews = _reviewService.GetReviews();
+            CommonViewData();
 
-            if (string.IsNullOrEmpty(filter) || string.Equals(filter, "all", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(searchQuery))
-                {
-                    data = data
-                        .Where(book =>
-                            (book.AddedTime >= twoWeeksAgo) &&
-                            (book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                        )
-                        .ToList();
-                }
-            }
-            else if (!string.IsNullOrEmpty(searchQuery))
-            {
-                switch (filter.ToLower())
-                {
-                    case "title":
-                        data = data
-                            .Where(book => book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "author":
-                        data = data
-                            .Where(book => book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "genre":
-                        data = data
-                            .Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                }
-            }
-            if (string.Equals(sort, "title", StringComparison.OrdinalIgnoreCase))
-            {
-                data = data.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-            else if (string.Equals(sort, "ratings", StringComparison.OrdinalIgnoreCase))
-            {
-                var bookAverages = reviews
-                    .GroupBy(r => r.BookId)
-                    .ToDictionary(g => g.Key, g => g.Average(r => (double?)r.Rate) ?? 0.0);
-
-                data = data.OrderByDescending(book => bookAverages.ContainsKey(book.BookId) ? bookAverages[book.BookId] : 0.0).ToList();
-            }
-            else if (string.Equals(sort, "author", StringComparison.OrdinalIgnoreCase))
-            {
-                data = data.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-
-            ViewData["Books"] = data;
-            ViewData["Reviews"] = reviews;
-
+            ViewData["NewBooks"] = book;
 
             return View();
         }
@@ -206,25 +163,17 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// <param name="searchQuery"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult TopBooks(string searchQuery)
+        public IActionResult TopBooks(string searchQuery, string filter, string sort)
         {
-            var data = _bookService.GetBooks();
+            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
 
-            if (!string.IsNullOrEmpty(searchQuery))
-            {
-                data = data.Where(book =>
-                    book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                    book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                    book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
-                ).ToList();
-            }
-            var reviews = _reviewService.GetReviews();
-            ViewData["Reviews"] = reviews;
-            ViewData["TopBooks"] = data;
+            CommonViewData();
+
+            ViewData["TopBooks"] = book;
 
             return View();
         }
-        
+
         /// <summary>
         /// BookDetails
         /// </summary>
@@ -245,22 +194,7 @@ namespace NavOS.Basecode.BookApp.Controllers
             TempData["ErrorMessage"] = "No Book Found";
             return RedirectToAction("Index");
         }
-
-        /// <summary>
-        /// Adds the review.
-        /// </summary>
-        /// <param name="review">The review.</param>
-        /// <returns></returns>
-        public IActionResult AddReview(ReviewViewModel review)
-        {
-            if (string.IsNullOrEmpty(review.ReviewText))
-            {
-                review.ReviewText = string.Empty;
-            }
-            _reviewService.AddReview(review);
-            return RedirectToAction("BookDetails", new { review.BookId });
-        }
-        
+      
         [HttpGet]
         public IActionResult AddBook()
         {
@@ -312,6 +246,18 @@ namespace NavOS.Basecode.BookApp.Controllers
             TempData["ErrorMessage"] = "No Book was Deleted";
             return RedirectToAction("BookList");
         }
+        [HttpGet]
+        public IActionResult AllBooks(string searchQuery, string filter, string sort)
+        {
+            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
+
+            CommonViewData();
+
+            ViewData["AllBooks"] = book;
+
+            return View();
+        }
+
 
     }
 }
