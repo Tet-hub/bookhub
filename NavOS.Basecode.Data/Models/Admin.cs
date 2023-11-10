@@ -13,5 +13,9 @@ namespace NavOS.Basecode.Data.Models
         public string Token { get; set; }
         public string ContactNo { get; set; }
         public DateTime Dob { get; set; }
+        public string AddedBy { get; set; }
+        public DateTime AddedTime { get; set; }
+        public string UpdatedBy { get; set; }
+        public DateTime UpdatedTime { get; set; }
     }
 }

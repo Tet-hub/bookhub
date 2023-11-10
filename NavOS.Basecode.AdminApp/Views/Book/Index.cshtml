@@ -3,25 +3,14 @@
     ViewData["Title"] = "Home Page";
     var books = ViewData["Books"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
     var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
-    var reviewsCountByBookId = ViewData["reviewsCountByBookId"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
 
-    var sortedBooks = books.OrderByDescending(book => reviewsCountByBookId.Any(review => review.BookId == book.BookId));
+    var sortedBooks = books.OrderByDescending(book => book.TotalRating);
 
     var filteredBooks = books
     .OrderByDescending(book => book.AddedTime)
     .Where(book => (DateTime.Now - book.AddedTime).TotalDays <= 14)
     .Take(5);
 
-    var bookAverages = sortedBooks.Select(book => new
-    {
-        BookId = book.BookId,
-        AverageRate = reviews
-            .Where(r => r.BookId == book.BookId)
-            .Select(r => (double?)r.Rate)
-            .Average() ?? 0.0,
-        ReviewCount = reviews
-            .Count(r => r.BookId == book.BookId)
-    });
 
 }
 <style>
@@ -76,11 +65,7 @@
                             <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
                                 <div class="rating-badge">
                                     <span class="badge badge-primary rounded-circle text-dark">
-                                        @(
-                                            (bookAverages.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0) % 1 == 0
-                                            ? (bookAverages.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0).ToString("0")
-                                            : (bookAverages.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0).ToString("0.0")
-                                            )
+                                        @book.TotalRating
                                         <i class="fa fa-star checked"></i>
                                     </span>
                                 </div>
@@ -118,11 +103,7 @@
                             <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
                                 <div class="rating-badge">
                                     <span class="badge badge-primary rounded-circle text-dark">
-                                        @(
-                                            (bookAverages.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0) % 1 == 0
-                                            ? (bookAverages.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0).ToString("0")
-                                            : (bookAverages.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0).ToString("0.0")
-                                            )
+                                        @book.TotalRating
                                         <i class="fa fa-star checked"></i>
                                     </span>
                                 </div>
@@ -132,9 +113,7 @@
                                 </div>
                                 <div class="card-footer text-center d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
                                     <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
-                                        @(
-                                            reviewsCountByBookId.FirstOrDefault(r => r.BookId == book.BookId)?.ReviewCount ?? 0
-                                            )
+                                        @book.ReviewCount
                                         <i class="fas fa-book"></i>
                                     </span>
                                 </div>

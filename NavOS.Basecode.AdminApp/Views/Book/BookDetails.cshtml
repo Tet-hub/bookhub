@@ -1,8 +1,8 @@
 ﻿@using NavOS.Basecode.Services.ServiceModels;
 @{
+    ViewData["Title"] = "Book Details";
     var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
     var book = ViewData["Book"] as NavOS.Basecode.Services.ServiceModels.BookViewModel;
-    ViewData["Title"] = "Book Details - " + book.BookTitle;
     string bookId = book.BookId.ToString();
     // Calculate the avg. rate & count no. of reviews where BookId = currentBookId
     double averageRate = reviews
@@ -129,40 +129,9 @@
                 <p>@book.Summary</p>
             </div>
             <h7 id="reviewsLabel" class="w3-margin-bottom mt-3">REVIEWS</h7>
-            <!-- USER REVIEW LIST-->
+            <!-- REVIEW LIST-->
             <div id="leftRightPadding" class="w3-border w3-padding-32">
-                @if (reviews.Any(r => r.BookId == book.BookId))
-                {
-                    @foreach (var review in reviews.Where(r => r.BookId == book.BookId).OrderByDescending(r => r.DateReviewed))
-                    {
-                        <div class="w3-border w3-padding">
-                            <div class="w3-row">
-                                <div id="userReviewDate" class="w3-rest w3-right w3-margin-bottom">
-                                    <small><i>@review.DateReviewed.ToString("MMMM dd, yyyy hh:mm tt")</i></small>
-                                </div>
-                                <div class="w3-third">
-                                    <span id="reviewName" style="width:150px;">@review.UserName</span>
-                                </div>
-                                <div class="w3-col">
-                                    @foreach (var star in Enumerable.Range(1, review.Rate))
-                                    {
-                                        <i class="fa fa-star yellow-star"></i>
-                                    }
-                                    @foreach (var star in Enumerable.Range(1, 5 - review.Rate))
-                                    {
-                                        <i class="fa fa-star"></i>
-                                    }
-                                </div>
-                            </div>
-                            <p id="userReview" class="w3-text-white">@review.ReviewText</p>
-                        </div>
-                        <br>
-                    }
-                }
-                else
-                {
-                    <p>No reviews available.</p>
-                }
+                @Html.Partial("~/Views/Review/ReviewDetails.cshtml", reviews)
             </div>
 
         </div>

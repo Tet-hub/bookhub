@@ -4,13 +4,14 @@
     ViewData["Title"] = "All Books";
 
     var books = ViewData["AllBooks"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
-    var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
     var genres = ViewData["Genre"] as List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>;
-    var averageRateByBookId = ViewData["averageRateByBookId"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
-    var reviewsCountByBookId = ViewData["reviewsCountByBookId"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
 
     int pageSize = 10;
-    var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = PaginationHelper.GetPagination(pageSize, books, ViewContext.HttpContext.Request.Query["page"].FirstOrDefault());
+    var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = PaginationHelper
+    .GetPagination(pageSize, books, ViewContext.HttpContext.Request.Query["page"]
+    .FirstOrDefault());
+
+    var (displayText, textColor, fontStyle) = HeaderHelper.GetDisplayProperties(Context);
 
 }
 <style>
@@ -47,19 +48,8 @@
         <!-- Header Container -->
         <div class="col-md-12" style="background-color:#FFC119">
             <div class="d-flex justify-content-between align-items-center">
-                <span class="float-start text-center fst-italic my-2 text-dark fw-bold" style="color: @(string.IsNullOrEmpty(Context.Request.Query["filter"]) && string.IsNullOrEmpty(Context.Request.Query["searchQuery"]) ? "#00A651" : "inherit"); font-style: @(string.IsNullOrEmpty(Context.Request.Query["filter"]) && string.IsNullOrEmpty(Context.Request.Query["searchQuery"]) ? "italic" : "normal");">
-                    @if (!string.IsNullOrEmpty(Context.Request.Query["filter"]))
-                    {
-                        @("LIST | BOOKS | " + Context.Request.Query["filter"].ToString().ToUpper() + " | " + Context.Request.Query["searchQuery"])
-                    }
-                    else if (!string.IsNullOrEmpty(Context.Request.Query["searchQuery"]))
-                    {
-                        @("LIST | BOOKS | " + Context.Request.Query["searchQuery"])
-                    }
-                    else
-                    {
-                        @("LIST | BOOKS")
-                    }
+                <span class="float-start text-center fst-italic my-2 text-dark fw-bold" style="color: @textColor; font-style: @fontStyle;">
+                    @displayText
                 </span>
                 <!-- Pagination -->
                 <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
@@ -67,26 +57,23 @@
                         @if (currentPage > 1)
                         {
                             <li class="page-item">
-                                <a class="page-link" href="?filter=@Context.Request.Query["filter"]&sort=@Context.Request.Query["sort"]&searchQuery=@Context.Request.Query["searchQuery"]&page=@(currentPage - 1)" aria-label="Previous">
+                                <a class="page-link" href="@FilterHelper.GetQueryString(currentPage - 1, Context)" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
                         }
 
-                        @for (int i = currentPage - 2; i <= currentPage + 2; i++)
+                        @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
                         {
-                            if (i >= 1 && i <= totalPages)
-                            {
-                                <li class="page-item @(i == currentPage ? "active" : "")">
-                                    <a class="page-link" href="?filter=@Context.Request.Query["filter"]&sort=@Context.Request.Query["sort"]&searchQuery=@Context.Request.Query["searchQuery"]&page=@i">@i</a>
-                                </li>
-                            }
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" href="@FilterHelper.GetQueryString(i, Context)">@i</a>
+                            </li>
                         }
 
                         @if (currentPage < totalPages)
                         {
                             <li class="page-item">
-                                <a class="page-link" href="?filter=@Context.Request.Query["filter"]&sort=@Context.Request.Query["sort"]&searchQuery=@Context.Request.Query["searchQuery"]&page=@(currentPage + 1)" aria-label="Next">
+                                <a class="page-link" href="@FilterHelper.GetQueryString(currentPage + 1, Context)" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
@@ -107,15 +94,15 @@
         <div class="row" style="margin-top:-10px;">
             <!-- Filter button section -->
             <div class="col-12 mt-4 ms-3">
-                <a href="?filter=all&sort=All" class="btn btn-outline-warning @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "all", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:5px;">
-                    All
-                </a>
-                <a href="?filter=title&sort=title" class="btn btn-outline-warning @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
-                    Title
-                </a>
-                <a href="?filter=author&sort=author" class="btn btn-outline-warning @(string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "author", StringComparison.OrdinalIgnoreCase) ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit;">
-                    Author
-                </a>
+                @foreach (var filterOption in new[] { "all", "title", "author" })
+                {
+                    var isActive = string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), filterOption, StringComparison.OrdinalIgnoreCase);
+                    var buttonText = filterOption.First().ToString().ToUpper() + filterOption.Substring(1);
+
+                    <a href="?filter=@filterOption&sort=@filterOption" class="btn btn-outline-warning @(isActive ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:5px;">
+                        @buttonText
+                    </a>
+                }
                 <button type="button" style="box-shadow:none; text-decoration: none; color: inherit;" class="btn btn-outline-warning text-white" data-toggle="collapse" data-target="#genreFilter">Genre</button>
             </div>
             <!-- Genre list section -->
@@ -129,7 +116,7 @@
                         var currentGenre = genre.GenreName;
                         var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
 
-                        <button type="button" class="btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)&filter=genre'">@currentGenre</button>
+                        <button type="button" class="btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?filter=genre&searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)'">@currentGenre</button>
                     }
                 </div>
             </div>
@@ -158,14 +145,8 @@
                             <small style="font-size: 13px;">
                                 <i class='fa fa-star w3-text-yellow'></i>
                                 <b>
-                                    @{
-                                        var averageRate = averageRateByBookId.FirstOrDefault(b => b.BookId == book.BookId)?.AverageRate ?? 0.0;
-                                        var formattedRate = averageRate % 1 == 0
-                                        ? averageRate.ToString("0")
-                                        : averageRate.ToString("0.0");
-                                        @formattedRate
-                                    }
-                                </b>Ratings . @(reviewsCountByBookId.FirstOrDefault(r => r.BookId == book.BookId)?.ReviewCount ?? 0) reviews
+                                    @book.TotalRating
+                                </b>Ratings . @book.ReviewCount reviews
                             </small><br><br>
                             <div class="buttonFlex mb-3">
                                 <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">

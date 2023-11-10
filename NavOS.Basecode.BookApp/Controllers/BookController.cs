@@ -46,11 +46,6 @@ namespace NavOS.Basecode.BookApp.Controllers
         {
             var genres = _genreService.GetGenres();
             var reviews = _reviewService.GetReviews();
-            var averageRateByBookId = _reviewService.GetBooksSortedByReviews();
-            var reviewsCountByBookId = _reviewService.GetReviewsCountByBookId();
-
-            ViewData["averageRateByBookId"] = averageRateByBookId;
-            ViewData["reviewsCountByBookId"] = reviewsCountByBookId;
             ViewData["Genre"] = genres;
             ViewData["Reviews"] = reviews;
         }
@@ -63,11 +58,9 @@ namespace NavOS.Basecode.BookApp.Controllers
         {
             var reviews = _reviewService.GetReviews();
             var books = _bookService.GetBooks();
-            var reviewsCountByBookId = _reviewService.GetReviewsCountByBookId();
 
             ViewData["Reviews"] = reviews;
             ViewData["Books"] = books;
-            ViewData["reviewsCountByBookId"] = reviewsCountByBookId;
 
             return View();
         }
@@ -84,9 +77,7 @@ namespace NavOS.Basecode.BookApp.Controllers
             var twoWeeksAgo = currentDate.AddDays(-14);
 
             var book = _bookService.FilterAndSortBooksTwoWeeks(searchQuery, filter, sort, twoWeeksAgo, currentDate);
-
             CommonViewData();
-
             ViewData["NewBooks"] = book;
 
             return View();
@@ -102,9 +93,7 @@ namespace NavOS.Basecode.BookApp.Controllers
         public IActionResult TopBooks(string searchQuery, string filter, string sort)
         {
             var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
-
             CommonViewData();
-
             ViewData["TopBooks"] = book;
 
             return View();
@@ -138,7 +127,7 @@ namespace NavOS.Basecode.BookApp.Controllers
             var book = _bookService.GetBook(BookId);
             if (book != null)
             {
-                var reviews = _reviewService.GetReviews();
+                var reviews = _reviewService.GetReviews(BookId);
 
                 ViewData["Reviews"] = reviews;
                 ViewData["Book"] = book;
@@ -147,20 +136,5 @@ namespace NavOS.Basecode.BookApp.Controllers
             }
             return NotFound();
         }
-        /// <summary>
-        /// Adds the review.
-        /// </summary>
-        /// <param name="review">The review.</param>
-        /// <returns></returns>
-        public IActionResult AddReview(ReviewViewModel review)
-        {
-            if (string.IsNullOrEmpty(review.ReviewText))
-            {
-                review.ReviewText = string.Empty;
-            }
-            _reviewService.AddReview(review);
-            return RedirectToAction("BookDetails", new { review.BookId });
-        }
-
     }
 }

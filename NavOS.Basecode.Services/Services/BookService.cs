@@ -41,8 +41,8 @@ namespace NavOS.Basecode.Services.Services
                 AddedTime = s.AddedTime,
                 ImageUrl = Path.Combine(url, s.BookId + ".png"),
                 ReviewCount = s.Reviews.Count,
-                TotalRating = s.Reviews.Any() ? (double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count : 0
-            })
+                TotalRating = s.Reviews.Any() ? Math.Round((double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count, 2) : 0,
+        })
             .ToList();
 
             return data;
@@ -58,27 +58,21 @@ namespace NavOS.Basecode.Services.Services
             var url = "https://127.0.0.1:8080/";
             var book = _bookRepository.GetBooks().FirstOrDefault(s => s.BookId == BookId);
 
-            if (book != null)
+            var bookViewModel = new BookViewModel
             {
-                var bookViewModel = new BookViewModel
-                {
-                    BookId = book.BookId,
-                    BookTitle = book.BookTitle,
-                    Summary = book.Summary,
-                    Author = book.Author,
-                    Status = book.Status,
-                    Genre = book.Genre,
-                    Chapter = book.Chapter,
-                    DateReleased = book.DateReleased,
-                    AddedTime = book.AddedTime,
-                    ImageUrl = Path.Combine(url, book.BookId + ".png"),
-                };
-                return bookViewModel;
-            }
-            else
-            {
-                return null;
-            }
+                BookId = book.BookId,
+                BookTitle = book.BookTitle,
+                Summary = book.Summary,
+                Author = book.Author,
+                Status = book.Status,
+                Genre = book.Genre,
+                Chapter = book.Chapter,
+                DateReleased = book.DateReleased,
+                AddedTime = book.AddedTime,
+                ImageUrl = Path.Combine(url, book.BookId + ".png"),
+
+            };
+            return bookViewModel;
         }
 
         public void AddBook(BookViewModel book, string user)
@@ -207,7 +201,10 @@ namespace NavOS.Basecode.Services.Services
             {
                 data = data.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
             }
-
+            else if (string.Equals(sort, "ratings", StringComparison.OrdinalIgnoreCase))
+            {
+                data = data.OrderByDescending(book => book.TotalRating).ToList();
+            }
             return data;
         }
 
@@ -261,9 +258,14 @@ namespace NavOS.Basecode.Services.Services
             {
                 data = data.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
             }
+            else if (string.Equals(sort, "newest", StringComparison.OrdinalIgnoreCase))
+            {
+                data = data.OrderByDescending(book => book.AddedTime).ToList();
+            }
 
             return data;
         }
 
+        
     }
 }
