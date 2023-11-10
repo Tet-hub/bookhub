@@ -48,6 +48,11 @@ namespace NavOS.Basecode.Data
             {
                 get { return GetFolderPath(SetupRootDirectory, "coverImages"); }
             }
+
+            public static string EmailTemplateDirectory
+            {
+                get { return GetFolderPath(SetupRootDirectory, "emailTemplates"); }
+            }
         }
 
         /// <summary>

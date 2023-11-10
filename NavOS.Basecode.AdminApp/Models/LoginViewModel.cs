@@ -10,7 +10,7 @@ namespace NavOS.Basecode.AdminApp.Models
     {
         /// <summary>ユーザーID</summary>
         [JsonPropertyName("adminEmail")]
-        [Required(ErrorMessage = "adminEmail is required.")]
+        [Required(ErrorMessage = "Email is required.")]
         public string AdminEmail { get; set; }
         /// <summary>パスワード</summary>
         [JsonPropertyName("password")]

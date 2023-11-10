@@ -13,34 +13,40 @@
     var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = PaginationHelper.GetPagination(pageSize, books, ViewContext.HttpContext.Request.Query["page"].FirstOrDefault());
 
 }
-<style>
-    .summary-truncate {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
-    }
 
-    .pagination .page-item.active a {
-        background-color: #00A651;
-        box-shadow: none;
-    }
+@section styles {
+    <link rel="stylesheet" href="~/css//allbooks.css" />
 
-    .pagination .page-item:not(.active) a {
-        background-color: transparent;
-        color: #000;
-    }
-
-    .pagination .page-item a {
-        border: none;
-    }
-
-        .pagination .page-item a:hover {
-            background-color: #00A651;
-            color: white;
+    <style>
+        .summary-truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
         }
-</style>
+
+        .pagination .page-item.active a {
+            background-color: #00A651;
+            box-shadow: none;
+        }
+
+        .pagination .page-item:not(.active) a {
+            background-color: transparent;
+            color: #000;
+        }
+
+        .pagination .page-item a {
+            border: none;
+        }
+
+            .pagination .page-item a:hover {
+                background-color: #00A651;
+                color: white;
+            }
+    </style>
+}
+
 
 <div class="container">
     <div class="row mt-5" style="border: 1px solid #fff;">

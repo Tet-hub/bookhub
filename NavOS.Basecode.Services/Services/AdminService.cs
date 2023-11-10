@@ -18,11 +18,13 @@ namespace NavOS.Basecode.Services.Services
     public class AdminService : IAdminService
     {
         private readonly IAdminRepository _adminRepository;
+        private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
-        public AdminService(IAdminRepository repository, IMapper mapper)
+        public AdminService(IAdminRepository repository, IMapper mapper, IEmailSender emailSender)
         {
             _adminRepository = repository;
             _mapper = mapper;
+            _emailSender = emailSender;
         }
         public LoginResult AuthenticateAdmin(string email, string password, ref Admin admin)
         {
@@ -133,6 +135,53 @@ namespace NavOS.Basecode.Services.Services
                 _adminRepository.DeleteAdmin(admin);
                 return true;
             }
+            return false;
+        }
+
+        public bool InsertToken(AdminViewModel adminViewModel, string host)
+        {
+            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminEmail ==  adminViewModel.AdminEmail).FirstOrDefault();
+            if (admin != null)
+            {
+                admin.Token = Guid.NewGuid().ToString();
+                _adminRepository.UpdateAdmin(admin);
+                _emailSender.PasswordReset(admin.AdminEmail, host, admin.AdminName, admin.AdminId, admin.Token);
+                return true;
+            }
+            return false;
+        }
+
+        public bool CheckQueryParamater(string AdminId, string Token)
+        {
+            if (_adminRepository.AdminExists_v2(AdminId, Token))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool ChangePassword(AdminViewModel adminViewModel)
+        {
+            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId && x.Token == adminViewModel.Token).FirstOrDefault();
+            if (admin != null)
+            {
+                admin.Password = PasswordManager.EncryptPassword(adminViewModel.Password);
+                admin.Token = null;
+                _adminRepository.UpdateAdmin(admin);
+                return true;
+            }
+            return false;
+        }
+
+        public bool CheckEmailExist(AdminViewModel adminViewModel)
+        {
+            Admin admin = _adminRepository.GetAdmins().FirstOrDefault(x => x.AdminEmail == adminViewModel.AdminEmail);
+
+            if (admin != null && admin.AdminId != adminViewModel.AdminId)
+            {
+                return true;
+            }
+
             return false;
         }
 

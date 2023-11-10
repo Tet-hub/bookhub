@@ -82,7 +82,7 @@
 				</div>
 				<div class="col-sm-8">
 					<div class="form-outline">
-						<input type="password" class="form-control" asp-for="Password" />
+						<input type="password" class="form-control" asp-for="Password" onkeypress="return event.charCode != 32" />
 						<span asp-validation-for="Password" class="text-danger"></span>
 					</div>
 				</div>
@@ -94,7 +94,7 @@
 				</div>
 				<div class="col-sm-8">
 					<div class="form-outline">
-						<input type="password" class="form-control" asp-for="ConfirmPassword" />
+						<input type="password" class="form-control" asp-for="ConfirmPassword" onkeypress="return event.charCode != 32" />
 						<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
 					</div>
 				</div>
