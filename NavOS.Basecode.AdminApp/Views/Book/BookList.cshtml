@@ -45,7 +45,7 @@
                         </td>
                         <td class="align-middle">@books.BookTitle</td>
                         <td class="align-middle">@books.Author</td>
-                        <td class="align-middle">@((books.TotalRating % 2 == 0) ? books.TotalRating.ToString("0") : books.TotalRating.ToString("0.0")) Ratings / @books.ReviewCount Reviews</td>
+                        <td class="align-middle">@books.TotalRating Ratings / @books.ReviewCount Reviews</td>
                         <td class="align-middle">
                             <div class="btn-group" role="group">
                                 <form asp-action="EditBook" method="get">

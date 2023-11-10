@@ -15,6 +15,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using static NavOS.Basecode.Resources.Constants.Enums;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace NavOS.Basecode.AdminApp.Controllers
 {
@@ -27,18 +28,18 @@ namespace NavOS.Basecode.AdminApp.Controllers
         private readonly IConfiguration _appConfiguration;
         private readonly IAdminService _adminService;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccountController"/> class.
-		/// </summary>
-		/// <param name="signInManager">The sign in manager.</param>
-		/// <param name="httpContextAccessor">The HTTP context accessor.</param>
-		/// <param name="loggerFactory">The logger factory.</param>
-		/// <param name="configuration">The configuration.</param>
-		/// <param name="mapper">The mapper.</param>
-		/// <param name="adminService">The admin service.</param>
-		/// <param name="tokenValidationParametersFactory">The token validation parameters factory.</param>
-		/// <param name="tokenProviderOptionsFactory">The token provider options factory.</param>
-		public AccountController(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountController"/> class.
+        /// </summary>
+        /// <param name="signInManager">The sign in manager.</param>
+        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="mapper">The mapper.</param>
+        /// <param name="adminService">The admin service.</param>
+        /// <param name="tokenValidationParametersFactory">The token validation parameters factory.</param>
+        /// <param name="tokenProviderOptionsFactory">The token provider options factory.</param>
+        public AccountController(
                             SignInManager signInManager,
                             IHttpContextAccessor httpContextAccessor,
                             ILoggerFactory loggerFactory,
@@ -68,20 +69,19 @@ namespace NavOS.Basecode.AdminApp.Controllers
             {
                 return RedirectToAction("Index", "Book");
             }
-            ViewBag.LoginView = true;
-			ViewData["Title"] = "Login Page";
+			
 			TempData["returnUrl"] = System.Net.WebUtility.UrlDecode(HttpContext.Request.Query["ReturnUrl"]);
             
             return this.View();
         }
 
-		/// <summary>
-		/// Logins the specified model.
-		/// </summary>
-		/// <param name="model">The model.</param>
-		/// <param name="returnUrl">The return URL.</param>
-		/// <returns></returns>
-		[HttpPost]
+        /// <summary>
+        /// Logins the specified model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <param name="returnUrl">The return URL.</param>
+        /// <returns></returns>
+        [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
@@ -109,13 +109,71 @@ namespace NavOS.Basecode.AdminApp.Controllers
             }
         }
 
-		[HttpGet]
+        /// <summary>
+        /// Forgots the password.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
 		[AllowAnonymous]
         public ActionResult ForgotPassword()
         {
-			ViewData["Title"] = "Forgot Password";
-			ViewBag.LoginView = true;
 			return View();
+        }
+
+        /// <summary>
+        /// Forgots the password.
+        /// </summary>
+        /// <param name="adminViewModel">The admin view model.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult ForgotPassword(AdminViewModel adminViewModel)
+        {
+            string host = HttpContext.Request.Host.ToString();
+            bool isEmailExist = _adminService.InsertToken(adminViewModel, host);
+
+            if (isEmailExist)
+            {
+                TempData["SuccessMessage"] = "Instructions have been sent to your email for resetting your password.";
+                return RedirectToAction("Login", "Account");
+            }
+            TempData["ErrorMessage"] = "Email does not exist.";
+            return RedirectToAction("ForgotPassword");
+        }
+
+        /// <summary>
+        /// Resets the password.
+        /// </summary>
+        /// <param name="AdminId">The admin identifier.</param>
+        /// <param name="Token">The token.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string AdminId, string Token)
+        {
+            bool isTokenExists = _adminService.CheckQueryParamater(AdminId, Token);
+            if (isTokenExists)
+            {
+                ViewBag.AdminId = AdminId;
+                ViewBag.Token = Token;
+                return View();
+            }
+            TempData["ErrorMessage"] = "Token Not Found";
+            return RedirectToAction("Login", "Account");
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult ResetPassword(AdminViewModel adminViewModel)
+        {
+            bool isPasswordChanged = _adminService.ChangePassword(adminViewModel);
+            if (isPasswordChanged)
+            {
+                TempData["SuccessMessage"] = "Admin Successfully Changed Password";
+                return RedirectToAction("Login", "Account");
+            }
+
+            return View();
         }
 
         /// <summary>

@@ -1,0 +1,104 @@
+.centerBox{
+	max-width: 480px;
+	padding: 0 20px;
+	margin: 120px auto;
+}
+
+.box{
+    width: 100%;	
+}
+
+a{
+	text-decoration:none;
+}
+
+.box header{
+    text-align: center;
+	margin:0;
+	padding:25px;
+	background-color:#FFC119;	
+	border-radius:15px 15px 0px 0px;
+}
+
+header h1,h5{
+	  margin:0 !important;
+	  font-weight: bold;
+}
+
+.box form{
+    box-sizing: border-box;
+}
+  
+.txt_field {
+    position: relative;
+}
+
+body{
+    background-color: #212529F5;
+}
+
+form{
+	padding:30 50 30 50;
+	background-color: white;
+	border-radius:	0px 0px 15px 15px;
+}
+
+.input-item {
+	position: absolute;
+	left: 10px; /* Adjust the left positioning as needed */
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.txt_field{
+	background-color: transparent;
+	position:relative;
+}
+.txt_field i{
+	position: absolute;
+	width: 47px;
+	height: 35px;
+	color: #fff;
+	font-size: 18px;
+	background: #212529F5;
+	border-radius: 5px 0 0 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.txt_field input{
+	height: 35px;
+	width: 100%;
+	outline: none;
+	padding-left: 60px;
+	border-radius: 5px;
+	border: 1px solid #212529F5;
+	font-size: 16px;
+	transition: all 0.3s ease;
+}
+
+input[type="submit"]{
+	min-width:140px;
+	height: 40px;
+	border:0;
+	color:#FFC119;
+	background-color: black;
+	font-weight: 700;
+	border-radius:8px;
+}
+
+h5{
+	font-weight: normal;
+}
+
+.text-danger {
+	color: #dc3545;
+}
+
+.align-middle {
+	vertical-align: middle !important
+}
+
+.pointer {
+	cursor: pointer;
+}

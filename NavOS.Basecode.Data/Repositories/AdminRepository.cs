@@ -21,10 +21,14 @@ namespace NavOS.Basecode.Data.Repositories
             return this.GetDbSet<Admin>();
         }
 
-
         public bool AdminExists(string email)
         {
             return this.GetDbSet<Admin>().Any(x => x.AdminEmail == email);
+        }
+
+        public bool AdminExists_v2(string adminId, string token)
+        {
+            return this.GetDbSet<Admin>().Any(x => x.AdminId == adminId && x.Token == token);
         }
 
         public void AddAdmin(Admin admin) 

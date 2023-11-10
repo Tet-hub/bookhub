@@ -59,7 +59,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
 
             string[] headers = new string[] { "Admin Profile", "Name", "Email", "Role", "Actions" };
 
-            var paginatedAdmins = allAdmins.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var paginatedAdmins = allAdmins.Skip((page - 1) * pageSize).Take(pageSize).ToList(); 
 
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
@@ -166,14 +166,21 @@ namespace NavOS.Basecode.AdminApp.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            bool _isAdminUpdated = _adminService.EditAdmin(model, this.UserName);
-            if (_isAdminUpdated)
+
+            bool isEmailExisted = _adminService.CheckEmailExist(model);
+            if (!isEmailExisted)
             {
-                TempData["SuccessMessage"] = "Admin updated successfully.";
+                bool _isAdminUpdated = _adminService.EditAdmin(model, this.UserName);
+                if (_isAdminUpdated)
+                {
+                    TempData["SuccessMessage"] = "Admin updated successfully.";
+                    return RedirectToAction("List");
+                }
+                TempData["ErrorMessage"] = "No Admin was updated.";
                 return RedirectToAction("List");
-			}
-			TempData["ErrorMessage"] = "No Admin was updated.";
-			return RedirectToAction("List");
-		}
+            }
+            TempData["ErrorMessage"] = "Admin Email already existed!";
+            return RedirectToAction("Edit", "Admin", new { adminId = model.AdminId });
+        }
 	}
 }
