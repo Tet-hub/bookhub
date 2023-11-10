@@ -39,15 +39,13 @@ namespace NavOS.Basecode.BookApp.Controllers
             _genreService = genreService;
 
         }
+        /// <summary>
+        /// Setups the common view data.
+        /// </summary>
         private void CommonViewData()
         {
             var genres = _genreService.GetGenres();
             var reviews = _reviewService.GetReviews();
-            var averageRateByBookId = _reviewService.GetBooksSortedByReviews();
-            var reviewsCountByBookId = _reviewService.GetReviewsCountByBookId();
-
-            ViewData["averageRateByBookId"] = averageRateByBookId;
-            ViewData["reviewsCountByBookId"] = reviewsCountByBookId;
             ViewData["Genre"] = genres;
             ViewData["Reviews"] = reviews;
         }
@@ -60,13 +58,83 @@ namespace NavOS.Basecode.BookApp.Controllers
         {
             var reviews = _reviewService.GetReviews();
             var books = _bookService.GetBooks();
-            var reviewsCountByBookId = _reviewService.GetReviewsCountByBookId();
 
             ViewData["Reviews"] = reviews;
             ViewData["Books"] = books;
-            ViewData["reviewsCountByBookId"] = reviewsCountByBookId;
 
             return View();
+        }
+        /// <summary>
+        /// Display new books.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult NewBooks(string searchQuery, string filter, string sort)
+        {
+            var currentDate = DateTime.Now;
+            var twoWeeksAgo = currentDate.AddDays(-14);
+
+            var book = _bookService.FilterAndSortBooksTwoWeeks(searchQuery, filter, sort, twoWeeksAgo, currentDate);
+            CommonViewData();
+            ViewData["NewBooks"] = book;
+
+            return View();
+        }
+
+
+        /// <summary>
+        /// TopBooks
+        /// </summary>
+        /// <param name="searchQuery"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult TopBooks(string searchQuery, string filter, string sort)
+        {
+            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
+            CommonViewData();
+            ViewData["TopBooks"] = book;
+
+            return View();
+        }
+        /// <summary>
+        /// Alls the books.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult AllBooks(string searchQuery, string filter, string sort)
+        {
+            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
+
+            CommonViewData();
+
+            ViewData["AllBooks"] = book;
+
+            return View();
+        }
+        /// <summary>
+        /// BookDetails
+        /// </summary>
+        /// <param name="BookId"></param>
+        /// <returns></returns>
+        public IActionResult BookDetails(string BookId)
+        {
+            var book = _bookService.GetBook(BookId);
+            if (book != null)
+            {
+                var reviews = _reviewService.GetReviews(BookId);
+
+                ViewData["Reviews"] = reviews;
+                ViewData["Book"] = book;
+
+                return View();
+            }
+            TempData["ErrorMessage"] = "No Book Found";
+            return RedirectToAction("Index");
         }
 
         /// <summary>
@@ -135,66 +203,7 @@ namespace NavOS.Basecode.BookApp.Controllers
             return RedirectToAction("BookList");
 
         }
-
-        /// <summary>
-        /// Display new books.
-        /// </summary>
-        /// <param name="searchQuery">The search query.</param>
-        /// <param name="filter">The filter.</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult NewBooks(string searchQuery, string filter, string sort)
-        {
-            var currentDate = DateTime.Now;
-            var twoWeeksAgo = currentDate.AddDays(-14);
-
-            var book = _bookService.FilterAndSortBooksTwoWeeks(searchQuery, filter, sort, twoWeeksAgo, currentDate);
-
-            CommonViewData();
-
-            ViewData["NewBooks"] = book;
-
-            return View();
-        }
-
-        /// <summary>
-        /// TopBooks
-        /// </summary>
-        /// <param name="searchQuery"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult TopBooks(string searchQuery, string filter, string sort)
-        {
-            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
-
-            CommonViewData();
-
-            ViewData["TopBooks"] = book;
-
-            return View();
-        }
-
-        /// <summary>
-        /// BookDetails
-        /// </summary>
-        /// <param name="BookId"></param>
-        /// <returns></returns>
-        public IActionResult BookDetails(string BookId)
-        {
-            var book = _bookService.GetBook(BookId);
-            if (book != null)
-            {
-                var reviews = _reviewService.GetReviews();
-
-                ViewData["Reviews"] = reviews;
-                ViewData["Book"] = book;
-
-                return View();
-            }
-            TempData["ErrorMessage"] = "No Book Found";
-            return RedirectToAction("Index");
-        }
-      
+        
         [HttpGet]
         public IActionResult AddBook()
         {
@@ -246,17 +255,7 @@ namespace NavOS.Basecode.BookApp.Controllers
             TempData["ErrorMessage"] = "No Book was Deleted";
             return RedirectToAction("BookList");
         }
-        [HttpGet]
-        public IActionResult AllBooks(string searchQuery, string filter, string sort)
-        {
-            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
 
-            CommonViewData();
-
-            ViewData["AllBooks"] = book;
-
-            return View();
-        }
 
 
     }

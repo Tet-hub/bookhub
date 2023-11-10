@@ -1,17 +1,21 @@
-﻿using NavOS.Basecode.BookApp.Mvc;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NavOS.Basecode.AdminApp.Mvc;
+using NavOS.Basecode.Data.Models;
+using NavOS.Basecode.Services.Interfaces;
+using NavOS.Basecode.Services.ServiceModels;
+using NavOS.Basecode.Services.Services;
+using System;
+using System.Linq;
 
-namespace NavOS.Basecode.BookApp.Controllers
+namespace NavOS.Basecode.AdminApp.Controllers
 {
-    /// <summary>
-    /// Home Controller
-    /// </summary>
-    public class HomeController : ControllerBase<HomeController>
+    public class ReviewController : ControllerBase<ReviewController>
     {
+        private readonly IReviewService _reviewService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -20,21 +24,18 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// <param name="configuration"></param>
         /// <param name="localizer"></param>
         /// <param name="mapper"></param>
-        public HomeController(IHttpContextAccessor httpContextAccessor,
+        public ReviewController(IReviewService reviewService,
+                              IHttpContextAccessor httpContextAccessor,
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
                               IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
-
+            _reviewService = reviewService;
         }
-
-        /// <summary>
-        /// Returns Home View.
-        /// </summary>
-        /// <returns> Home View </returns>
-        public IActionResult Index()
+        public IActionResult ReviewDetails()
         {
             return View();
+            //return PartialView("BookDetails", "Book");
         }
     }
 }

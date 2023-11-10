@@ -25,7 +25,7 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        margin-top:-17px;
+        margin-top: -17px;
     }
 
     .star {
@@ -47,16 +47,16 @@
         transition: background-color 0.3s, color 0.3s;
     }
 
-    .genre-tag:hover {
-        text-decoration: underline;
-        color: #FFC119;
-    }
+        .genre-tag:hover {
+            text-decoration: underline;
+            color: #FFC119;
+        }
 
 </Style>
 <div class="container mt-5">
     <div class="w3-margin" id="bgColor">
         <!-- Header Container -->
-        <div class="col-md-12 d-flex justify-content-between align-items-center"style="background-color: #FFC119; height: 35px;">
+        <div class="col-md-12 d-flex justify-content-between align-items-center" style="background-color: #FFC119; height: 35px;">
             <div class="float-start">
                 <span class="float-start text-center ms-3 fst-italic">Released | @book.DateReleased.ToString("MMMM dd, yyyy")</span>
             </div>
@@ -112,11 +112,17 @@
                     </div>
                 </div>
             </div><br>
-                <h6 id="summaryLabel" class="w3-margin-bottom">SUMMARY</h6>
+            <h6 id="summaryLabel" class="w3-margin-bottom">SUMMARY</h6>
             <div id="summary" class="w3-justify w3-border w3-padding">
                 <p>@book.Summary</p>
             </div><br><br>
             <!--REVIEWS PARTIAL VIEW-->
+            @Html.Partial("~/Views/Review/AddReview.cshtml", new ReviewViewModel { BookId = book.BookId })
+            <!-- REVIEW LIST-->
+            <div id="leftRightPadding" class="w3-border w3-padding-32">
+                @Html.Partial("~/Views/Review/ReviewDetails.cshtml", reviews)
+            </div>
+@*             <!--REVIEWS PARTIAL VIEW-->
             @Html.Partial("AddReview", new ReviewViewModel { BookId = book.BookId })
 
             <!-- USER REVIEW LIST-->
@@ -153,7 +159,7 @@
                 {
                     <p>No reviews available.</p>
                 }
-            </div>
+            </div> *@
 
         </div>
     </div>
