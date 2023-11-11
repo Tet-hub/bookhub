@@ -6,7 +6,7 @@
     var book = ViewData["NewBooks"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
     var genres = ViewData["Genre"] as List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>;
 
-    int pageSize = 5;
+    int pageSize = 10;
     var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = PaginationHelper
     .GetPagination(pageSize, book, ViewContext.HttpContext.Request.Query["page"]
     .FirstOrDefault());
