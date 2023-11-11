@@ -17,5 +17,7 @@ namespace NavOS.Basecode.Services.Interfaces
         bool UpdateBook(BookViewModel bookViewModel, string user);
         List<BookViewModel> FilterAndSortBooks(string filter, string searchQuery, string sort);
         List<BookViewModel> FilterAndSortBooksTwoWeeks(string searchQuery, string filter, string sort, DateTime startDate, DateTime endDate);
+
+        public List<BookViewModel> GetBooksForGenre(string genreName);
     }
 }
