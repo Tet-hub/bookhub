@@ -33,6 +33,10 @@ namespace NavOS.Basecode.Data
                     .HasMaxLength(50)
                     .HasColumnName("AdminID");
 
+                entity.Property(e => e.AddedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.AdminEmail)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -58,6 +62,10 @@ namespace NavOS.Basecode.Data
                     .HasMaxLength(50);
 
                 entity.Property(e => e.Token).HasMaxLength(100);
+
+                entity.Property(e => e.UpdatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Book>(entity =>
@@ -72,19 +80,17 @@ namespace NavOS.Basecode.Data
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Author)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.Author).IsRequired();
 
-                entity.Property(e => e.BookTitle)
+                entity.Property(e => e.BookTitle).IsRequired();
+
+                entity.Property(e => e.Chapter)
                     .IsRequired()
                     .HasMaxLength(50);
 
                 entity.Property(e => e.DateReleased).HasColumnType("date");
 
-                entity.Property(e => e.Genre)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.Genre).IsRequired();
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -105,11 +111,17 @@ namespace NavOS.Basecode.Data
                     .HasMaxLength(50)
                     .HasColumnName("GenreID");
 
-                entity.Property(e => e.GenreDescription)
+                entity.Property(e => e.AddedBy)
                     .IsRequired()
                     .HasMaxLength(50);
 
+                entity.Property(e => e.GenreDescription).IsRequired();
+
                 entity.Property(e => e.GenreName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedBy)
                     .IsRequired()
                     .HasMaxLength(50);
             });
@@ -138,7 +150,6 @@ namespace NavOS.Basecode.Data
                 entity.HasOne(d => d.Book)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.BookId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Reviews_Reviews");
             });
 

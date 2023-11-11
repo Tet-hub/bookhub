@@ -22,7 +22,7 @@ namespace NavOS.Basecode.Services.Utilities
             mail = new SmtpClient("smtp.gmail.com", 587)
             {
                 EnableSsl = true,
-                Credentials = new NetworkCredential("frenchcries12@gmail.com", "ehlxzxdcksskipfe")
+                Credentials = new NetworkCredential("bookhubnavos@gmail.com", "fmlewnloinlybjha")
             };
         }
 
@@ -30,7 +30,7 @@ namespace NavOS.Basecode.Services.Utilities
         {
             var mailMessage = new MailMessage
             {
-                From = new MailAddress("frenchcries12@gmail.com"),
+                From = new MailAddress("bookhubnavos@gmail.com"),
                 Subject = "BOOKHUB | PASSWORD RESET",
                 Body = GetMailBody(host, adminName, adminId, token),
                 IsBodyHtml = true
