@@ -1,5 +1,5 @@
 .centerBox{
-	max-width: 480px;
+	max-width: 600px;
 	padding: 0 20px;
 	margin: 120px auto;
 }
@@ -94,11 +94,9 @@ h5{
 .text-danger {
 	color: #dc3545;
 }
-
 .align-middle {
-	vertical-align: middle !important
+	align-items: center;
 }
-
 .pointer {
 	cursor: pointer;
 }
