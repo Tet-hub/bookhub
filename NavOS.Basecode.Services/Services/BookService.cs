@@ -154,6 +154,7 @@ namespace NavOS.Basecode.Services.Services
             return isExist;
         }
 
+
         public List<BookViewModel> FilterAndSortBooks(string searchQuery, string filter, string sort)
         {
             var data = GetBooks();
@@ -266,6 +267,29 @@ namespace NavOS.Basecode.Services.Services
             return data;
         }
 
-        
+
+        public List<BookViewModel> GetBooksForGenre(string genreName)
+        {
+            var url = "https://127.0.0.1:8080/";
+            var booksForGenre = _bookRepository.GetBooks().Where(s => s.Genre == genreName)
+                .Select(s => new BookViewModel
+                {
+                    BookId = s.BookId,
+                    BookTitle = s.BookTitle,
+                    Summary = s.Summary,
+                    Author = s.Author,
+                    Status = s.Status,
+                    Genre = s.Genre,
+                    Chapter = s.Chapter,
+                    DateReleased = s.DateReleased,
+                    AddedTime = s.AddedTime,
+                    ImageUrl = Path.Combine(url, s.BookId + ".png"),
+                })
+                .ToList();
+
+            return booksForGenre;
+        }
+
+
     }
 }
