@@ -1,36 +1,128 @@
 ﻿@model NavOS.Basecode.Services.ServiceModels.GenreViewModel
 
-
 @{
-	ViewData["Title"] = "Add Genre";
+    ViewData["Title"] = "Add Genre";
 }
 
-<h2>Add New Genre</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
 
-<form enctype="multipart/form-data" asp-action="AddGenre">
+        body {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            user-select: none;
+            background-color: #343a40;
+            color: #ffffff;
+        }
 
-    <div class="form-group">
-        <label>Title</label>
-        <input class="form-control" asp-for="GenreName" />
-        <span asp-validation-for="GenreName" class="text-danger"></span>
+        .container {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        h2 {
+            color: #FFC119;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            color: #ffffff;
+        }
+
+        .form-control {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #FFC119;
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #c49200;
+            }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .addNow{
+            background-color: #FFC119;
+            font-weight: bolder;
+            color: #000;
+            text-indent: 10px;  
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        @* <h2>Add New Genre</h2> *@
+       
+        <form enctype="multipart/form-data" asp-action="AddGenre">
+            <div class="addNow">
+                <button type="submit" class="addbtn text-dark">+ADD GENRE</button>
+            </div>
+            <div class="form-group">
+                <label>Title: </label>
+                <input class="form-control" asp-for="GenreName" style="box-shadow:none;" />
+                <span asp-validation-for="GenreName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Description: </label>
+                <textarea class="form-control" rows="10" asp-for="GenreDescription" style="box-shadow:none;"></textarea>
+                <span asp-validation-for="GenreDescription" class="text-danger"></span>
+            </div>
+
+            <!-- Uncomment the lines below if you want to include UpdatedBy and AddedBy -->
+            <!--
+            <div>
+                <small class="text-muted">UpdatedBy</small>
+            </div>
+
+            <div>
+                <small class="text-muted">AddedBy</small>
+            </div>
+            -->
+
+            
+        </form>
     </div>
+</body>
+</html>
+@section scripts {
+    <script>
+        // Check for error message and display Toastr notification
+        var errorMessage = '@TempData["ErrorMessage"]';
+        var successMessage = '@TempData["SuccessMessage"]';
 
-    <div class="form-group">
-        <label>Description</label>
-        <input class="form-control" asp-for="GenreDescription" />
-        <span asp-validation-for="GenreDescription" class="text-danger"></span>
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
 
-    </div>
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
 
-    @* <div>
-    <small class="text-muted">UpdatedBy</small>
-    </div>
-
-    <div>
-    <small class="text-muted">AddedBy</small>
-    </div> *@
-
-
-    <button type="submit" class="btn btn-primary">Add</button>
-</form>
-
+    </script>
+}

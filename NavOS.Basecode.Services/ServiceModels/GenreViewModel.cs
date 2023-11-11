@@ -16,6 +16,7 @@ namespace NavOS.Basecode.Services.ServiceModels
         public string GenreName { get; set; }
 
         [Required(ErrorMessage = "Description is required.")]
+        [RegularExpression(@"^(?!\s*$).+", ErrorMessage = "Please provide description.")]
         public string GenreDescription { get; set; }
         public string UpdatedBy { get; set; }
         public string AddedBy { get; set; }

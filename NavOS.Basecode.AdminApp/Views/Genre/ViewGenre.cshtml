@@ -1,55 +1,221 @@
 ﻿@model List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>
 
-
 @{
     ViewData["Title"] = "Genre List";
-
 }
+@section styles{
 
-<div style="margin-top: 40px; text-align: right">
-    <h3><a asp-controller="Genre" asp-action="AddGenre" style="text-decoration: none; font-weight: bold;color: #FFC119">+ ADD GENRE</a></h3>
-</div>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
 
-<div class="container pt-5">
-    <div class="row">
-        @foreach (var genre in Model)
-        {
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
-                        <h4 class="card-text font-weight-bold">@genre.GenreName</h4>
-                        <p class="card-text"><b>@genre.GenreDescription</b></p>
-                        <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                            <form asp-controller="Genre" asp-action="EditGenre" method="get">
-                                    <input type="hidden" name="Genreid" value="@genre.GenreId" />
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">Edit</button>
-                            </form>
-                            <form asp-controller="Genre" asp-action="Delete" method="post">
-                                <input type="hidden" name="Genreid" value="@genre.GenreId" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </form>
+        body {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        .container {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .card {
+            border-radius: 5px;
+            filter: drop-shadow(0 5px 10px 0 #ffffff);
+            width: 300px;
+            height: 250px;
+            background-color: white;
+            color: #000000;
+            /* padding: 20px; */
+            position: relative;
+            /* overflow: hidden;
+            transition: 0.3s ease-in; */
+        }
+
+           /*  .card:hover {
+                background-color: #FFC119;
+                transform: scale(1.05);
+            }
+
+            .card p {
+                padding: 5px 0;
+            } */
+
+
+        h3 a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #FFC119;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+
+        .btn-group {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+        }
+
+            .btn-group button {
+                margin-bottom: 5px;
+                width: 100%;
+            }
+
+
+        .crudbutton.card-footer {
+            /* border: solid 1px; */
+            background-color: white; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 0;
+        }
+
+        .cardtext.card-body {
+            border: solid 1px;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            overflow-y: auto; /* Add a scrollbar for vertical overflow */
+            max-height: 150px; /* Adjust the maximum height as needed */
+        }
+
+
+        .cardtext.card-top {
+            border: solid 1px;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .small-text {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 2px;
+            flex-direction: column;
+            /* justify-content: space-evenly; */
+            align-items:flex-end;
+            margin-right: 10px;
+            margin-bottom: 5px;
+
+        }
+
+        .container-add {
+            margin-top: 40px;
+            text-align: right;
+            margin-bottom: 40px;
+        }
+
+        b, h4, .muted {
+            color: black;
+        }
+    </style>
+}
+    
+
+   
+
+
+    <div class="container-add">
+        <div>
+            <h3><a asp-controller="Genre" asp-action="AddGenre">+ ADD GENRE</a></h3>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            @foreach (var genre in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+
+                        <div class="cardtext card-top">
+                                <h4>@genre.GenreName</h4>
+                            </div>
+                        <div class="cardtext card-body">
+                                <p><b>@genre.GenreDescription</b></p>
+                            </div>
+                        <div class="crudbutton card-footer">
+                                <div class=" btn-group">
+                                    <form asp-controller="Genre" asp-action="BooksGenre" method="get">
+                                        <input type="hidden" name="genreName" value="@genre.GenreName" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </form>
+                                    <form asp-controller="Genre" asp-action="EditGenre" method="get">
+                                        <input type="hidden" name="Genreid" value="@genre.GenreId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    </form>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="openModalSet('@genre.GenreId','@genre.GenreName')">Delete</button>
+                                </div>
+                                
                         </div>
-                        <div>
-                            <small class="text-muted">Updated by: @genre.UpdatedBy</small>
-                            <br>
-                            <small class="text-muted">Added by: @genre.AddedBy</small>
-                        </div>
-                        
-                            @*  <small class="text-muted">@book.CreatedDate.ToString("dd/MM/yyyy")</small> *@
-                        
-                        
+                        <div class="small-text">
+                                
+                                    <small class="muted">Updated by: @genre.UpdatedBy</small>
+                                    <small class="muted">Added by: @genre.AddedBy</small>
                         </div>
                     </div>
                 </div>
+            }
+        </div>
+    </div>
+
+@* Modal Area *@
+<div class="w3-modal" id="deleteModal">
+    <div class="w3-modal-content w3-animate-top w3-round-xlarge" style="background-color: #212529;width: 40%;">
+        <div class="w3-container w3-padding-large">
+            <p>
+                <div class="text-center">
+                    <h3 class="w3-center">Are you sure you want to delete</h3>
+                    <h3 class="w3-center" id="GenreName"></h3>
+                </div>
+            </p>
+            <div class="row text-center">
+                <div id="GenreId" style="display: none"></div>
+                <div class="col-md-6">
+                    <button class="btn btn-outline-warning" style="width: 200px" onclick="deleteGenre()"><h3>YES</h3></button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-warning" style="width: 200px" onclick="modal_control('deleteModal','none')"><h3>NO</h3></button>
+                </div>
             </div>
-        }
+        </div>
     </div>
 </div>
 
+
 @section scripts {
     <script>
-        let nav = document.getElementById("Genre");
-        nav.classList.add("active");
+        // Check for error message and display Toastr notification
+        var errorMessage = '@TempData["ErrorMessage"]';
+        var successMessage = '@TempData["SuccessMessage"]';
+
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+
     </script>
+
+    <script src="~/js/genreModal.js"></script>
 }
