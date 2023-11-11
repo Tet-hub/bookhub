@@ -5,6 +5,9 @@
     var genres = ViewData["Genre"] as List<GenreViewModel>;
 
 }
+@section styles {
+    <link rel="stylesheet" href="~/css/addbook.css" />
+}
 <!-- script for image-->
 <script>
     function displayImage(input) {
@@ -18,13 +21,15 @@
         }
     }
 </script>
-
-<form method="post" enctype="multipart/form-data" asp-action="EditBook" onsubmit="return validateForm()">
+<div class="container">
+    <div class="row" style="border: 1px solid #fff;">
+        <div class="col-md-12">
+            <form method="post" enctype="multipart/form-data" asp-action="EditBook" onsubmit="return validateForm()">
     <input type="hidden" asp-for="BookId" />
-    <div class="w3-margin">
+    <div class="row">
         <!--EDIT BUTTON-->
         <div class="addNow">
-            <button type="submit" class="addbtn text-dark">+EDIT NOW</button>
+            <button type="submit" class="addbtn text-dark float-end">+EDIT NOW</button>
         </div>
         <div class="bodyDetails">
             <div class="w3-row w3-margin-bottom">
@@ -104,7 +109,9 @@
         </div>
     </div>
 </form>
-
+        </div>
+    </div>
+</div>
 @section scripts {
     <script>
         var errorMessage = '@TempData["ErrorMessage"]';

@@ -142,26 +142,16 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult BookList(string searchQuery, int page = 1, int pageSize = 5)
+        public IActionResult BookList(string searchQuery, string filter, string sort)
         {
-            var books = _bookService.GetBooks();
-
-            if (!string.IsNullOrEmpty(searchQuery))
-            {
-                books = books.Where(a => a.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                                                 a.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                                                 a.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-
+            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
             string[] headers = new string[] { "Book Profile", "Title", "Author", "Reviews", "Actions" };
-            var paginatedBooks = books.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalPages = (int)Math.Ceiling(books.Count / (double)pageSize);
+            CommonViewData();
+
+            ViewData["AllBooks"] = book;
             ViewBag.headers = headers;
-            ViewBag.SearchString = searchQuery;
-            return View(paginatedBooks);
+            return View();
         }
 
         /// <summary>

@@ -1,99 +1,26 @@
 ﻿@model NavOS.Basecode.Services.ServiceModels.GenreViewModel
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
-            
-            user-select: none;
-            background-color: #343a40;
-            color: #ffffff;
-        }
-
-        
-
-        h1 {
-            color: #FFC119;
-            font-family: "Poppins", sans-serif;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            color: #ffffff;
-        }
-
-        .form-control {
-            background-color: #343a40;
-            color: white;
-        }
-
-        .btn-primary {
-            background-color: #FFC119;
-            border: none;
-            
-        }
-
-            .btn-primary:hover {
-                background-color: #c49200;
-            }
-
-        .container {
-            margin-top: 10px;
-            text-align: left;
-        }
-        form{
-            display: flex;
-            flex-direction: column;
-            justify-content:center;
-        }
-
-        .addNow{
-            background-color: #FFC119;
-            font-weight: bolder;
-            color: #000;
-            text-indent: 10px;
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        @* <h1>Edit Genre</h1> *@
-        
-        <form asp-action="EditGenre">
-            <div class="addNow">
-                <button type="submit" class="addbtn text-dark">+EDIT NOW</button>
-            </div>
-            <input type="hidden" class="form-control" asp-for="GenreId">
-            <div class="form-group">
-                <label>Name: </label>
-                <input type="text" class="form-control" asp-for="GenreName">
-                <span asp-validation-for="GenreName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label>Description: </label>
-                <textarea class="form-control" rows="10" asp-for="GenreDescription"></textarea>
-                <span asp-validation-for="GenreDescription" class="text-danger"></span>
-            </div>
-            @* <button type="submit" class="btn btn-primary">Submit</button> *@
-        </form>
+@{
+    ViewData["Title"] = "Edit Genre";
+}
+<form asp-action="EditGenre" method="post">
+    <input type="hidden" asp-for="GenreId" />
+    
+    <div class="form-group">
+        <label class="text-dark">Name: </label>
+        <input type="text" class="form-control" asp-for="GenreName">
+        <span asp-validation-for="GenreName" class="text-danger"></span>
     </div>
-</body>
-</html>
+    
+    <div class="form-group">
+        <label class="text-dark">Description: </label>
+        <textarea class="form-control" rows="4" asp-for="GenreDescription"></textarea>
+        <span asp-validation-for="GenreDescription" class="text-danger"></span>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+</form>
+
+
