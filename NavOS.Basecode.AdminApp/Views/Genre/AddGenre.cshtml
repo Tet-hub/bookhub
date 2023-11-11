@@ -3,136 +3,27 @@
 @{
     ViewData["Title"] = "Add Genre";
 }
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
-            user-select: none;
-            background-color: #343a40;
-            color: #ffffff;
-        }
-
-        .container {
-            margin-top: 10px;
-            text-align: left;
-        }
-
-        h2 {
-            color: #FFC119;
-            font-family: "Poppins", sans-serif;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            color: #ffffff;
-        }
-
-        .form-control {
-            background-color: #343a40;
-            color: white;
-        }
-
-        .btn-primary {
-            background-color: #FFC119;
-            border: none;
-        }
-
-            .btn-primary:hover {
-                background-color: #c49200;
-            }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .addNow{
-            background-color: #FFC119;
-            font-weight: bolder;
-            color: #000;
-            text-indent: 10px;  
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        @* <h2>Add New Genre</h2> *@
-       
-        <form enctype="multipart/form-data" asp-action="AddGenre">
-
-            <div class="addNow">
-                <button type="submit" class="addbtn text-dark">+ADD GENRE</button>
-            </div>
-
-            @* <div style="margin-top: 40px; text-align: right; margin-bottom: 40px">
-                <h3><a  style="text-decoration: none; font-weight: bold;color: #FFC119">+ ADD BOOK</a></h3>
-            </div>
-
-            <div style="margin-top: 40px; text-align: right; margin-bottom: 40px">
-                <h3><a asp-controller="Book" asp-action="AddBook" style="">+ ADD BOOK</a></h3>
-            </div> *@
-
-            <div class="form-group">
-                <label>Title: </label>
-                <input class="form-control" asp-for="GenreName" style="box-shadow:none;" />
-                <span asp-validation-for="GenreName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label>Description: </label>
-                <textarea class="form-control" rows="10" asp-for="GenreDescription" style="box-shadow:none;"></textarea>
-                <span asp-validation-for="GenreDescription" class="text-danger"></span>
-            </div>
-
-            <!-- Uncomment the lines below if you want to include UpdatedBy and AddedBy -->
-            <!--
-            <div>
-                <small class="text-muted">UpdatedBy</small>
-            </div>
-
-            <div>
-                <small class="text-muted">AddedBy</small>
-            </div>
-            -->
-
-            
-        </form>
+<form enctype="multipart/form-data" asp-action="AddGenre" class="modal-content text-dark">
+    <div class="modal-header">
+        <h5 class="modal-title">@ViewData["Title"]</h5>
     </div>
-</body>
-</html>
-@section scripts {
-    <script>
-        // Check for error message and display Toastr notification
-        var errorMessage = '@TempData["ErrorMessage"]';
-        var successMessage = '@TempData["SuccessMessage"]';
 
-        if (errorMessage) {
-            toastr.error(errorMessage);
-        }
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Title:</label>
+            <input class="form-control border-1" asp-for="GenreName" />
+            <span asp-validation-for="GenreName" class="text-danger"></span>
+        </div>
 
-        if (successMessage) {
-            toastr.success(successMessage);
-        }
+        <div class="form-group">
+            <label>Description:</label>
+            <textarea class="form-control border-1" rows="4" asp-for="GenreDescription"></textarea>
+            <span asp-validation-for="GenreDescription" class="text-danger"></span>
+        </div>
+    </div>
 
-    </script>
-}
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Add Genre</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</form>
