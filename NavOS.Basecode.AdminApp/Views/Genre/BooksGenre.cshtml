@@ -1,0 +1,133 @@
+﻿@using NavOS.Basecode.Services.ServiceModels
+@model List<BookViewModel>
+
+@{
+    ViewData["Title"] = "Book List";
+    string[] headers = ViewBag.headers as string[];
+}
+
+@section styles {
+    <link rel="stylesheet" type="text/css" href="~/css/list.css">
+}
+<div style="margin-top: 40px; text-align: right; margin-bottom: 40px">
+    <h3><a asp-controller="Book" asp-action="AddBook" style="text-decoration: none; font-weight: bold;color: #FFC119">+ ADD BOOK</a></h3>
+</div>
+
+@* <form asp-controller="Book" asp-action="BookList" method="get" class="form-inline my-2 my-lg-0" style="margin-top: 40px">
+    <div class="input-group">
+        <input class="form-control mr-sm-2" name="searchQuery" id="searchQuery" type="search" placeholder="Search Book" aria-label="Search" style="border-radius: 5px;">&nbsp;
+        <div class="input-group-append">
+            <button class="btn my-2 my-sm-0" type="submit" style="background-color: #FFC119;color: black;">Search</button>
+        </div>
+    </div>
+</form> *@
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-dark table-borderless text-center" style="margin-top: 20px;">
+            <thead class="rounded">
+                <tr>
+                    <th style="background-color: #FFC119;color: black;">Image</th>
+                    <th style="background-color: #FFC119;color: black;">Title</th>
+                    <th style="background-color: #FFC119;color: black;">Author</th>
+                    <th style="background-color: #FFC119;color: black;">Rating / Reviews</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var book in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@book.ImageUrl" class="rounded" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" alt="@book.BookTitle" height="125" width="100" style="object-fit: cover; cursor: pointer" onclick="location.href='/Book/BookDetails?BookId=@book.BookId'" title="View Book Detail">
+                        </td>
+                        <td class="align-middle">@book.BookTitle</td>
+                        <td class="align-middle">@book.Author</td>
+                        <td class="align-middle">@((book.TotalRating % 2 == 0) ? book.TotalRating.ToString("0") : book.TotalRating.ToString("0.0")) Ratings / @book.ReviewCount Reviews</td>
+                        
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <span class="text-white w3-display-middle">No Book found </span>
+}
+
+@* Pagination *@
+@if (ViewBag.CurrentPage != null){
+    <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-end">
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)" style="background-color: #FFC119;color: black;" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+        @for (int i = ViewBag.CurrentPage - 2; i <= ViewBag.CurrentPage + 2; i++)
+        {
+            if (i >= 1 && i <= ViewBag.TotalPages)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" style="background-color: #FFC119;color: black;"
+                       asp-controller="Book" asp-action="BookList" asp-route-page="@i">@i</a>
+                </li>
+            }
+        }
+        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)" style="background-color: #FFC119;color: black;" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+}
+   
+
+@* Modal Area *@
+<div class="w3-modal" id="deleteModal">
+    <div class="w3-modal-content w3-animate-top w3-round-xlarge" style="background-color: #212529;width: 40%;">
+        <div class="w3-container w3-padding-large">
+            <p>
+                <div class="text-center">
+                    <h3 class="w3-center">Are you sure you want to delete</h3>
+                    <h3 class="w3-center" id="BookTitle"></h3>
+                </div>
+            </p>
+            <div class="row text-center">
+                <div id="BookId" style="display: none"></div>
+                <div class="col-md-6">
+                    <button class="btn btn-outline-warning" style="width: 200px" onclick="deleteBook()"><h3>YES</h3></button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-warning" style="width: 200px" onclick="modal_control('deleteModal','none')"><h3>NO</h3></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var errorMessage = '@TempData["ErrorMessage"]';
+        var successMessage = '@TempData["SuccessMessage"]';
+
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+    </script>
+    <script src="~/js/bookModal.js"></script>
+    <script src="~/js/getQueryParam.js"></script>
+}

@@ -18,7 +18,7 @@ namespace NavOS.Basecode.Services.Interfaces
         public Genre GetGenre(string Genreid);
         public bool UpdateGenre(GenreViewModel genreViewModel, string user);
 
-        public bool DeleteGenre(GenreViewModel genreViewModel);
+        public bool DeleteGenre(string GenreId);
 
     }
 }

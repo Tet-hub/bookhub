@@ -2,15 +2,15 @@ function modal_control(modal_name, action) {
     document.getElementById(modal_name).style.display = action;
 }
 
-function openModalSet(id, bookTitle) {
+function openModalSet(id, genreName) {
     modal_control("deleteModal", "block");
-    document.getElementById('BookId').innerHTML = id;
-    document.getElementById('BookTitle').innerHTML = bookTitle + "?";
+    document.getElementById('GenreId').innerHTML = id;
+    document.getElementById('GenreName').innerHTML = genreName + "?";
 }
 
-function deleteBook() {
-    let BookId = document.getElementById("BookId").innerHTML;
-    window.location.href = "/Genre/DeleteBook?bookId=" + BookId;
+function deleteGenre() {
+    let GenreId = document.getElementById("GenreId").innerHTML;
+    window.location.href = "/Genre/Delete?genreId=" + GenreId;
 }
 
 window.onclick = function (event) {

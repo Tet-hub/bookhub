@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NavOS.Basecode.AdminApp.Mvc;
+using NavOS.Basecode.Data.Models;
 using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.ServiceModels;
 using NavOS.Basecode.Services.Services;
+using System.Linq;
 
 namespace NavOS.Basecode.AdminApp.Controllers
 {
@@ -14,6 +16,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
     {
         
         private readonly IGenreService _genreService;
+        private readonly IBookService _bookService;
 
         /// <summary>
         /// Constructor
@@ -24,6 +27,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// <param name="localizer"></param>
         /// <param name="mapper"></param>
         public GenreController(IGenreService genreService,
+                              IBookService bookService,
                               IHttpContextAccessor httpContextAccessor,
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
@@ -31,6 +35,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
             
             _genreService = genreService;
+            _bookService = bookService;
 
         }
         public IActionResult Index()
@@ -51,11 +56,11 @@ namespace NavOS.Basecode.AdminApp.Controllers
         [HttpPost]
         public IActionResult AddGenre(GenreViewModel genre)
         {
-            var isExist = _genreService.Validate(genre.GenreName);
+            bool isExist = _genreService.Validate(genre.GenreName);
 
             if (isExist)
             {
-                ModelState.AddModelError("Title", "Title already exist.");
+                TempData["ErrorMessage"] = "Title already exist.";
                 return View(genre);
             }
             _genreService.AddGenre(genre, this.UserName);
@@ -78,6 +83,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                     
                 };
 
+                
                 return View(genreViewModel);
             }
             return NotFound();
@@ -89,7 +95,9 @@ namespace NavOS.Basecode.AdminApp.Controllers
             bool isUpdated = _genreService.UpdateGenre(genreViewModel, this.UserName);
             if (isUpdated)
             {
+                TempData["SuccessMessage"] = "Genre Successfully Edited";
                 return RedirectToAction("ViewGenre");
+
             }
             return NotFound();
         }
@@ -97,17 +105,38 @@ namespace NavOS.Basecode.AdminApp.Controllers
        
 
 
-        [HttpPost]
-        public IActionResult Delete(GenreViewModel genreViewModel)
+        [HttpGet]
+        public IActionResult Delete(string genreId)
         {
-            bool isDeleted = _genreService.DeleteGenre(genreViewModel);
+            bool isDeleted = _genreService.DeleteGenre(genreId);
             if (isDeleted)
             {
+                TempData["SuccessMessage"] = "Genre Successfully Deleted";
                 return RedirectToAction("ViewGenre");
             }
             return NotFound();
         }
 
+        [HttpGet]
+        public IActionResult BooksGenre(string genreName)
+        {
 
+            var booksForGenre = _bookService.GetBooksForGenre(genreName); // Replace with your actual method to get books for a genre
+            ViewData["GenreName"] = genreName;
+
+            return View(booksForGenre);
+        }
+        [HttpGet]
+        public IActionResult DeleteBook(string bookId)
+        {
+            bool _isBookDeleted = _bookService.DeleteBook(bookId);
+            if (_isBookDeleted)
+            {
+                TempData["SuccessMessage"] = "Book Deleted Successfully";
+                return RedirectToAction("BooksGenre");
+            }
+            TempData["ErrorMessage"] = "No Book was Deleted";
+            return RedirectToAction("BooksGenre");
+        }
     }
 }

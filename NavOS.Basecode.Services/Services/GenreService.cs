@@ -109,9 +109,21 @@ namespace NavOS.Basecode.Services.Services
             return false;
         }
 
-        public bool DeleteGenre(GenreViewModel genreViewModel)
+        //public bool DeleteGenres(GenreViewModel genreViewModel)
+        //{
+        //    Genre genre = _genreRepository.GetGenre(genreViewModel.GenreId);
+        //    if (genre != null)
+        //    {
+        //        _genreRepository.DeleteGenre(genre);
+        //        return true;
+        //    }
+
+        //    return false;
+        //}
+
+        public bool DeleteGenre(string GenreId)
         {
-            Genre genre = _genreRepository.GetGenre(genreViewModel.GenreId);
+            Genre genre = _genreRepository.GetGenre(GenreId);
             if (genre != null)
             {
                 _genreRepository.DeleteGenre(genre);
