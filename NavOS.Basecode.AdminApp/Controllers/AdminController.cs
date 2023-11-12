@@ -45,7 +45,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
 
             var allAdmins = _adminService.GetAllAdmins();
@@ -79,7 +79,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
             return View();
         }
@@ -94,7 +94,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
 		{
             if (this._session.GetString("Role") != "Master Admin")
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
 
 			try
@@ -120,7 +120,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
             bool _isAdminDeleted = _adminService.DeleteAdmin(adminId);
             if (_isAdminDeleted)
@@ -142,7 +142,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
             var admin = _adminService.GetAdmin(adminId);
             if (admin != null)
@@ -164,7 +164,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
 
             bool isEmailExisted = _adminService.CheckEmailExist(model);

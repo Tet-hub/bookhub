@@ -10,7 +10,7 @@ function openModalSet(id, bookTitle) {
 
 function deleteBook() {
     let BookId = document.getElementById("BookId").innerHTML;
-    window.location.href = "/Genre/DeleteBook?bookId=" + BookId;
+    window.location.href = "/Book/DeleteBook?bookId=" + BookId;
 }
 
 window.onclick = function (event) {
