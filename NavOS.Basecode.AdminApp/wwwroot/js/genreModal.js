@@ -4,12 +4,12 @@ function modal_control(modal_name, action) {
 
 function openModalSet(id, genreName) {
     modal_control("deleteModal", "block");
-    document.getElementById('GenreId').innerHTML = id;
-    document.getElementById('GenreName').innerHTML = genreName + "?";
+    document.getElementById('IdGenre').innerHTML = id;
+    document.getElementById('NameGenre').innerHTML = genreName + "?";
 }
 
 function deleteGenre() {
-    let GenreId = document.getElementById("GenreId").innerHTML;
+    let GenreId = document.getElementById("IdGenre").innerHTML;
     window.location.href = "/Genre/Delete?genreId=" + GenreId;
 }
 

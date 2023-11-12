@@ -13,17 +13,16 @@ namespace NavOS.Basecode.Services.ServiceModels
         public string AdminId {  get; set; }
         public string Token { get; set; }
 
-        [RegularExpression(@"^(?!\s*$).+", ErrorMessage = "Don't leave it blank.")]
+        [RegularExpression(@"^(?!\s*$).+", ErrorMessage = "Please provide a name.")]
         [Required(ErrorMessage = "Admin Name is required.")]
         public string AdminName { get; set; }
 
         [Required(ErrorMessage = "Email is required.")]
-        [RegularExpression(@"^(?!\s*$).+", ErrorMessage = "Don't leave it blank.")]
         public string AdminEmail { get; set; }
 
         [Required(ErrorMessage = "Password is required.")]
         //[RegularExpression(@"^(?!\s*$).+", ErrorMessage = "Don't leave it blank.")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$", ErrorMessage = "Password must be at least 8 characters.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$", ErrorMessage = "Password is too weak.")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Confirmation Password is required.")]

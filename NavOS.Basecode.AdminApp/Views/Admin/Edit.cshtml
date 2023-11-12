@@ -28,55 +28,55 @@
 		</div>
 		<div class="col-sm-8">
 			<!--Admin Name-->
-			<div class="row mb-4 align-items-center">
+			<div class="row mb-2 align-items-center">
 				<div class="col-sm-4">
 					<label class="form-label" for="AdminName">Admin Name</label>
 				</div>
 				<div class="col-sm-8">
 					<div class="form-outline">
 						<input type="text" class="form-control" asp-for="AdminName" />
-						<span asp-validation-for="AdminName" class="text-danger"></span>
 					</div>
+						<span asp-validation-for="AdminName" class="text-danger" style=" margin-left:5px;"></span>
 				</div>
 			</div>
 			<!--Contact Number-->
-			<div class="row mb-4 align-items-center">
+			<div class="row mb-2 align-items-center">
 				<div class="col-sm-4">
 					<label class="form-label" for="ContactNo">Contact Number</label>
 				</div>
 				<div class="col-sm-8">
 					<div class="form-outline">
 						<input type="number" class="form-control" asp-for="ContactNo" />
-						<span asp-validation-for="ContactNo" class="text-danger"></span>
 					</div>
+						<span asp-validation-for="ContactNo" class="text-danger" style="height:10px; margin-left:5px;"></span>
 				</div>
 			</div>
 			<!--DOB-->
-			<div class="row mb-4 align-items-center">
+			<div class="row mb-2 align-items-center">
 				<div class="col-sm-4">
 					<label class="form-label" for="Dob">Date Of Birth</label>
 				</div>
 				<div class="col-sm-8">
 					<div class="form-outline">
 						<input type="date" class="form-control" asp-for="Dob" />
-						<span asp-validation-for="Dob" class="text-danger"></span>
 					</div>
+						<span asp-validation-for="Dob" class="text-danger" style="height:10px; margin-left:5px;"></span>
 				</div>
 			</div>
 			<!--Admin Email-->
-			<div class="row mb-4 align-items-center">
+			<div class="row mb-2 align-items-center">
 				<div class="col-sm-4">
 					<label class="form-label" for="AdminEmail">Admin Email</label>
 				</div>
 				<div class="col-sm-8">
 					<div class="form-outline">
-						<input type="text" class="form-control" asp-for="AdminEmail" />
-						<span asp-validation-for="AdminEmail" class="text-danger"></span>
+						<input type="email" class="form-control" asp-for="AdminEmail" />
 					</div>
+						<span asp-validation-for="AdminEmail" class="text-danger" style="height:10px; margin-left:5px;"></span>
 				</div>
 			</div>
 			<!--Role-->
-			<div class="row mb-4 align-items-center">
+			<div class="row mb-2 align-items-center">
 				<div class="col-sm-4">
 					<label class="form-label" for="Role">Role</label>
 				</div>
@@ -86,8 +86,8 @@
 							<option value="Admin">Admin</option>
 							<option value="Master Admin">Master Admin</option>
 						</select>
-						<span asp-validation-for="Role" class="text-danger"></span>
 					</div>
+						<span asp-validation-for="Role" class="text-danger" style="height:10px; margin-left:5px;"></span>
 				</div>
 			</div>
 
