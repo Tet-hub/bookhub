@@ -1,15 +1,14 @@
-﻿@using NavOS.Basecode.Services.ServiceModels;
+﻿@model NavOS.Basecode.Services.ServiceModels.FilteredBooksViewModel
 @using NavOS.Basecode.Services.Helper;
 @{
     ViewData["Title"] = "Top books";
 
-    var book = ViewData["TopBooks"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
-    var genres = ViewData["Genre"] as List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>;
+    var requestQuery = ViewContext.HttpContext.Request.Query;
 
     int pageSize = 10;
     var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = PaginationHelper
-    .GetPagination(pageSize, book, ViewContext.HttpContext.Request.Query["page"]
-    .FirstOrDefault());
+        .GetPagination(pageSize, Model.Books, requestQuery["page"]
+        .FirstOrDefault());
 
     var (displayText, textColor, fontStyle) = HeaderHelper.GetDisplayProperties(Context);
 }
@@ -78,6 +77,7 @@
 
 </style>
 
+
 <div class="container mt-5">
     <div class="row" style="border: 1px solid #fff;">
         <!-- Header Container -->
@@ -118,19 +118,19 @@
             </div>
         </div>
         <!-- Search -->
-        <div class="row mx-4">
+        <div class="col-md-12">
             <form asp-controller="Book" asp-action="TopBooks" method="get" class="mt-3">
-                <div class="input-group" style="width: 93.6%;">
+                <div class="input-group">
                     <input type="text" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow: none;">
-                    <input type="hidden" name="filter" value="@ViewContext.HttpContext.Request.Query["filter"]" />
+                    <input type="hidden" name="filter" value="@requestQuery["filter"]" />
                 </div>
             </form>
         </div>
         <!-- Filter button section -->
-        <div class="col-12 mt-4 ms-4">
+        <div class="col-12 mt-4">
             @foreach (var filterOption in new[] { "ratings", "title", "author" })
             {
-                var isActive = string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), filterOption, StringComparison.OrdinalIgnoreCase);
+                var isActive = string.Equals(requestQuery["filter"].ToString(), filterOption, StringComparison.OrdinalIgnoreCase);
                 var buttonText = filterOption.First().ToString().ToUpper() + filterOption.Substring(1);
 
                 <a href="?filter=@filterOption&sort=@filterOption" class="btn btn-outline-warning @(isActive ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:5px;">
@@ -141,13 +141,13 @@
         </div>
         <!-- Genre list section -->
         <div id="genreFilter" class="collapse">
-            <div class="row ms-4">
+            <div class="row ms-1">
                 <div class="col-md-12 mt-3">
                     <h4 class="text-white font-weight-light mt-2">Genre</h4>
-                    @for (var i = 0; i < genres.Count; i++)
+                    @for (var i = 0; i < Model.Genres.Count; i++)
                     {
-                        var genre = genres[i];
-                        var selectedGenres = ViewContext.HttpContext.Request.Query["searchQuery"];
+                        var genre = Model.Genres[i];
+                        var selectedGenres = requestQuery["searchQuery"];
                         var currentGenre = genre.GenreName;
                         var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
 
@@ -157,8 +157,8 @@
             </div>
         </div>
         <!-- Book List -->
-        <div class="col-md-12 mx-2">
-            <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
+        <div class="col-md-12 mt-3">
+            <ul class="row mt-3 list-unstyled" style="padding-left: 0;">
                 @if (pageData.Any())
                 {
                     @foreach (var books in pageData)
@@ -174,7 +174,7 @@
                                     </div>
                                     <img class="card-img-top" height="250" width="100" src="@books.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
                                     <div class="card-body text-center d-flex justify-content-center" style="height:110px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                        @if (string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase))
+                                        @if (string.Equals(requestQuery["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase))
                                         {
                                             <h6 class="card-title ellipsis text-white">@books.BookTitle</h6>
                                         }
@@ -184,21 +184,21 @@
                                         }
                                     </div>
                                     <div class="card-footer text-start d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
-                                        @if (string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase))
+                                        @if (string.Equals(requestQuery["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase))
                                         {
                                             <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
                                                 <i class="fas fa-book"></i>
                                                 @books.ReviewCount
                                             </span>
                                         }
-                                        else if (string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "author", StringComparison.OrdinalIgnoreCase))
+                                        else if (string.Equals(requestQuery["filter"].ToString(), "author", StringComparison.OrdinalIgnoreCase))
                                         {
                                             <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
                                                 <i class="fas fa-user"></i>
                                                 @books.Author
                                             </span>
                                         }
-                                        else if (string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), "genre", StringComparison.OrdinalIgnoreCase))
+                                        else if (string.Equals(requestQuery["filter"].ToString(), "genre", StringComparison.OrdinalIgnoreCase))
                                         {
                                             <span class="card-title ellipsis-genre text-white" style="margin-top:-5px; font-size:12px;">
                                                 <i class="fas fa-folder"></i>

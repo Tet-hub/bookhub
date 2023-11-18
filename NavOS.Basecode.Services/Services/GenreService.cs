@@ -38,45 +38,15 @@ namespace NavOS.Basecode.Services.Services
         {
             
             var isExist = _genreRepository.GetGenre().Where(x => x.GenreName == title).Any();
-          
-
-            //    var isExist = _genreRepository.GetGenre()
-            //.Any(x => x.GenreName == title && x.GenreDescription == desc);
 
             return isExist;
         }
-        //public GenreViewModel GetGenre(string GenreId)
-        //{
-        //    var genre = _genreRepository.GetGenre().FirstOrDefault(s => s.GenreId == GenreId);
-
-        //    if (genre != null)
-        //    {
-        //        var genreViewModel = new GenreViewModel
-        //        {
-        //            GenreId = genre.GenreId,
-        //            GenreName = genre.GenreName,
-        //            GenreDescription = genre.GenreDescription,
-        //            AddedBy = genre.AddedBy,
-        //            UpdatedBy = genre.UpdatedBy,
-        //            AddedTime = genre.AddedTime,
-        //            UpdatedTime = genre.UpdatedTime,
-
-        //        };
-        //        return genreViewModel;
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
-        //}
         public Genre GetGenre(string Genreid)
         {
             var genre = _genreRepository.GetGenre(Genreid);
 
             return genre;
         }
-
-
         public void AddGenre(GenreViewModel genre, string user)
         {
             
@@ -108,19 +78,6 @@ namespace NavOS.Basecode.Services.Services
 
             return false;
         }
-
-        //public bool DeleteGenres(GenreViewModel genreViewModel)
-        //{
-        //    Genre genre = _genreRepository.GetGenre(genreViewModel.GenreId);
-        //    if (genre != null)
-        //    {
-        //        _genreRepository.DeleteGenre(genre);
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
         public bool DeleteGenre(string GenreId)
         {
             Genre genre = _genreRepository.GetGenre(GenreId);

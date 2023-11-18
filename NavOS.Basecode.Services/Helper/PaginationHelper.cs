@@ -23,4 +23,21 @@ namespace NavOS.Basecode.Services.Helper
             return (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData);
         }
     }
+
+    public static class ReviewPaginationHelper
+    {
+        public static (int, int, int, int, int, List<ReviewViewModel>) GetPagination(
+            int pageSize, List<ReviewViewModel> reviews, string currentPageQueryString)
+        {
+            int currentPage = string.IsNullOrEmpty(currentPageQueryString) ? 1 : int.Parse(currentPageQueryString);
+            int totalItems = reviews.Count;
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            int startIndex = (currentPage - 1) * pageSize;
+            int reviewNumber = startIndex + 1;
+            int endIndex = Math.Min(startIndex + pageSize, totalItems);
+            List<ReviewViewModel> pageData = reviews.GetRange(startIndex, endIndex - startIndex);
+
+            return (currentPage, totalItems, totalPages, startIndex, reviewNumber, pageData);
+        }
+    }
 }

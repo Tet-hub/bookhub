@@ -1,18 +1,5 @@
-﻿@using NavOS.Basecode.Services.ServiceModels;
-@{
-    ViewData["Title"] = "Home Page";
-    var books = ViewData["Books"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
-    var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
+﻿@model NavOS.Basecode.Services.ServiceModels.BookWithReviewViewModel
 
-    var sortedBooks = books.OrderByDescending(book => book.TotalRating);
-
-    var filteredBooks = books
-    .OrderByDescending(book => book.AddedTime)
-    .Where(book => (DateTime.Now - book.AddedTime).TotalDays <= 14)
-    .Take(5);
-
-
-}
 <style>
     .ellipsis {
         overflow: hidden;
@@ -58,25 +45,25 @@
         <!-- Book List -->
         <div class="col-md-12 mx-2">
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
-                @foreach (var book in filteredBooks)
+                @foreach (var latestBook in Model.LatestBooks)
                 {
                     <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                         <div class="card w-100" style="height: 100%;">
-                            <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                            <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@latestBook.BookId" class="text-decoration-none text-dark">
                                 <div class="rating-badge">
                                     <span class="badge badge-primary rounded-circle text-dark">
-                                        @book.TotalRating
+                                        @latestBook.TotalRating
                                         <i class="fa fa-star checked"></i>
                                     </span>
                                 </div>
-                                <img class="card-img-top" height="250" width="100" src="@book.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                <img class="card-img-top" height="250" width="100" src="@latestBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
                                 <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                    <h6 class="card-title ellipsis text-white">@book.BookTitle</h6>
+                                    <h6 class="card-title ellipsis text-white">@latestBook.BookTitle</h6>
                                 </div>
                                 <div class="card-footer text-center d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
                                     <span class="card-title ellipsis text-white" style="margin-top:-5px;font-size:12px;">
                                         <i class="far fa-calendar"></i>
-                                        @(book.AddedTime.ToString("MMMM d, yyyy"))
+                                        @(latestBook.AddedTime.ToString("MMMM d, yyyy"))
                                     </span>
                                 </div>
                             </a>
@@ -96,24 +83,24 @@
         <!-- Book List -->
         <div class="col-md-12 mx-2">
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
-                @foreach (var book in sortedBooks.Take(5))
+                @foreach (var topBook in Model.TopRatedBooks)
                 {
                     <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                         <div class="card w-100" style="height: 100%;">
-                            <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@book.BookId" class="text-decoration-none text-dark">
+                            <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@topBook.BookId" class="text-decoration-none text-dark">
                                 <div class="rating-badge">
                                     <span class="badge badge-primary rounded-circle text-dark">
-                                        @book.TotalRating
+                                        @topBook.TotalRating
                                         <i class="fa fa-star checked"></i>
                                     </span>
                                 </div>
-                                <img class="card-img-top" height="250" width="100" src="@book.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                <img class="card-img-top" height="250" width="100" src="@topBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
                                 <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                    <h6 class="card-title ellipsis text-white">@book.BookTitle</h6>
+                                    <h6 class="card-title ellipsis text-white">@topBook.BookTitle</h6>
                                 </div>
                                 <div class="card-footer text-center d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
                                     <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
-                                        @book.ReviewCount
+                                        @topBook.ReviewCount
                                         <i class="fas fa-book"></i>
                                     </span>
                                 </div>
@@ -125,18 +112,3 @@
         </div>
     </div>
 </div>
-
-@section scripts {
-    <script>
-        var errorMessage = '@TempData["ErrorMessage"]';
-        var successMessage = '@TempData["SuccessMessage"]';
-
-        if (errorMessage) {
-            toastr.error(errorMessage);
-        }
-
-        if (successMessage) {
-            toastr.success(successMessage);
-        }
-    </script>
-}

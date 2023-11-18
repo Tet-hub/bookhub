@@ -40,29 +40,14 @@ namespace NavOS.Basecode.BookApp.Controllers
 
         }
         /// <summary>
-        /// Setups the common view data.
-        /// </summary>
-        private void CommonViewData()
-        {
-            var genres = _genreService.GetGenres();
-            var reviews = _reviewService.GetReviews();
-            ViewData["Genre"] = genres;
-            ViewData["Reviews"] = reviews;
-        }
-        /// <summary>
         /// Homepage
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IActionResult Index()
         {
-            var reviews = _reviewService.GetReviews();
-            var books = _bookService.GetBooks();
-
-            ViewData["Reviews"] = reviews;
-            ViewData["Books"] = books;
-
-            return View();
+            var data = _bookService.GetBooksWithReviews();
+            return View(data);
         }
         /// <summary>
         /// Display new books.
@@ -73,17 +58,10 @@ namespace NavOS.Basecode.BookApp.Controllers
         [HttpGet]
         public IActionResult NewBooks(string searchQuery, string filter, string sort)
         {
-            var currentDate = DateTime.Now;
-            var twoWeeksAgo = currentDate.AddDays(-14);
+            var data = _bookService.FilterAndSortBookListTwoWeeks(searchQuery, filter, sort);
 
-            var book = _bookService.FilterAndSortBooksTwoWeeks(searchQuery, filter, sort, twoWeeksAgo, currentDate);
-            CommonViewData();
-            ViewData["NewBooks"] = book;
-
-            return View();
+            return View(data);
         }
-
-
         /// <summary>
         /// TopBooks
         /// </summary>
@@ -92,14 +70,11 @@ namespace NavOS.Basecode.BookApp.Controllers
         [HttpGet]
         public IActionResult TopBooks(string searchQuery, string filter, string sort)
         {
-            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
-            CommonViewData();
-            ViewData["TopBooks"] = book;
-
-            return View();
+            var data = _bookService.FilterAndSortBookList(searchQuery, filter, sort);
+            return View(data);
         }
         /// <summary>
-        /// Alls the books.
+        /// All the books.
         /// </summary>
         /// <param name="searchQuery">The search query.</param>
         /// <param name="filter">The filter.</param>
@@ -108,13 +83,9 @@ namespace NavOS.Basecode.BookApp.Controllers
         [HttpGet]
         public IActionResult AllBooks(string searchQuery, string filter, string sort)
         {
-            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
+            var data = _bookService.FilterAndSortBookList(searchQuery, filter, sort);
 
-            CommonViewData();
-
-            ViewData["AllBooks"] = book;
-
-            return View();
+            return View(data);
         }
 
         /// <summary>
@@ -122,19 +93,17 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// </summary>
         /// <param name="BookId"></param>
         /// <returns></returns>
-        public IActionResult BookDetails(string BookId)
+        public IActionResult BookDetails(string bookId)
         {
-            var book = _bookService.GetBook(BookId);
-            if (book != null)
+            var data = _bookService.GetBookWithReviews(bookId);
+
+            if (data != null)
             {
-                var reviews = _reviewService.GetReviews(BookId);
-
-                ViewData["Reviews"] = reviews;
-                ViewData["Book"] = book;
-
-                return View();
+                return View(data);
             }
+
             return NotFound();
         }
+
     }
 }
