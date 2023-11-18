@@ -1,20 +1,16 @@
-﻿@using NavOS.Basecode.Services.ServiceModels;
-@using NavOS.Basecode.Services.Helper
+﻿@model NavOS.Basecode.Services.ServiceModels.FilteredBooksViewModel
+@using NavOS.Basecode.Services.Helper;
 @{
     ViewData["Title"] = "All Books";
-
-    var books = ViewData["AllBooks"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
-    var genres = ViewData["Genre"] as List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>;
-
+    var requestQuery = ViewContext.HttpContext.Request.Query;
     int pageSize = 5;
     var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = PaginationHelper
-    .GetPagination(pageSize, books, ViewContext.HttpContext.Request.Query["page"]
-    .FirstOrDefault());
+        .GetPagination(pageSize, Model.Books, requestQuery["page"]
+        .FirstOrDefault());
 
     var (displayText, textColor, fontStyle) = HeaderHelper.GetDisplayProperties(Context);
 
 }
-
 @section styles {
     <link rel="stylesheet" href="~/css//allbooks.css" />
 
@@ -41,13 +37,12 @@
             border: none;
         }
 
-            .pagination .page-item a:hover {
-                background-color: #00A651;
-                color: white;
-            }
+        .pagination .page-item a:hover {
+            background-color: #00A651;
+            color: white;
+        }
     </style>
 }
-
 
 <div class="container">
     <div class="row mt-5" style="border: 1px solid #fff;">
@@ -89,20 +84,20 @@
             </div>
         </div>
         <!-- Search -->
-        <div class="row ms-1">
+        <div class="col-md-12">
             <form asp-controller="Book" asp-action="AllBooks" method="get" class="mt-3">
-                <div class="input-group" style="width:99%;">
+                <div class="input-group">
                     <input type="text" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow:none;">
-                    <input type="hidden" name="filter" value="@ViewContext.HttpContext.Request.Query["filter"]" />
+                    <input type="hidden" name="filter" value="@requestQuery["filter"]" />
                 </div>
             </form>
         </div>
         <div class="row" style="margin-top:-10px;">
             <!-- Filter button section -->
-            <div class="col-12 mt-4 ms-3">
+            <div class="col-12 mt-4">
                 @foreach (var filterOption in new[] { "all", "title", "author" })
                 {
-                    var isActive = string.Equals(ViewContext.HttpContext.Request.Query["filter"].ToString(), filterOption, StringComparison.OrdinalIgnoreCase);
+                    var isActive = string.Equals(requestQuery["filter"].ToString(), filterOption, StringComparison.OrdinalIgnoreCase);
                     var buttonText = filterOption.First().ToString().ToUpper() + filterOption.Substring(1);
 
                     <a href="?filter=@filterOption&sort=@filterOption" class="btn btn-outline-warning @(isActive ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:5px;">
@@ -113,12 +108,12 @@
             </div>
             <!-- Genre list section -->
             <div id="genreFilter" class="collapse">
-                <div class="col-md-12 ms-4 mt-3">
+                <div class="col-md-12 ms-1 mt-3">
                     <h4 class="text-white font-weight-light mt-2">Genre</h4>
-                    @for (var i = 0; i < genres.Count; i++)
+                    @for (var i = 0; i < Model.Genres.Count; i++)
                     {
-                        var genre = genres[i];
-                        var selectedGenres = ViewContext.HttpContext.Request.Query["searchQuery"];
+                        var genre = Model.Genres[i];
+                        var selectedGenres = requestQuery["searchQuery"];
                         var currentGenre = genre.GenreName;
                         var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
 
@@ -143,10 +138,13 @@
                         <div class="w3-twothird">
                             @*                      <h3 class="w3-text-orange"><i>#@(bookNumber)</i></h3> *@
                             <div class="animateZoom">
-                                <h3><span>@book.BookTitle</span></h3>
+                                <h3><a href="#" class="text-white">@book.BookTitle</a></h3>
                             </div>
                             <div class="animateZoom">
-                                <h4><span>@book.Author</span></h4>
+                                <h4><a href="#" class="text-white">@book.Author</a></h4>
+                            </div>
+                            <div class="animateZoom">
+                                <p class="fs-italic"><a href="#" class="text-white">@book.Genre</a></p>
                             </div>
                             <small style="font-size: 13px;">
                                 <i class='fa fa-star w3-text-yellow'></i>

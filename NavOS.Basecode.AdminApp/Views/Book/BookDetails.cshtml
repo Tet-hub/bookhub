@@ -1,19 +1,5 @@
-﻿@using NavOS.Basecode.Services.ServiceModels;
-@{
-    ViewData["Title"] = "Book Details";
-    var reviews = ViewData["Reviews"] as List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
-    var book = ViewData["Book"] as NavOS.Basecode.Services.ServiceModels.BookViewModel;
-    string bookId = book.BookId.ToString();
-    // Calculate the avg. rate & count no. of reviews where BookId = currentBookId
-    double averageRate = reviews
-        .Where(r => r.BookId == bookId)
-        .Select(r => (double?)r.Rate)
-        .Average() ?? 0.0;
-    int reviewCount = reviews
-        .Count(r => r.BookId == bookId);
+﻿@model NavOS.Basecode.Services.ServiceModels.BookWithReviewViewModel
 
-
-}
 <Style>
     .rating {
         display: flex;
@@ -25,7 +11,7 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        margin-top:-17px;
+        margin-top: -17px;
     }
 
     .star {
@@ -47,30 +33,18 @@
         transition: background-color 0.3s, color 0.3s;
     }
 
-    .genre-tag:hover {
-        text-decoration: underline;
-        color: #FFC119;
-    }
+        .genre-tag:hover {
+            text-decoration: underline;
+            color: #FFC119;
+        }
 
-    .star-rating {
-        font-size: 25px;
-        cursor: pointer;
-    }
-
-    .star-rating:hover {
-        color: yellow;
-    }
-
-    .yellow-star {
-        color: yellow !important;
-    }
 </Style>
 <div class="container mt-5">
     <div class="w3-margin" id="bgColor">
         <!-- Header Container -->
-        <div class="col-md-12 d-flex justify-content-between align-items-center"style="background-color: #FFC119; height: 35px;">
+        <div class="col-md-12 d-flex justify-content-between align-items-center" style="background-color: #FFC119; height: 35px;">
             <div class="float-start">
-                <span class="float-start text-center ms-3 fst-italic text-dark">Released | @book.DateReleased.ToString("MMMM dd, yyyy")</span>
+                <span class="float-start text-center ms-3 fst-italic">Released | @Model.BookDetails.DateReleased.ToString("MMMM dd, yyyy")</span>
             </div>
             <div class="float-end py-2">
                 <a class="text-dark text-decoration-none fw-bold me-2 btn btn-dark text-white" style="font-size:12px; box-shadow:none;" href="javascript:history.back()" type="button"><i class="bi bi-backspace"></i></a>
@@ -80,26 +54,23 @@
         <div id="details">
             <div class="w3-row w3-padding-30 w3-margin-bottom">
                 <div class="w3-col w3-padding-30" style="width:230px">
-                    <img src="@book.ImageUrl" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" class="w3-margin-bottom" height="250" width="210" style="object-fit: cover">
+                    <img src="@Model.BookDetails.ImageUrl" class="w3-margin-bottom" height="250" width="210" onerror="this.src='@Url.Content("~/img/default-book.jpg")'">
                 </div>
                 <div id="bookInfo" class="w3-col w3-padding-30" style="width:270px">
-                    <p id="book1" class="w3-margin-bottom w3-text-orange">@book.BookTitle</p>
-                    <p>Author: @book.Author</p>
-                    <p>Status: @book.Status</p>
+                    <p id="book1" class="w3-margin-bottom w3-text-orange">@Model.BookDetails.BookTitle</p>
+                    <p>Author: @Model.BookDetails.Author</p>
+                    <p>Status: @Model.BookDetails.Status</p>
                     <p class="genre-tags">
                         <span>Genre: </span>
-                        @foreach (var genre in book.Genre.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                        {
-                            <a href="#" class="genre-tag text-white fw-italic">@genre.Trim()</a>
-                        }
+                        <a href="#" class="genre-tag text-white fw-italic">@Model.BookDetails.Genre</a>
                     </p>
-                    <p>Chapter: @book.Chapter</p><br>
+                    <p>Chapter: @Model.BookDetails.Chapter</p><br>
                 </div>
-                <div class="w3-right w3-col" style="width: 258px">
+                <div class="w3-right w3-col" style="width: 246px">
                     <div id="rate-review">
                         <p class="font-italic">
-                            <b>@(averageRate % 1 == 0 ? averageRate.ToString("0") : averageRate.ToString("0.0")) / 5 </b>-
-                            <span>@reviewCount.ToString("N0") Reviews</span>
+                            <b>@(Model.BookDetails.AverageRate % 1 == 0 ? Model.BookDetails.AverageRate.ToString("0") : Model.BookDetails.AverageRate.ToString("0.0")) / 5 </b>-
+                            <span>@Model.BookDetails.ReviewCount.ToString("N0") Reviews</span>
                         </p>
                     </div>
                     <div class="rating">
@@ -109,13 +80,13 @@
                             {
                                 double starColorPercentage = 0.0;
 
-                                if (i < Math.Floor(averageRate))
+                                if (i < Math.Floor(Model.BookDetails.AverageRate))
                                 {
                                     starColorPercentage = 100.0;
                                 }
-                                else if (i == Math.Floor(averageRate) && averageRate % 1 > 0)
+                                else if (i == Math.Floor(Model.BookDetails.AverageRate) && Model.BookDetails.AverageRate % 1 > 0)
                                 {
-                                    starColorPercentage = (averageRate % 1) * 100;
+                                    starColorPercentage = (Model.BookDetails.AverageRate % 1) * 100;
                                 }
 
                                 <div class="star" style="background: linear-gradient(90deg, yellow @(starColorPercentage)%, gray @(starColorPercentage)%);"></div>
@@ -124,16 +95,14 @@
                     </div>
                 </div>
             </div><br>
-                <h6 id="summaryLabel" class="w3-margin-bottom">SUMMARY</h6>
+            <h6 id="summaryLabel" class="w3-margin-bottom">SUMMARY</h6>
             <div id="summary" class="w3-justify w3-border w3-padding">
-                <p>@book.Summary</p>
-            </div>
-            <h7 id="reviewsLabel" class="w3-margin-bottom mt-3">REVIEWS</h7>
+                <p>@Model.BookDetails.Summary</p>
+            </div><br><br>
             <!-- REVIEW LIST-->
             <div id="leftRightPadding" class="w3-border w3-padding-32">
-                @Html.Partial("~/Views/Review/ReviewDetails.cshtml", reviews)
+                @await Html.PartialAsync("~/Views/Review/ReviewDetails.cshtml", Model.Reviews)
             </div>
-
         </div>
     </div>
 </div>

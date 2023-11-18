@@ -11,15 +11,22 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using ZXing;
 
 namespace NavOS.Basecode.Services.Services
 {
     public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
-        public BookService(IBookRepository bookRepository, NavosDBContext dbContext)
+        private readonly IGenreService _genreService;
+        private readonly IReviewService _reviewService;
+        public BookService(IBookRepository bookRepository,
+            IGenreService genreService,
+            IReviewService reviewService, NavosDBContext dbContext)
         {
             _bookRepository = bookRepository;
+            _genreService = genreService;
+            _reviewService = reviewService;
         }
         /// <summary>
         /// Gets the books.
@@ -46,6 +53,71 @@ namespace NavOS.Basecode.Services.Services
             .ToList();
 
             return data;
+        }
+        /// <summary>
+        /// Gets the books with reviews -> used for index.cstml
+        /// </summary>
+        /// <returns></returns>
+        public BookWithReviewViewModel GetBooksWithReviews()
+        {
+            var url = "https://127.0.0.1:8080/";
+
+            var booksData = _bookRepository.GetBooks()
+                .Select(s => new BookViewModel
+                {
+                    BookId = s.BookId,
+                    BookTitle = s.BookTitle,
+                    Summary = s.Summary,
+                    Author = s.Author,
+                    Status = s.Status,
+                    Genre = s.Genre,
+                    Chapter = s.Chapter,
+                    DateReleased = s.DateReleased,
+                    AddedTime = s.AddedTime,
+                    ImageUrl = Path.Combine(url, s.BookId + ".png"),
+                    ReviewCount = s.Reviews.Count,
+                    TotalRating = s.Reviews.Any() ? Math.Round((double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count, 2) : 0,
+                })
+                .ToList();
+
+            var reviewsData = _reviewService.GetReviews()
+                .GroupBy(r => r.BookId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var bookWithReviews = new BookWithReviewViewModel
+            {
+                Books = booksData,
+                Reviews = new List<ReviewViewModel>()
+            };
+
+            foreach (var book in booksData)
+            {
+                if (reviewsData.TryGetValue(book.BookId, out var bookReviews))
+                {
+                    book.Reviews = bookReviews.Select(r => new ReviewViewModel
+                    {
+                    }).ToList();
+                }
+                else
+                {
+                    book.Reviews = new List<ReviewViewModel>();
+                }
+            }
+            var latestBooks = bookWithReviews.Books
+                .Where(book => (DateTime.Now - book.AddedTime).TotalDays <= 14)
+                .OrderByDescending(book => book.AddedTime)
+                .Take(5)
+                .ToList();
+
+            var topRatedBooks = bookWithReviews.Books
+                .OrderByDescending(book => book.TotalRating)
+                .Take(5)
+                .ToList();
+
+            bookWithReviews.LatestBooks = latestBooks;
+            bookWithReviews.TopRatedBooks = topRatedBooks;
+
+            return bookWithReviews;
         }
 
         /// <summary>
@@ -74,7 +146,11 @@ namespace NavOS.Basecode.Services.Services
             };
             return bookViewModel;
         }
-
+        /// <summary>
+        /// Adds the book.
+        /// </summary>
+        /// <param name="book">The book.</param>
+        /// <param name="user">The user.</param>
         public void AddBook(BookViewModel book, string user)
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -154,7 +230,7 @@ namespace NavOS.Basecode.Services.Services
             return isExist;
         }
 
-
+        //to be removed
         public List<BookViewModel> FilterAndSortBooks(string searchQuery, string filter, string sort)
         {
             var data = GetBooks();
@@ -208,14 +284,94 @@ namespace NavOS.Basecode.Services.Services
             }
             return data;
         }
-
-        public List<BookViewModel> FilterAndSortBooksTwoWeeks(string searchQuery, string filter, string sort, DateTime startDate, DateTime endDate)
+        /// <summary>
+        /// Filters the and sort book list.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        public FilteredBooksViewModel FilterAndSortBookList(string searchQuery, string filter, string sort)
         {
+            var result = new FilteredBooksViewModel();
+
+            result.Books = GetBooks();
+            //filters
+            if (string.IsNullOrEmpty(filter) || string.Equals(filter, "all", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    result.Books = result.Books
+                        .Where(book =>
+                            (book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                             book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                             book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                        )
+                        .ToList();
+                }
+            }
+            //search query
+            else if (!string.IsNullOrEmpty(searchQuery))
+            {
+                switch (filter.ToLower())
+                {
+                    case "title":
+                        result.Books = result.Books
+                            .Where(book => book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                        break;
+                    case "author":
+                        result.Books = result.Books
+                            .Where(book => book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                        break;
+                    case "genre":
+                        result.Books = result.Books
+                            .Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                        break;
+                }
+            }
+            //sorting
+            if (string.Equals(sort, "title", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Books = result.Books.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
+            }
+            else if (string.Equals(sort, "author", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Books = result.Books.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
+            }
+            else if (string.Equals(sort, "ratings", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
+            }
+
+            result.Genres = _genreService.GetGenres();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Filters the and sort book list two weeks.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        public FilteredBooksViewModel FilterAndSortBookListTwoWeeks(string searchQuery, string filter, string sort)
+        {
+            var result = new FilteredBooksViewModel();
+
             var data = GetBooks();
+
+            var currentDate = DateTime.Now;
+            var twoWeeksAgo = currentDate.AddDays(-14);
+
             data = data
-                .Where(book => book.AddedTime >= startDate && book.AddedTime <= endDate)
+                .Where(book => book.AddedTime >= twoWeeksAgo && book.AddedTime <= currentDate)
                 .ToList();
 
+            //filters
             if (string.IsNullOrEmpty(filter) || string.Equals(filter, "all", StringComparison.OrdinalIgnoreCase))
             {
                 if (!string.IsNullOrEmpty(searchQuery))
@@ -229,6 +385,7 @@ namespace NavOS.Basecode.Services.Services
                         .ToList();
                 }
             }
+            //searchQuery
             else if (!string.IsNullOrEmpty(searchQuery))
             {
                 switch (filter.ToLower())
@@ -250,7 +407,7 @@ namespace NavOS.Basecode.Services.Services
                         break;
                 }
             }
-
+            //sorting
             if (string.Equals(sort, "title", StringComparison.OrdinalIgnoreCase))
             {
                 data = data.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
@@ -264,14 +421,20 @@ namespace NavOS.Basecode.Services.Services
                 data = data.OrderByDescending(book => book.AddedTime).ToList();
             }
 
-            return data;
+            result.Books = data;
+            result.Genres = _genreService.GetGenres();
+
+            return result;
         }
-
-
+        /// <summary>
+        /// Gets the books for genre.
+        /// </summary>
+        /// <param name="genreName">Name of the genre.</param>
+        /// <returns></returns>
         public List<BookViewModel> GetBooksForGenre(string genreName)
         {
             var url = "https://127.0.0.1:8080/";
-            var booksForGenre = _bookRepository.GetBooks().Where(s => s.Genre == genreName)
+            var data = _bookRepository.GetBooks().Where(s => s.Genre == genreName)
                 .Select(s => new BookViewModel
                 {
                     BookId = s.BookId,
@@ -287,9 +450,51 @@ namespace NavOS.Basecode.Services.Services
                 })
                 .ToList();
 
-            return booksForGenre;
+            return data;
         }
+        /// <summary>
+        /// Gets the book with reviews.
+        /// </summary>
+        /// <param name="bookId">The book identifier.</param>
+        /// <returns></returns>
+        public BookWithReviewViewModel GetBookWithReviews(string bookId)
+        {
+            var book = _bookRepository.GetBooks().FirstOrDefault(s => s.BookId == bookId);
 
+            if (book != null)
+            {
+                var url = "https://127.0.0.1:8080/";
+                var reviews = _reviewService.GetReviews(bookId);
 
+                var data = new BookWithReviewViewModel
+                {
+                    BookDetails = new BookViewModel
+                    {
+                        BookId = book.BookId,
+                        BookTitle = book.BookTitle,
+                        Summary = book.Summary,
+                        Author = book.Author,
+                        Status = book.Status,
+                        Genre = book.Genre,
+                        Chapter = book.Chapter,
+                        DateReleased = book.DateReleased,
+                        AddedTime = book.AddedTime,
+                        ImageUrl = Path.Combine(url, book.BookId + ".png"),
+                        Reviews = reviews,
+                        AverageRate = reviews.Any() ? reviews.Average(r => r.Rate) : 0.0,
+                        ReviewCount = reviews.Count
+                    },
+                    Reviews = reviews,
+                    Review = new ReviewViewModel
+                    {
+                        BookId = book.BookId
+                    }
+                };
+
+                return data;
+            }
+
+            return null;
+        }
     }
 }

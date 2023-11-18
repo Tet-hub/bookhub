@@ -10,14 +10,16 @@ namespace NavOS.Basecode.Services.Interfaces
     public interface IBookService
     {
         List<BookViewModel> GetBooks();
-        public BookViewModel GetBook(string BookId);
+        BookViewModel GetBook(string BookId);
         void AddBook(BookViewModel book, string user);
         bool Validate(string BookTitle);
         bool DeleteBook(string bookId);
         bool UpdateBook(BookViewModel bookViewModel, string user);
         List<BookViewModel> FilterAndSortBooks(string filter, string searchQuery, string sort);
-        List<BookViewModel> FilterAndSortBooksTwoWeeks(string searchQuery, string filter, string sort, DateTime startDate, DateTime endDate);
-
-        public List<BookViewModel> GetBooksForGenre(string genreName);
+        List<BookViewModel> GetBooksForGenre(string genreName);
+        FilteredBooksViewModel FilterAndSortBookList(string searchQuery, string filter, string sort);
+        FilteredBooksViewModel FilterAndSortBookListTwoWeeks(string searchQuery, string filter, string sort);
+        BookWithReviewViewModel GetBooksWithReviews();
+        BookWithReviewViewModel GetBookWithReviews(string bookId);
     }
 }

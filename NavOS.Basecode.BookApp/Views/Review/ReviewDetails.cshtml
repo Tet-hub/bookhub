@@ -1,8 +1,15 @@
-﻿@model List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>;
+﻿@using NavOS.Basecode.Services.Helper
+@model List<NavOS.Basecode.Services.ServiceModels.ReviewViewModel>
+@{
+    int pageSize = 5;
+    string currentPageQueryString = Context.Request.Query["page"];
+    var (currentPage, totalItems, totalPages, startIndex, reviewNumber, reviewsToDisplay) =
+        ReviewPaginationHelper.GetPagination(pageSize, Model, currentPageQueryString);
+}
 
-@if (Model != null && Model.Count > 0)
+@if (reviewsToDisplay != null && reviewsToDisplay.Count > 0)
 {
-    @foreach (var review in Model.OrderByDescending(r => r.DateReviewed))
+    @foreach (var review in reviewsToDisplay)
     {
         <div class="w3-border w3-padding">
             <div class="w3-row">
@@ -27,6 +34,37 @@
         </div>
         <br>
     }
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center">
+        <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
+            <ul class="pagination">
+                @if (currentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = currentPage - 1 })" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+
+                @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = i })">@i</a>
+                    </li>
+                }
+
+                @if (currentPage < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = currentPage + 1 })" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
 }
 else
 {

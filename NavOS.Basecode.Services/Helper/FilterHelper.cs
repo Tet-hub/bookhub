@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NavOS.Basecode.Services.Helper
 {
@@ -11,15 +7,16 @@ namespace NavOS.Basecode.Services.Helper
     {
         public static string GetQueryString(int page, HttpContext context)
         {
+            var query = context.Request.Query;
             var queryParameters = new List<string>();
 
-            if (context.Request.Query.TryGetValue("filter", out var filter))
+            if (query.TryGetValue("filter", out var filter))
                 queryParameters.Add($"filter={filter}");
 
-            if (context.Request.Query.TryGetValue("sort", out var sort))
+            if (query.TryGetValue("sort", out var sort))
                 queryParameters.Add($"sort={sort}");
 
-            if (context.Request.Query.TryGetValue("searchQuery", out var searchQuery))
+            if (query.TryGetValue("searchQuery", out var searchQuery))
                 queryParameters.Add($"searchQuery={searchQuery}");
 
             queryParameters.Add($"page={page}");
@@ -27,5 +24,4 @@ namespace NavOS.Basecode.Services.Helper
             return "?" + string.Join("&", queryParameters);
         }
     }
-
 }
