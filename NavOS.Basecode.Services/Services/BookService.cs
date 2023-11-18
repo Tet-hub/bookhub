@@ -169,12 +169,15 @@ namespace NavOS.Basecode.Services.Services
             model.AddedTime = DateTime.Now;
             model.UpdatedTime = DateTime.Now;
 
-            var coverImageFileName = Path.Combine(coverImagesPath, model.BookId) + ".png";
-            using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+            if (book.ImageFile != null)
             {
-                book.ImageFile.CopyTo(fileStream);
+                var coverImageFileName = Path.Combine(coverImagesPath, book.BookId) + ".png";
+                using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+                {
+                    book.ImageFile.CopyTo(fileStream);
+                }
+                _bookRepository.AddBook(model);
             }
-
             _bookRepository.AddBook(model);
         }
 
