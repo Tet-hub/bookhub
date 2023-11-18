@@ -112,3 +112,19 @@
         </div>
     </div>
 </div>
+@section scripts {
+    <script>
+        var errorMessage = '@TempData["ErrorMessage"]';
+        var successMessage = '@TempData["SuccessMessage"]';
+
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+    </script>
+    <script src="~/js/bookModal.js"></script>
+    <script src="~/js/getQueryParam.js"></script>
+}

@@ -1,5 +1,11 @@
-﻿@model NavOS.Basecode.Services.ServiceModels.BookWithReviewViewModel
-
+﻿@model NavOS.Basecode.Services.ServiceModels.BookWithReviewViewModel;
+@using NavOS.Basecode.Services.Helper
+@{
+    int pageSize = 5;
+    string currentPageQueryString = Context.Request.Query["page"];
+    var (currentPage, totalItems, totalPages, startIndex, reviewNumber, reviewsToDisplay) =
+        ReviewPaginationHelper.GetPagination(pageSize, Model.Reviews, currentPageQueryString);
+}
 <Style>
     .rating {
         display: flex;
@@ -33,16 +39,19 @@
         transition: background-color 0.3s, color 0.3s;
     }
 
-        .genre-tag:hover {
-            text-decoration: underline;
-            color: #FFC119;
-        }
+    .genre-tag:hover {
+        text-decoration: underline;
+        color: #FFC119;
+    }
+    .star-color {
+        color: yellow;
+    }
 
 </Style>
 <div class="container mt-5">
     <div class="w3-margin" id="bgColor">
         <!-- Header Container -->
-        <div class="col-md-12 d-flex justify-content-between align-items-center" style="background-color: #FFC119; height: 35px;">
+        <div class="col-md-12 d-flex justify-content-between align-items-center text-dark" style="background-color: #FFC119; height: 35px;">
             <div class="float-start">
                 <span class="float-start text-center ms-3 fst-italic">Released | @Model.BookDetails.DateReleased.ToString("MMMM dd, yyyy")</span>
             </div>
@@ -101,7 +110,69 @@
             </div><br><br>
             <!-- REVIEW LIST-->
             <div id="leftRightPadding" class="w3-border w3-padding-32">
-                @await Html.PartialAsync("~/Views/Review/ReviewDetails.cshtml", Model.Reviews)
+                @if (reviewsToDisplay != null && reviewsToDisplay.Count > 0)
+                {
+                    @foreach (var review in reviewsToDisplay)
+                    {
+                        <div class="w3-border w3-padding">
+                            <div class="w3-row">
+                                <div id="userReviewDate" class="w3-rest w3-right w3-margin-bottom">
+                                    <small><i>@review.DateReviewed.ToString("MMMM dd, yyyy hh:mm tt")</i></small>
+                                </div>
+                                <div class="w3-third">
+                                    <span id="reviewName" style="width:150px;">@review.UserName</span>
+                                </div>
+                                <div class="w3-col">
+                                    @foreach (var star in Enumerable.Range(1, review.Rate))
+                                    {
+                                        <i class="fa fa-star star-color"></i>
+                                    }
+                                    @foreach (var star in Enumerable.Range(1, 5 - review.Rate))
+                                    {
+                                        <i class="fa fa-star"></i>
+                                    }
+                                </div>
+                            </div>
+                            <p id="userReview" class="w3-text-white">@review.ReviewText</p>
+                        </div>
+                        <br>
+                    }
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center">
+                        <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
+                            <ul class="pagination">
+                                @if (currentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = currentPage - 1 })" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
+                                {
+                                    <li class="page-item @(i == currentPage ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = i })">@i</a>
+                                    </li>
+                                }
+
+                                @if (currentPage < totalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = currentPage + 1 })" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                }
+                else
+                {
+                    <p>No reviews available.</p>
+                }
             </div>
         </div>
     </div>
