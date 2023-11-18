@@ -81,21 +81,6 @@ namespace NavOS.Basecode.BookApp.Controllers
             return View(data);
         }
         /// <summary>
-        /// All the books.
-        /// </summary>
-        /// <param name="searchQuery">The search query.</param>
-        /// <param name="filter">The filter.</param>
-        /// <param name="sort">The sort.</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult AllBooks(string searchQuery, string filter, string sort)
-        {
-            var data = _bookService.FilterAndSortBookList(searchQuery, filter, sort);
-
-            return View(data);
-        }
-
-        /// <summary>
         /// BookDetails
         /// </summary>
         /// <param name="BookId"></param>
