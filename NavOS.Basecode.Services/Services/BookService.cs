@@ -353,6 +353,76 @@ namespace NavOS.Basecode.Services.Services
 
             return result;
         }
+        /// <summary>
+        /// Filters the and sort top book list.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        public FilteredBooksViewModel FilterAndSortTopBookList(string searchQuery, string filter, string sort)
+        {
+            var result = new FilteredBooksViewModel();
+
+            result.Books = GetBooks();
+            // filters
+            if (string.IsNullOrEmpty(filter) || string.Equals(filter, "ratings", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    result.Books = result.Books
+                        .Where(book =>
+                            (book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                             book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                             book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                        )
+                        .ToList();
+                }
+            }
+            //search query
+            else if (!string.IsNullOrEmpty(searchQuery))
+            {
+                switch (filter.ToLower())
+                {
+                    case "title":
+                        result.Books = result.Books
+                            .Where(book => book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                        break;
+                    case "author":
+                        result.Books = result.Books
+                            .Where(book => book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                        break;
+                    case "genre":
+                        result.Books = result.Books
+                            .Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                        break;
+                }
+            }
+            //sorting
+            if (string.Equals(sort, "title", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Books = result.Books.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
+            }
+            else if (string.Equals(sort, "author", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Books = result.Books.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
+            }
+            else if (string.Equals(sort, "ratings", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
+            }
+            else
+            {
+                result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
+            }
+
+            result.Genres = _genreService.GetGenres();
+
+            return result;
+        }
 
         /// <summary>
         /// Filters the and sort book list two weeks.
@@ -467,7 +537,7 @@ namespace NavOS.Basecode.Services.Services
             if (book != null)
             {
                 var url = "https://127.0.0.1:8080/";
-                var reviews = _reviewService.GetReviews(bookId);
+                var reviews = _reviewService.GetReviews(bookId).OrderByDescending(r => r.DateReviewed).ToList();
 
                 var data = new BookWithReviewViewModel
                 {

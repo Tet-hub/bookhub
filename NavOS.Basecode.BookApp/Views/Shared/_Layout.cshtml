@@ -47,14 +47,38 @@
             progressBar: true
         };
     </script>
-    <!--Script for rating-->
     <script>
+        var isRatingClicked = false;
+
+        function validateForm() {
+            var rateInput = document.getElementById("Rate");
+            var rateValue = parseInt(rateInput.value);
+
+            var rateValidationMessage = document.getElementById("rateValidationMessage");
+
+            if (rateValue === 0) {
+                rateValidationMessage.textContent = "Please rate 1-5";
+                return false;
+            }
+
+            rateValidationMessage.textContent = "";
+
+            return true;
+        }
+
+        // Script for rating
         const stars = document.querySelectorAll('.star-rating');
         const ratingInput = document.getElementById('Rate');
 
         stars.forEach(star => {
             star.addEventListener('click', () => {
                 const value = star.getAttribute('data-value');
+
+                isRatingClicked = true;
+
+                stars.forEach(s => {
+                    s.removeEventListener('mouseover', hoverEffect);
+                });
 
                 stars.forEach(s => {
                     const sValue = s.getAttribute('data-value');
@@ -67,19 +91,29 @@
                 ratingInput.value = value;
             });
         });
-    </script>
-    <!--Script for stars-->
-    <script>
+
+        // Script for stars
         function highlightStars(count) {
-            const stars = document.querySelectorAll('.star-rating');
-            for (let i = 0; i < count; i++) {
-                stars[i].classList.add('yellow-star');
-            }
-            for (let i = count; i < stars.length; i++) {
-                stars[i].classList.remove('yellow-star');
+            if (!isRatingClicked) {
+                const stars = document.querySelectorAll('.star-rating');
+                for (let i = 0; i < count; i++) {
+                    stars[i].classList.add('yellow-star');
+                }
+                for (let i = count; i < stars.length; i++) {
+                    stars[i].classList.remove('yellow-star');
+                }
             }
         }
 
+        // Hover effect function
+        function hoverEffect() {
+            const value = this.getAttribute('data-value');
+            highlightStars(value);
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', hoverEffect);
+        });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
