@@ -28,21 +28,65 @@
         border-radius: 50%; 
     }
 
+    .btn-slide {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+    }
+
+    .trigger {
+        padding: 10px 20px;
+        background-color: transparent;
+        color: #FFC119;
+        border: 2px solid #f39c12; 
+        cursor: pointer;
+        transition: color 0.5s, background-color 0.5s;
+        position: relative;
+        z-index: 2;
+        display: inline-block; 
+        text-decoration: none; 
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background-color: #f39c12;
+        transition: left 0.5s ease;
+        z-index: 1;
+    }
+
+    .btn-slide:hover .slide {
+        left: 0;
+    }
+
+    .btn-slide:hover .trigger {
+        color: #000;
+        background-color: #FFC119;
+    }
+
+
 
 </style>
-<div class="row mt-4 mx-1">
-    <!-- Latest Books-->
-    <div class="col-9 col-md-11 ms-5 px-2">
-        <a asp-action="NewBooks" asp-controller="Book" class="btn btn-warning text-dark float-end mt-2" style="box-shadow:none; margin-right:-4px;">View More Books</a>
-    </div>
-    <div class="col-md-3 d-flex justify-content-between ms-3">
-        <span class="h4" style="color:#FFC119; margin-top:-28px;">LATEST BOOKS</span>
-    </div>
-</div>
-<div class="col-md-12">
+<div class="col-md-12 mt-5">
     <div class="row">
         <!-- Book List -->
-        <div class="col-md-12 mx-2">
+        <div class="col-md-12 mx-2 mt-2">
+            <div class="row mx-3">
+                <!-- Latest Books-->
+                <div class="col-11 col-md-12 px-2 justify-content-between">
+                    <div class="btn-slide float-end mt-2">
+                        <a class="trigger fw-semibold" asp-action="NewBooks" asp-controller="Book">View More Books</a>
+                        <div class="slide"></div>
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex justify-content-between">
+                    <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">LATEST BOOKS</span>
+                </div>
+            </div>
+            <hr class="mx-4"/>
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
                 @foreach (var latestBook in Model.LatestBooks)
                 {
@@ -59,12 +103,6 @@
                                 <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
                                     <h6 class="card-title ellipsis text-white">@latestBook.BookTitle</h6>
                                 </div>
-                                <div class="card-footer text-center d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
-                                    <span class="card-title ellipsis text-white" style="margin-top:-5px;font-size:12px;">
-                                        <i class="far fa-calendar"></i>
-                                        @(latestBook.AddedTime.ToString("MMMM d, yyyy"))
-                                    </span>
-                                </div>
                             </a>
                         </div>
                     </li>
@@ -72,15 +110,16 @@
             </ul>
         </div>
     </div>
-    <!--View Top Books-->
-    <div class="row mt-4 mx-1">
-        <div class="col-md-3 d-flex justify-content-between ms-3">
-            <span class="h4" style="color:#FFC119; margin-top:-28px;">TOP BOOKS</span>
-        </div>
-    </div>
-    <div class="row">
+    <div class="row mt-4">
         <!-- Book List -->
-        <div class="col-md-12 mx-2">
+        <div class="col-md-12 mx-2 mt-4">
+            <!--View Top Books-->
+            <div class="row mt-4 mx-1">
+                <div class="col-md-3 d-flex justify-content-between ms-3">
+                    <span class="h4" style="color:#FFC119; margin-top:-28px; margin-bottom:-15px;">TOP BOOKS</span>
+                </div>
+            </div>
+            <hr class="mx-4" />
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
                 @foreach (var topBook in Model.TopRatedBooks)
                 {
@@ -96,12 +135,6 @@
                                 <img class="card-img-top" height="250" width="100" src="@topBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
                                 <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
                                     <h6 class="card-title ellipsis text-white">@topBook.BookTitle</h6>
-                                </div>
-                                <div class="card-footer text-center d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
-                                    <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
-                                        @topBook.ReviewCount
-                                           <i class="fas fa-book"></i>
-                                    </span>
                                 </div>
                             </a>
                         </div>

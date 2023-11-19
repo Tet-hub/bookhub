@@ -1,5 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
+@{
+    var requestQuery = ViewContext.HttpContext.Request.Query;
+}
 <nav class="navbar navbar-expand-lg navbar-dark @((ViewBag.LoginView == true) ? "hide-navbar" : "")" style="background-color:#111111">
     <div class="container-fluid">
         <a asp-action="Index" asp-controller="Book">
@@ -23,6 +26,31 @@
                     <a class="nav-link" asp-action="NewBooks" asp-controller="Book">New Books</a>
                 </li>
             </ul>
+            <div class="navbar-nav ms-auto pe-5 me-5" style="margin-top: -15px;">
+                <form asp-controller="Book" asp-action="AllBooks" method="get" class="form-inline d-flex align-items-center mt-3">
+                    <div class="input-group" style="width: 610px;">
+                        <span class="input-group-text" style="background-color: #333; border: none;">
+                            <i class="bi bi-search" style="color: #fff;"></i>
+                        </span>
+                        <input type="text" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow: none; background-color: #333; color: #fff; border: none;" id="liveSearchInput">
+                        <input type="hidden" name="filter" value="@requestQuery["filter"]" />
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </nav>
+<style>
+    #liveSearchInput::placeholder {
+        color:gray;
+        background-color: #333 !important;
+    }
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px #333 inset !important;
+    }
+
+
+</style>

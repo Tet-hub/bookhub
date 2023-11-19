@@ -6,18 +6,56 @@
         cursor: pointer;
     }
 
-        .star-rating:hover {
-            color: yellow;
-        }
+    .star-rating:hover {
+        color: yellow;
+    }
 
     .yellow-star {
         color: yellow !important;
     }
+
+    .btn-slide {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+    }
+
+    .trigger {
+        padding: 10px 20px;
+        background-color: transparent;
+        color: #FFC119;
+        border: 2px solid #f39c12;
+        cursor: pointer;
+        transition: color 0.5s, background-color 0.5s;
+        position: relative;
+        z-index: 2;
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background-color: #f39c12;
+        transition: left 0.5s ease;
+        z-index: 1;
+    }
+
+    .btn-slide:hover .slide {
+        left: 0;
+    }
+
+    .btn-slide:hover .trigger {
+        color: #000;
+        background-color: #FFC119;
+    }
+
 </style>
 <!--REVIEWS-->
 <form method="post" enctype="multipart/form-data" asp-action="AddReview" asp-controller="Review" onsubmit="return validateForm()">
     <input type="hidden" name="BookId" value="@Model.BookId" asp-for="BookId" />
-    <h7 id="reviewsLabel" class="w3-margin-bottom">REVIEWS</h7>
+    <h7 class="w3-margin-bottom reviewsLabel fw-bold">REVIEWS</h7>
     <div id="leftRightPadding" class="w3-border w3-padding-32">
         <div class="w3-row">
             <div class="w3-col" style="width: 120px;">
@@ -48,25 +86,11 @@
                 <span asp-validation-for="UserEmail" class="text-warning ms-3"></span>
             </div>
             <div class="w3-quarter">
-                <button class="w3-right" type="submit" id="send">SEND</button>
+                <div class="btn-slide float-end" style="margin-top:-5px;">
+                    <button class="trigger fw-semibold" type="submit">ADD REVIEW</button>
+                    <div class="slide"></div>
+                </div>
             </div>
         </div>
     </div>
 </form>
-<script>
-    function validateForm() {
-        var rateInput = document.getElementById("Rate");
-        var rateValue = parseInt(rateInput.value);
-
-        var rateValidationMessage = document.getElementById("rateValidationMessage");
-
-        if (rateValue === 0) {
-            rateValidationMessage.textContent = "Please rate 1-5";
-            return false;
-        }
-
-        rateValidationMessage.textContent = "";
-
-        return true;
-    }
-</script>

@@ -70,7 +70,7 @@ namespace NavOS.Basecode.BookApp.Controllers
         [HttpGet]
         public IActionResult TopBooks(string searchQuery, string filter, string sort)
         {
-            var data = _bookService.FilterAndSortBookList(searchQuery, filter, sort);
+            var data = _bookService.FilterAndSortTopBookList(searchQuery, filter, sort);
             return View(data);
         }
         /// <summary>
