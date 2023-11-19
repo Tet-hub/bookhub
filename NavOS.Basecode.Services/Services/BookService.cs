@@ -300,7 +300,7 @@ namespace NavOS.Basecode.Services.Services
 
             result.Books = GetBooks();
             //filters
-            if (string.IsNullOrEmpty(filter) || string.Equals(filter, "all", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(filter) || string.Equals(filter, "all", StringComparison.OrdinalIgnoreCase) || string.Equals(filter, "ratings", StringComparison.OrdinalIgnoreCase))
             {
                 if (!string.IsNullOrEmpty(searchQuery))
                 {
@@ -332,6 +332,21 @@ namespace NavOS.Basecode.Services.Services
                         result.Books = result.Books
                             .Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
                             .ToList();
+                        break;
+                }
+            }
+            if (!string.IsNullOrEmpty(sort))
+            {
+                switch (sort.ToLower())
+                {
+                    case "title":
+                        result.Books = result.Books.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
+                        break;
+                    case "author":
+                        result.Books = result.Books.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
+                        break;
+                    case "ratings":
+                        result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
                         break;
                 }
             }
