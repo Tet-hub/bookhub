@@ -3,18 +3,21 @@
     font-weight: bolder;
     color:#000;
     text-indent: 10px;
+    padding:12px;
 }
 .addbtn {
     background-color: transparent;
-    color: #000;
-    border: none;
     padding: 10px 20px;
+    color: white;
     transition: background-color 0.3s, color 0.3s;
+    border: 2px solid white;
+    float: right;
+    width: 150px;
+    text-align:center;
 }
 
 .addbtn:hover {
     background-color: #00A651; 
-    color: white;
     border:none;
 }
 
@@ -29,6 +32,7 @@
 
 .imgPaddingRight {
     margin-right: 60px;
+    width: 230px;
 }
 
 .form-container {
@@ -39,18 +43,20 @@
 
 .form-row {
     display: flex;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    align-items: center;
 }
 
     .form-row p {
         margin: 0;
-        width: 75px;
+        width: 95px;
     }
 
-.form-container input, .genre-dropdown, .dropdown-content, select {
+.form-container input, .genre-dropdown, select {
     color: white;
+    height:37px;
+    border-radius: 10px;
     width: 70%;
-    margin-bottom: 10px;
     background-color: transparent;
     border: 2px solid white;
 }
@@ -61,7 +67,13 @@
     margin-left:31px;
 }
 
+.dropdown-content label {
+    display: flex;
+}
+
 .dropdown-content {
+    border-radius:10px;
+    margin-top:10px;
     width: 100%;
     border: 1px solid white;
     display: none;
@@ -76,13 +88,8 @@
     border: 0;
 }
 
-.dropdown-content label {
-    display: block;
-    padding: 5px;
-}
-
     .dropdown-content label input[type="checkbox"] {
-        margin-right: 5px;
+        margin-right: 10px;
         width: auto;
     }
 
@@ -96,6 +103,8 @@
     background-color: #FFC119;
     color: #212529;
     font-weight: bold;
+    width: 130px;
+    text-align: center;
 }
 
 textarea {
@@ -103,4 +112,56 @@ textarea {
     background-color: transparent;
     resize: none;
     border: 0;
+    outline:none;
+}
+
+/* ADDED */
+.boxShadow{
+    box-shadow:none;
+}
+
+.bookImgStyle {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+}
+
+.spanImgFile {
+    height: 20px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.bodyBorder {
+    border: 1px solid #fff;
+}
+
+.bookInputSpan {
+    margin-left: 80px;
+    height: 20px;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
+
+.summarySpan {
+    height: 20px;
+    margin-bottom: 10px;
+}
+
+.scrollable-genres {
+    max-height: 185px;
+    overflow-y: auto;
+}
+
+.genreText{
+    margin-top:5px;
+    margin-left:10px;
+}
+
+select {
+    appearance: none;
+    padding-left:12px;
+}
+.genre-style{
+    margin-top:8px;
 }
