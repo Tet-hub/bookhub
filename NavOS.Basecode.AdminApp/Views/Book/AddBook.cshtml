@@ -56,7 +56,7 @@
                                     <span asp-validation-for="Status" class="text-warning bookInputSpan"></span>
                                     <div class="form-row">
                                         <p>Chapter:</p>
-                                        <input type="number" class="form-control" asp-for="Chapter"/>
+                                        <input type="text" class="form-control" asp-for="Chapter" min="1"/>
                                     </div>
                                     <span asp-validation-for="Chapter" class="text-warning bookInputSpan"></span>
                                     <div class="form-row">
@@ -67,7 +67,7 @@
                                     <div class="form-row">
                                         <p>Genre:</p>
                                         <div class="dropdown genre-dropdown">
-                                            <button class="genreText" id="genreDropdownBtn">Choose Genre</button>
+                                            <a type="button" class="genreText text-decoration-none text-white" id="genreDropdownBtn">Choose Genre</a>
                                             <div class="dropdown-content">
                                                 @if (genres != null)
                                                 {
@@ -93,13 +93,18 @@
                         <!--INPUT SUMMARY-->
                         <div class="w3-row">
                         <h7 class="w3-margin-bottom summaryLabel w3-half">SUMMARY</h7>
-                        <button type="submit" class="addbtn w3-half">+ADD NOW</button>
                         </div>
                         <span asp-validation-for="Summary" class="text-warning summarySpan"></span>
                         <div class="w3-border">
                             <textarea rows="7" class="w3-justify w3-text-white w3-padding" asp-for="Summary"></textarea>
                         </div>
                         <br>
+                        <div class="col-12 col-md-12 px-2 justify-content-between ms-2">
+                            <div class="btn-slide float-end mt-2">
+                                <button type="submit" class="trigger fw-semibold">+ Add Book</button>
+                                <div class="slide"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>

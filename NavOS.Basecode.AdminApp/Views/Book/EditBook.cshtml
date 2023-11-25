@@ -8,6 +8,15 @@
 @section styles {
     <link rel="stylesheet" href="~/css/addEditBook.css" />
     <script src="~/js/editBook.js"></script>
+    <style>
+        .genre-ellipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+    </style>
 }
 
 <div class="container">
@@ -66,7 +75,7 @@
                         <div class="form-row">
                             <p>Genre:</p>
                             <div class="dropdown genre-dropdown">
-                                <button class="genreText" id="genreDropdownBtn">Choose Genre</button>
+                                <a type="button" class="genreText text-decoration-none text-white" id="genreDropdownBtn">Choose Genre</a>
                                 <div class="dropdown-content">
                                     @{
                                         string[] separatedGenre = Model.Genre.Split(", ");
@@ -77,7 +86,7 @@
                                         @foreach (var genre in genres)
                                         {
                                             <label>
-                                                <input type="checkbox" onchange="updateButtonText()" name="SelectedGenres" value="@genre.GenreName" @((separatedGenre.Contains(genre.GenreName)) ? "checked" : "") required>
+                                                <input class="ms-2" type="checkbox" onchange="updateButtonText()" name="SelectedGenres" value="@genre.GenreName" @((separatedGenre.Contains(genre.GenreName)) ? "checked" : "") required>
                                                <span class="genre-style">@genre.GenreName</span>
                                                 
                                             </label>
@@ -96,11 +105,16 @@
             <!--INPUT SUMMARY-->
             <div class="w3-row">
                 <h7 class="w3-margin-bottom summaryLabel w3-half">SUMMARY</h7>
-                <button type="submit" class="addbtn text-white float-end">+EDIT NOW</button>
             </div>
             <span asp-validation-for="Summary" class="text-warning summarySpan"></span>
             <div class="w3-border">
                 <textarea rows="7" class="w3-justify w3-text-white w3-padding" asp-for="Summary"></textarea>
+            </div>
+            <div class="col-12 col-md-12 px-2 justify-content-between mt-2 ms-2">
+                <div class="btn-slide float-end mt-2">
+                    <button type="submit" class="trigger fw-semibold">+ Edit Book</button>
+                    <div class="slide"></div>
+                </div>
             </div>
         </div>
     </div>

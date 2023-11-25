@@ -100,11 +100,11 @@
 .summaryLabel {
     display: inline-block;
     padding: 15px;
-    background-color: #FFC119;
-    color: #212529;
+    color: #FFC119;
     font-weight: bold;
     width: 130px;
     text-align: center;
+    margin-left:-20px;
 }
 
 textarea {

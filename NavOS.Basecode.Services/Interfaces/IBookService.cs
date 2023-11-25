@@ -15,7 +15,6 @@ namespace NavOS.Basecode.Services.Interfaces
         bool Validate(string BookTitle);
         bool DeleteBook(string bookId);
         bool UpdateBook(BookViewModel bookViewModel, string user);
-        List<BookViewModel> FilterAndSortBooks(string filter, string searchQuery, string sort);
         List<BookViewModel> GetBooksForGenre(string genreName);
         FilteredBooksViewModel FilterAndSortBookList(string searchQuery, string filter, string sort);
         FilteredBooksViewModel FilterAndSortBookListTwoWeeks(string searchQuery, string filter, string sort);
@@ -23,7 +22,7 @@ namespace NavOS.Basecode.Services.Interfaces
         BookWithReviewViewModel GetBookWithReviews(string bookId);
         FilteredBooksViewModel FilterAndSortTopBookList(string searchQuery, string filter, string sort);
 
-
+        FilteredBooksViewModel FilterAndSortBooks(string searchQuery = null, string filter = null, string sort = null);
         FilteredBooksViewModel FilterAndSortAllBookList(string searchQuery = null, string filter = null, string sort = null);
         FilteredBooksViewModel FilterAndSortTopBooks(string searchQuery = null, string filter = null, string sort = null);
         FilteredBooksViewModel FilterAndSortNewBooks(string searchQuery = null, string filter = null, string sort = null);
