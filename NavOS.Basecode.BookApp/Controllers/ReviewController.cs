@@ -32,6 +32,11 @@ namespace NavOS.Basecode.BookApp.Controllers
         {
             _reviewService = reviewService;
         }
+        /// <summary>
+        /// Adds the review.
+        /// </summary>
+        /// <param name="review">The review.</param>
+        /// <returns></returns>
         public IActionResult AddReview(ReviewViewModel review)
         {
             if (string.IsNullOrEmpty(review.ReviewText))
@@ -41,6 +46,10 @@ namespace NavOS.Basecode.BookApp.Controllers
             _reviewService.AddReview(review);
             return RedirectToAction("BookDetails", "Book", new { review.BookId });
         }
+        /// <summary>
+        /// Reviews the details.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult ReviewDetails()
         {
             return View();

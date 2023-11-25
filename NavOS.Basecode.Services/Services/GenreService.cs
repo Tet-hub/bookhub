@@ -18,7 +18,10 @@ namespace NavOS.Basecode.Services.Services
         {
             _genreRepository = genreRepository;
         }
-
+        /// <summary>
+        /// Gets the genres.
+        /// </summary>
+        /// <returns></returns>
         public List<GenreViewModel> GetGenres()
         {
             var data = _genreRepository.GetGenre().Select(s => new GenreViewModel
@@ -34,6 +37,11 @@ namespace NavOS.Basecode.Services.Services
 
             return data;
         }
+        /// <summary>
+        /// Validates the specified title.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <returns></returns>
         public bool Validate(string title)
         {
             
@@ -41,12 +49,22 @@ namespace NavOS.Basecode.Services.Services
 
             return isExist;
         }
+        /// <summary>
+        /// Gets the genre.
+        /// </summary>
+        /// <param name="Genreid">The genreid.</param>
+        /// <returns></returns>
         public Genre GetGenre(string Genreid)
         {
             var genre = _genreRepository.GetGenre(Genreid);
 
             return genre;
         }
+        /// <summary>
+        /// Adds the genre.
+        /// </summary>
+        /// <param name="genre">The genre.</param>
+        /// <param name="user">The user.</param>
         public void AddGenre(GenreViewModel genre, string user)
         {
             
@@ -62,6 +80,12 @@ namespace NavOS.Basecode.Services.Services
             _genreRepository.AddGenre(model);
 
         }
+        /// <summary>
+        /// Updates the genre.
+        /// </summary>
+        /// <param name="genreViewModel">The genre view model.</param>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
         public bool UpdateGenre(GenreViewModel genreViewModel, string user)
         {
             Genre genre = (Genre)_genreRepository.GetGenre(genreViewModel.GenreId);
@@ -78,6 +102,11 @@ namespace NavOS.Basecode.Services.Services
 
             return false;
         }
+        /// <summary>
+        /// Deletes the genre.
+        /// </summary>
+        /// <param name="GenreId">The genre identifier.</param>
+        /// <returns></returns>
         public bool DeleteGenre(string GenreId)
         {
             Genre genre = _genreRepository.GetGenre(GenreId);

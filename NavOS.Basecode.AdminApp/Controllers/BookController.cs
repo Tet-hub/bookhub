@@ -39,13 +39,6 @@ namespace NavOS.Basecode.BookApp.Controllers
             _genreService = genreService;
 
         }
-        private void CommonViewData()
-        {
-            var genres = _genreService.GetGenres();
-            var reviews = _reviewService.GetReviews();
-            ViewData["Genre"] = genres;
-            ViewData["Reviews"] = reviews;
-        }
         /// <summary>
         /// Homepage
         /// </summary>
@@ -56,6 +49,13 @@ namespace NavOS.Basecode.BookApp.Controllers
             var data = _bookService.GetBooksWithReviews();
             return View(data);
         }
+        /// <summary>
+        /// Creates new books.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult NewBooks(string searchQuery = null, string filter = null, string sort = null)
         {
@@ -90,7 +90,6 @@ namespace NavOS.Basecode.BookApp.Controllers
 
             return NotFound();
         }
-
         /// <summary>
         /// List of Books.
         /// </summary>
@@ -124,6 +123,11 @@ namespace NavOS.Basecode.BookApp.Controllers
             return View(book);
         }
 
+        /// <summary>
+        /// Edits the book.
+        /// </summary>
+        /// <param name="book">The book.</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult EditBook(BookViewModel book)
         {
@@ -144,7 +148,11 @@ namespace NavOS.Basecode.BookApp.Controllers
             return RedirectToAction("BookList");
 
         }
-        
+
+        /// <summary>
+        /// Adds the book.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult AddBook()
         {
@@ -152,7 +160,11 @@ namespace NavOS.Basecode.BookApp.Controllers
             ViewData["Genre"] = genre;
             return View();
         }
-        
+        /// <summary>
+        /// Adds the book.
+        /// </summary>
+        /// <param name="book">The book.</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddBook(BookViewModel book)
         {
@@ -183,7 +195,11 @@ namespace NavOS.Basecode.BookApp.Controllers
             TempData["SuccessMessage"] = "Book Added Successfully";
             return RedirectToAction("BookList");
         }
-
+        /// <summary>
+        /// Deletes the book.
+        /// </summary>
+        /// <param name="bookId">The book identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult DeleteBook(string bookId)
         {
@@ -196,9 +212,5 @@ namespace NavOS.Basecode.BookApp.Controllers
             TempData["ErrorMessage"] = "No Book was Deleted";
             return RedirectToAction("BookList");
         }
-
-
-
-
     }
 }

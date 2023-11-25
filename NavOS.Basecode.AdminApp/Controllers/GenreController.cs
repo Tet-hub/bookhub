@@ -42,17 +42,30 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// Views the genre.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult ViewGenre()
         {
             var data = _genreService.GetGenres();
             return View(data);
         }
+        /// <summary>
+        /// Adds the genre.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult AddGenre()
         {
             return View();
         }
+        /// <summary>
+        /// Adds the genre.
+        /// </summary>
+        /// <param name="genre">The genre.</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddGenre(GenreViewModel genre)
         {
@@ -66,9 +79,12 @@ namespace NavOS.Basecode.AdminApp.Controllers
             _genreService.AddGenre(genre, this.UserName);
             return RedirectToAction("ViewGenre");
         }
-
+        /// <summary>
+        /// Edits the genre.
+        /// </summary>
+        /// <param name="Genreid">The genreid.</param>
+        /// <returns></returns>
         [HttpGet] 
-
         public IActionResult EditGenre(string Genreid)
         {
 
@@ -88,7 +104,11 @@ namespace NavOS.Basecode.AdminApp.Controllers
             }
             return NotFound();
         }
-
+        /// <summary>
+        /// Edits the genre.
+        /// </summary>
+        /// <param name="genreViewModel">The genre view model.</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult EditGenre(GenreViewModel genreViewModel)
         {
@@ -101,10 +121,11 @@ namespace NavOS.Basecode.AdminApp.Controllers
             }
             return NotFound();
         }
-
-       
-
-
+        /// <summary>
+        /// Deletes the specified genre identifier.
+        /// </summary>
+        /// <param name="genreId">The genre identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Delete(string genreId)
         {
@@ -116,16 +137,25 @@ namespace NavOS.Basecode.AdminApp.Controllers
             }
             return NotFound();
         }
-
+        /// <summary>
+        /// Bookses the genre.
+        /// </summary>
+        /// <param name="genreName">Name of the genre.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult BooksGenre(string genreName)
         {
 
-            var booksForGenre = _bookService.GetBooksForGenre(genreName); // Replace with your actual method to get books for a genre
+            var booksForGenre = _bookService.GetBooksForGenre(genreName);
             ViewData["GenreName"] = genreName;
 
             return View(booksForGenre);
         }
+        /// <summary>
+        /// Deletes the book.
+        /// </summary>
+        /// <param name="bookId">The book identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult DeleteBook(string bookId)
         {

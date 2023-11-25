@@ -29,90 +29,6 @@ namespace NavOS.Basecode.Services.Services
             _genreService = genreService;
             _reviewService = reviewService;
         }
-        /// <summary>
-        /// Applies the filter.
-        /// </summary>
-        /// <param name="options">The options.</param>
-        /// <param name="result">The result.</param>
-        private void ApplyFilter(BookFilterOptions options, FilteredBooksViewModel result)
-        {
-            if (options == null)
-                return;
-
-            // Genre filter
-            if (!string.IsNullOrEmpty(options.Filter) && string.Equals(options.Filter.ToLower(), "genre", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(options.Sort))
-                {
-                    result.Books = result.Books
-                        .Where(book => book.Genre.Contains(options.Sort, StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                }
-
-                // Apply title search within the selected genre
-                if (!string.IsNullOrEmpty(options.SearchQuery))
-                {
-                    result.Books = result.Books
-                        .Where(book => book.BookTitle.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                }
-            }
-            // All filters
-            else if (string.IsNullOrEmpty(options.Filter) || string.Equals(options.Filter, "all", StringComparison.OrdinalIgnoreCase) || string.Equals(options.Filter, "ratings", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(options.SearchQuery))
-                {
-                    result.Books = result.Books
-                        .Where(book =>
-                            (book.BookTitle.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Author.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Genre.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase))
-                        )
-                        .ToList();
-                }
-            }
-            //Filters based on the selected filter
-            else if (!string.IsNullOrEmpty(options.SearchQuery))
-            {
-                switch (options.Filter.ToLower())
-                {
-                    case "title":
-                        result.Books = result.Books
-                            .Where(book => book.BookTitle.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "author":
-                        result.Books = result.Books
-                            .Where(book => book.Author.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Applies the sort.
-        /// </summary>
-        /// <param name="options">The options.</param>
-        /// <param name="result">The result.</param>
-        private void ApplySort(BookFilterOptions options, FilteredBooksViewModel result)
-        {
-            if (options == null || string.IsNullOrEmpty(options.Sort))
-                return;
-
-            switch (options.Sort.ToLower())
-            {
-                case "title":
-                    result.Books = result.Books.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
-                    break;
-                case "author":
-                    result.Books = result.Books.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
-                    break;
-                case "ratings":
-                    result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
-                    break;
-            }
-        }
 
         /// <summary>
         /// Gets the books.
@@ -267,7 +183,6 @@ namespace NavOS.Basecode.Services.Services
             }
             _bookRepository.AddBook(model);
         }
-
         public bool DeleteBook(string bookId)
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -282,7 +197,6 @@ namespace NavOS.Basecode.Services.Services
             return false;
 
         }
-
         public bool UpdateBook(BookViewModel bookViewModel, string user)
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -319,8 +233,13 @@ namespace NavOS.Basecode.Services.Services
             var isExist = _bookRepository.GetBooks().Where(x => x.BookTitle == BookTitle).Any();
             return isExist;
         }
-
-        //to be removed
+        /// <summary>
+        /// Filters the and sort books. <= used from BookList
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
         public FilteredBooksViewModel FilterAndSortBooks(string searchQuery = null, string filter = null, string sort = null)
         {
             var result = new FilteredBooksViewModel();
@@ -342,238 +261,7 @@ namespace NavOS.Basecode.Services.Services
             result.Genres = _genreService.GetGenres();
             return result;
         }
-        /// <summary>
-        /// Filters the and sort all book list.
-        /// </summary>
-        /// <param name="searchQuery">The search query.</param>
-        /// <param name="filter">The filter.</param>
-        /// <param name="sort">The sort.</param>
-        /// <returns></returns>
-        public FilteredBooksViewModel FilterAndSortBookList(string searchQuery, string filter, string sort)
-        {
-            var result = new FilteredBooksViewModel();
 
-            result.Books = GetBooks();
-
-            // Genre filter
-            if (!string.IsNullOrEmpty(filter) && string.Equals(filter.ToLower(), "genre", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(sort))
-                {
-                    // Filter by genre
-                    result.Books = result.Books
-                        .Where(book => book.Genre.Contains(sort, StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                }
-
-                // Apply title search within the selected genre
-                if (!string.IsNullOrEmpty(searchQuery))
-                {
-                    result.Books = result.Books
-                        .Where(book => book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                }
-            }
-            // All filters
-            else if (string.IsNullOrEmpty(filter) || string.Equals(filter, "all", StringComparison.OrdinalIgnoreCase) || string.Equals(filter, "ratings", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(searchQuery))
-                {
-                    result.Books = result.Books
-                        .Where(book =>
-                            (book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                        )
-                        .ToList();
-                }
-            }
-            //Filters based on the selected filter
-            else if (!string.IsNullOrEmpty(searchQuery))
-            {
-                switch (filter.ToLower())
-                {
-                    case "title":
-                        result.Books = result.Books
-                            .Where(book => book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "author":
-                        result.Books = result.Books
-                            .Where(book => book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                }
-            }
-
-            //Sorting
-            if (!string.IsNullOrEmpty(sort))
-            {
-                switch (sort.ToLower())
-                {
-                    case "title":
-                        result.Books = result.Books.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
-                        break;
-                    case "author":
-                        result.Books = result.Books.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
-                        break;
-                    case "ratings":
-                        result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
-                        break;
-                }
-            }
-
-            result.Genres = _genreService.GetGenres();
-
-            return result;
-        }
-
-        /// <summary>
-        /// Filters the and sort top book list.
-        /// </summary>
-        /// <param name="searchQuery">The search query.</param>
-        /// <param name="filter">The filter.</param>
-        /// <param name="sort">The sort.</param>
-        /// <returns></returns>
-        public FilteredBooksViewModel FilterAndSortTopBookList(string searchQuery, string filter, string sort)
-        {
-            var result = new FilteredBooksViewModel();
-
-            result.Books = GetBooks();
-            // filters
-            if (string.IsNullOrEmpty(filter) || string.Equals(filter, "ratings", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(searchQuery))
-                {
-                    result.Books = result.Books
-                        .Where(book =>
-                            (book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                        )
-                        .ToList();
-                }
-            }
-            //search query
-            else if (!string.IsNullOrEmpty(searchQuery))
-            {
-                switch (filter.ToLower())
-                {
-                    case "title":
-                        result.Books = result.Books
-                            .Where(book => book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "author":
-                        result.Books = result.Books
-                            .Where(book => book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "genre":
-                        result.Books = result.Books
-                            .Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                }
-            }
-            //sorting
-            if (string.Equals(sort, "title", StringComparison.OrdinalIgnoreCase))
-            {
-                result.Books = result.Books.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-            else if (string.Equals(sort, "author", StringComparison.OrdinalIgnoreCase))
-            {
-                result.Books = result.Books.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-            else if (string.Equals(sort, "ratings", StringComparison.OrdinalIgnoreCase))
-            {
-                result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
-            }
-            else
-            {
-                result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
-            }
-
-            result.Genres = _genreService.GetGenres();
-
-            return result;
-        }
-
-        /// <summary>
-        /// Filters the and sort book list two weeks.
-        /// </summary>
-        /// <param name="searchQuery">The search query.</param>
-        /// <param name="filter">The filter.</param>
-        /// <param name="sort">The sort.</param>
-        /// <returns></returns>
-        public FilteredBooksViewModel FilterAndSortBookListTwoWeeks(string searchQuery, string filter, string sort)
-        {
-            var result = new FilteredBooksViewModel();
-
-            var data = GetBooks();
-
-            var currentDate = DateTime.Now;
-            var twoWeeksAgo = currentDate.AddDays(-14);
-
-            data = data
-                .Where(book => book.AddedTime >= twoWeeksAgo && book.AddedTime <= currentDate)
-                .ToList();
-
-            //filters
-            if (string.IsNullOrEmpty(filter) || string.Equals(filter, "all", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(searchQuery))
-                {
-                    data = data
-                        .Where(book =>
-                            (book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                             book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                        )
-                        .ToList();
-                }
-            }
-            //searchQuery
-            else if (!string.IsNullOrEmpty(searchQuery))
-            {
-                switch (filter.ToLower())
-                {
-                    case "title":
-                        data = data
-                            .Where(book => book.BookTitle.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "author":
-                        data = data
-                            .Where(book => book.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                    case "genre":
-                        data = data
-                            .Where(book => book.Genre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-                        break;
-                }
-            }
-            //sorting
-            if (string.Equals(sort, "title", StringComparison.OrdinalIgnoreCase))
-            {
-                data = data.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-            else if (string.Equals(sort, "author", StringComparison.OrdinalIgnoreCase))
-            {
-                data = data.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-            else if (string.Equals(sort, "newest", StringComparison.OrdinalIgnoreCase))
-            {
-                data = data.OrderByDescending(book => book.AddedTime).ToList();
-            }
-
-            result.Books = data;
-            result.Genres = _genreService.GetGenres();
-
-            return result;
-        }
         /// <summary>
         /// Gets the books for genre.
         /// </summary>
@@ -667,6 +355,13 @@ namespace NavOS.Basecode.Services.Services
             result.Genres = _genreService.GetGenres();
             return result;
         }
+        /// <summary>
+        /// Filters the and sort top books.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
         public FilteredBooksViewModel FilterAndSortTopBooks(string searchQuery = null, string filter = null, string sort = null)
         {
             var result = new FilteredBooksViewModel();
@@ -693,6 +388,13 @@ namespace NavOS.Basecode.Services.Services
             result.Genres = _genreService.GetGenres();
             return result;
         }
+        /// <summary>
+        /// Filters the and sort new books.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
         public FilteredBooksViewModel FilterAndSortNewBooks(string searchQuery = null, string filter = null, string sort = null)
         {
             var result = new FilteredBooksViewModel();
@@ -719,6 +421,91 @@ namespace NavOS.Basecode.Services.Services
             return result;
         }
 
+        #region private methods
+        /// <summary>
+        /// Applies the filter.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="result">The result.</param>
+        private void ApplyFilter(BookFilterOptions options, FilteredBooksViewModel result)
+        {
+            if (options == null)
+                return;
 
+            // Genre filter
+            if (!string.IsNullOrEmpty(options.Filter) && string.Equals(options.Filter.ToLower(), "genre", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.IsNullOrEmpty(options.Sort))
+                {
+                    result.Books = result.Books
+                        .Where(book => book.Genre.Contains(options.Sort, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
+
+                // Apply title search within the selected genre
+                if (!string.IsNullOrEmpty(options.SearchQuery))
+                {
+                    result.Books = result.Books
+                        .Where(book => book.BookTitle.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
+            }
+            // All filters
+            else if (string.IsNullOrEmpty(options.Filter) || string.Equals(options.Filter, "all", StringComparison.OrdinalIgnoreCase) || string.Equals(options.Filter, "ratings", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.IsNullOrEmpty(options.SearchQuery))
+                {
+                    result.Books = result.Books
+                        .Where(book =>
+                            (book.BookTitle.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase) ||
+                             book.Author.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase) ||
+                             book.Genre.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase))
+                        )
+                        .ToList();
+                }
+            }
+            //Filters based on the selected filter
+            else if (!string.IsNullOrEmpty(options.SearchQuery))
+            {
+                switch (options.Filter.ToLower())
+                {
+                    case "title":
+                        result.Books = result.Books
+                            .Where(book => book.BookTitle.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                        break;
+                    case "author":
+                        result.Books = result.Books
+                            .Where(book => book.Author.Contains(options.SearchQuery, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies the sort.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="result">The result.</param>
+        private void ApplySort(BookFilterOptions options, FilteredBooksViewModel result)
+        {
+            if (options == null || string.IsNullOrEmpty(options.Sort))
+                return;
+
+            switch (options.Sort.ToLower())
+            {
+                case "title":
+                    result.Books = result.Books.OrderBy(book => book.BookTitle, StringComparer.OrdinalIgnoreCase).ToList();
+                    break;
+                case "author":
+                    result.Books = result.Books.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
+                    break;
+                case "ratings":
+                    result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
+                    break;
+            }
+        }
+        #endregion
     }
 }

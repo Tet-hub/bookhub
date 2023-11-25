@@ -18,6 +18,10 @@ namespace NavOS.Basecode.Services.Services
         {
             _reviewRepository = reviewRepository;
         }
+        /// <summary>
+        /// Adds the review.
+        /// </summary>
+        /// <param name="review">The review.</param>
         public void AddReview(ReviewViewModel review)
         {
             var model = new Review();
@@ -33,7 +37,10 @@ namespace NavOS.Basecode.Services.Services
             _reviewRepository.AddReview(model);
 
         }
-
+        /// <summary>
+        /// Gets the reviews.
+        /// </summary>
+        /// <returns></returns>
         public List<ReviewViewModel> GetReviews()
         {
             var data = _reviewRepository.GetReviews().Select(s => new ReviewViewModel
@@ -48,6 +55,11 @@ namespace NavOS.Basecode.Services.Services
 
             return data;
         }
+        /// <summary>
+        /// Gets the reviews.
+        /// </summary>
+        /// <param name="bookId">The book identifier.</param>
+        /// <returns></returns>
         public List<ReviewViewModel> GetReviews(string bookId)
         {
             var data = _reviewRepository.GetReviews()
