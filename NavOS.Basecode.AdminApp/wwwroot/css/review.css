@@ -68,26 +68,15 @@ textarea {
     border: 0;
 }
 
-#summaryLabel,
-#reviewsLabel {
+.label-green {
+    color: #00a651;
+}
+
+.summaryLabel,
+.reviewsLabel {
     display: inline-block;
-    padding: 12px;
-    background-color: #FFC119;
-    color: #212529;
+    color: #00a651;
     font-weight: bold;
-}
-
-#reviewsLabel {
-    background-color: #DA1B60;
-    color: white;
-}
-
-#send {
-    background-color: #3A6073;
-    padding: 10px;
-    color: white;
-    font-weight: bold;
-    border: 0;
 }
 
 input {

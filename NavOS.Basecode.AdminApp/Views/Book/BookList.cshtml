@@ -11,6 +11,7 @@
     .FirstOrDefault());
 
     var (displayText, textColor, fontStyle) = HeaderHelper.GetDisplayProperties(Context);
+    var requestQuery = ViewContext.HttpContext.Request.Query;
 }
 
 @section styles {
@@ -42,128 +43,172 @@
             background-color: #00A651;
             color: white;
         }
+
+        .btn-slide {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .trigger {
+            padding: 10px 20px;
+            background-color: transparent;
+            color: #FFC119;
+            border: 2px solid #f39c12;
+            cursor: pointer;
+            transition: color 0.5s, background-color 0.5s;
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background-color: #f39c12;
+            transition: left 0.5s ease;
+            z-index: 1;
+        }
+
+        .btn-slide:hover .slide {
+            left: 0;
+        }
+
+        .btn-slide:hover .trigger {
+            color: #000;
+            background-color: #FFC119;
+        }
     </style>
 }
-
-
-<div style="margin-top: 40px; text-align: right; margin-bottom: 40px">
-    <h3><a asp-controller="Book" asp-action="AddBook" style="text-decoration: none; font-weight: bold;color: #FFC119">+ ADD BOOK</a></h3>
-</div>
-<div class="container">
-    <div class="row mt-5" style="border: 1px solid #fff;">
-        <!-- Header Container -->
-        <div class="col-md-12 mb-2" style="background-color:#FFC119">
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="float-start text-center fst-italic my-2 text-dark fw-bold ms-2" style="color: @textColor; font-style: @fontStyle;">
-                    @displayText
-                </span>
-                <!-- Pagination -->
-                <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
-                    <ul class="pagination">
-                        @if (currentPage > 1)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" href="@FilterHelper.GetQueryString(currentPage - 1, Context)" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        }
-
-                        @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
-                        {
-                            <li class="page-item @(i == currentPage ? "active" : "")">
-                                <a class="page-link" href="@FilterHelper.GetQueryString(i, Context)">@i</a>
-                            </li>
-                        }
-
-                        @if (currentPage < totalPages)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" href="@FilterHelper.GetQueryString(currentPage + 1, Context)" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
-            </div>
+<div class="row">
+    <div class="col-12 col-md-12 px-2 justify-content-between">
+        <div class="btn-slide float-end mt-2">
+            <a class="trigger fw-semibold" asp-action="AddBook" asp-controller="Book">+ Add Book</a>
+            <div class="slide"></div>
         </div>
-        <form asp-controller="Book" asp-action="BookList" method="get" class="form-inline my-2 my-lg-0" style="margin-top: 40px">
-            <div class="input-group" style="width:100%">
-                <input type="text" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow:none;">
-                <input type="hidden" name="filter" value="@ViewContext.HttpContext.Request.Query["filter"]" />
-            </div>
-        </form>
-
-        <div class="table-responsive">
-            @if (pageData.Any())
-            {
-                <table class="table table-striped table-dark text-center" style="margin-top: 20px;">
-                    <thead class="rounded">
-                        <tr>
-                            @foreach (var header in headers)
+    </div>
+    <div class="container">
+        <div class="row mt-5" style="border: 1px solid #fff;">
+            <!-- Header Container -->
+            <div class="col-md-12 mb-2" style="background-color:#FFC119">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="float-start text-center fst-italic my-2 text-dark fw-bold ms-2" style="color: @textColor; font-style: @fontStyle;">
+                        @displayText
+                    </span>
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
+                        <ul class="pagination">
+                            @if (currentPage > 1)
                             {
-                                <th style="background-color: #FFC119;color: black;" scope="col">@header</th>
+                                <li class="page-item">
+                                    <a class="page-link" href="@FilterHelper.GetQueryString(currentPage - 1, Context)" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
                             }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var books in pageData)
-                        {
+
+                            @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" href="@FilterHelper.GetQueryString(i, Context)">@i</a>
+                                </li>
+                            }
+
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@FilterHelper.GetQueryString(currentPage + 1, Context)" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <form asp-controller="Book" asp-action="BookList" method="get" class="form-inline d-flex align-items-center mt-3">
+                <div class="input-group">
+                    <span class="input-group-text" style="border: none;">
+                        <i class="bi bi-search" style="color: #000;"></i>
+                    </span>
+                    <input type="text" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow: none; border: none;" id="liveSearchInput">
+                    <input type="hidden" name="filter" value="@requestQuery["filter"]" />
+                    <input type="hidden" name="sort" value="@requestQuery["sort"]" />
+                </div>
+            </form>
+            <div class="table-responsive">
+                @if (pageData.Any())
+                {
+                    <table class="table table-striped table-dark text-center" style="margin-top: 20px;">
+                        <thead class="rounded">
                             <tr>
-                                <td>
-                                    <img src="@books.ImageUrl" class="rounded" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" alt="@books.BookTitle" height="125" width="100" style="object-fit: cover; cursor: pointer" onclick="location.href='/Book/BookDetails?BookId=@books.BookId'" title="View Book Detail">
-                                </td>
-                                <td class="align-middle">@books.BookTitle</td>
-                                <td class="align-middle">@books.Author</td>
-                                <td class="align-middle">@books.TotalRating Ratings / @books.ReviewCount Reviews</td>
-                                <td class="align-middle">
-                                    <div class="btn-group" role="group">
-                                        <form asp-action="EditBook" method="get">
-                                            <input type="hidden" name="BookId" value="@books.BookId">
-                                            <button type="submit" class="btn btn-warning" title="Edit Admin"><i class="fas fa-edit"></i></button>
-                                        </form>
-                                        &nbsp;
-                                        <button class="btn btn-outline-warning rounded" title="Delete Admin" onclick='openModalSet("@books.BookId", "@books.BookTitle")'><i class="fas fa-trash"></i></button>
-                                    </div>
-                                </td>
+                                @foreach (var header in headers)
+                                {
+                                    <th style="background-color: #FFC119;color: black;" scope="col">@header</th>
+                                }
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p class="mt-5 ms-3 mb-5">No books found.</p>
-            }
+                        </thead>
+                        <tbody>
+                            @foreach (var books in pageData)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@books.ImageUrl" class="rounded" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" alt="@books.BookTitle" height="125" width="100" style="object-fit: cover; cursor: pointer" onclick="location.href='/Book/BookDetails?BookId=@books.BookId'" title="View Book Detail">
+                                    </td>
+                                    <td class="align-middle">@books.BookTitle</td>
+                                    <td class="align-middle">@books.Author</td>
+                                    <td class="align-middle">@books.TotalRating Ratings / @books.ReviewCount Reviews</td>
+                                    <td class="align-middle">
+                                        <div class="btn-group" role="group">
+                                            <form asp-action="EditBook" method="get">
+                                                <input type="hidden" name="BookId" value="@books.BookId">
+                                                <button type="submit" class="btn btn-warning" title="Edit Admin"><i class="fas fa-edit"></i></button>
+                                            </form>
+                                            &nbsp;
+                                            <button class="btn btn-outline-warning rounded" title="Delete Admin" onclick='openModalSet("@books.BookId", "@books.BookTitle")'><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="mt-5 ms-3 mb-5">No books found.</p>
+                }
+            </div>
         </div>
     </div>
-</div>
 
 
-@* Modal Area *@
-<div class="w3-modal" id="deleteModal">
-    <div class="w3-modal-content w3-animate-top w3-round-xlarge" style="background-color: #212529;width: 40%;">
-        <div class="w3-container w3-padding-large">
-            <p>
-                <div class="text-center">
-                    <h3 class="w3-center">Are you sure you want to delete</h3>
-                    <h3 class="w3-center" id="BookTitle"></h3>
-                </div>
-            </p>
-            <div class="row text-center">
-                <div id="BookId" style="display: none"></div>
-                <div class="col-md-6">
-                    <button class="btn btn-outline-warning" style="width: 200px" onclick="deleteBook()"><h3>YES</h3></button>
-                </div>
-                <div class="col-md-6">
-                    <button class="btn btn-warning" style="width: 200px" onclick="modal_control('deleteModal','none')"><h3>NO</h3></button>
+    @* Modal Area *@
+    <div class="w3-modal" id="deleteModal">
+        <div class="w3-modal-content w3-animate-top w3-round-xlarge" style="background-color: #212529;width: 40%;">
+            <div class="w3-container w3-padding-large">
+                <p>
+                    <div class="text-center">
+                        <h3 class="w3-center">Are you sure you want to delete</h3>
+                        <h3 class="w3-center" id="BookTitle"></h3>
+                    </div>
+                </p>
+                <div class="row text-center">
+                    <div id="BookId" style="display: none"></div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-warning" style="width: 200px" onclick="deleteBook()"><h3>YES</h3></button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-warning" style="width: 200px" onclick="modal_control('deleteModal','none')"><h3>NO</h3></button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 @section scripts {
     <script>
         var errorMessage = '@TempData["ErrorMessage"]';

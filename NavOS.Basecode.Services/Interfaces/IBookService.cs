@@ -22,5 +22,10 @@ namespace NavOS.Basecode.Services.Interfaces
         BookWithReviewViewModel GetBooksWithReviews();
         BookWithReviewViewModel GetBookWithReviews(string bookId);
         FilteredBooksViewModel FilterAndSortTopBookList(string searchQuery, string filter, string sort);
+
+
+        FilteredBooksViewModel FilterAndSortAllBookList(string searchQuery = null, string filter = null, string sort = null);
+        FilteredBooksViewModel FilterAndSortTopBooks(string searchQuery = null, string filter = null, string sort = null);
+        FilteredBooksViewModel FilterAndSortNewBooks(string searchQuery = null, string filter = null, string sort = null);
     }
 }

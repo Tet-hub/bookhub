@@ -1,0 +1,12 @@
+﻿.back-to-top {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: none;
+}
+
+    .back-to-top:hover {
+        background-color: #00a651;
+        border-color: #00a651;
+        color: white;
+    }

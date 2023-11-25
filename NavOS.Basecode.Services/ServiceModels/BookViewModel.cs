@@ -37,5 +37,7 @@ namespace NavOS.Basecode.Services.ServiceModels
         public double TotalRating { get; set;}
         public double AverageRate { get; set; }
         public List<ReviewViewModel> Reviews { get; set; }
+        public double TotalRatingAndReviewsCount { get; set; }
+        public double TotalScore { get; set; }
     }
 }
