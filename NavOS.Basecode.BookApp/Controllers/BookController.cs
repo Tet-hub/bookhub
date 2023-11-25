@@ -56,9 +56,9 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// <param name="filter">The filter.</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult NewBooks(string searchQuery, string filter, string sort)
+        public IActionResult NewBooks(string searchQuery = null, string filter = null, string sort = null)
         {
-            var data = _bookService.FilterAndSortBookListTwoWeeks(searchQuery, filter, sort);
+            var data = _bookService.FilterAndSortNewBooks(searchQuery, filter, sort);
 
             return View(data);
         }
@@ -68,9 +68,9 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// <param name="searchQuery"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult TopBooks(string searchQuery, string filter, string sort)
+        public IActionResult TopBooks(string searchQuery = null, string filter = null, string sort = null)
         {
-            var data = _bookService.FilterAndSortTopBookList(searchQuery, filter, sort);
+            var data = _bookService.FilterAndSortTopBooks(searchQuery, filter, sort);
             return View(data);
         }
         /// <summary>
@@ -81,12 +81,13 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// <param name="sort">The sort.</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult AllBooks(string searchQuery, string filter, string sort)
+        public IActionResult AllBooks(string searchQuery = null, string filter = null, string sort = null)
         {
-            var data = _bookService.FilterAndSortBookList(searchQuery, filter, sort);
+            var data = _bookService.FilterAndSortAllBookList(searchQuery, filter, sort);
 
             return View(data);
         }
+
 
         /// <summary>
         /// BookDetails

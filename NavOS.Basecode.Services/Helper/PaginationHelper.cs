@@ -40,4 +40,21 @@ namespace NavOS.Basecode.Services.Helper
             return (currentPage, totalItems, totalPages, startIndex, reviewNumber, pageData);
         }
     }
+    public static class GenrePaginationHelper
+    {
+        public static (int, int, int, int, int, List<GenreViewModel>) GetPagination(
+            int pageSize, List<GenreViewModel> genre, string currentPageQueryString)
+        {
+            int currentPage = string.IsNullOrEmpty(currentPageQueryString) ? 1 : int.Parse(currentPageQueryString);
+            int totalItems = genre.Count;
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            int startIndex = (currentPage - 1) * pageSize;
+            int bookNumber = startIndex + 1;
+            int endIndex = Math.Min(startIndex + pageSize, totalItems);
+            List<GenreViewModel> pageData = genre.GetRange(startIndex, endIndex - startIndex);
+
+            return (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData);
+        }
+    }
+
 }

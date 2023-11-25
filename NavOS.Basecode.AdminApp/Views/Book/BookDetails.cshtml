@@ -47,6 +47,10 @@
         color: yellow;
     }
 
+    .label-green {
+        color: #00a651;
+    }
+
 </Style>
 <div class="container mt-5">
     <div class="w3-margin" id="bgColor">
@@ -66,14 +70,14 @@
                     <img src="@Model.BookDetails.ImageUrl" class="w3-margin-bottom" height="250" width="210" onerror="this.src='@Url.Content("~/img/default-book.jpg")'">
                 </div>
                 <div id="bookInfo" class="w3-col w3-padding-30" style="width:270px">
-                    <p id="book1" class="w3-margin-bottom w3-text-orange">@Model.BookDetails.BookTitle</p>
-                    <p>Author: @Model.BookDetails.Author</p>
-                    <p>Status: @Model.BookDetails.Status</p>
+                    <p class="w3-margin-bottom fw-semibold text-uppercase" style="color:#FFC119;">@Model.BookDetails.BookTitle</p>
+                    <p><span class="label-green fw-semibold">Author:</span> @Model.BookDetails.Author</p>
+                    <p><span class="label-green fw-semibold">Status:</span> @Model.BookDetails.Status</p>
                     <p class="genre-tags">
-                        <span>Genre: </span>
+                        <span class="label-green fw-semibold">Genre: </span>
                         <a href="#" class="genre-tag text-white fw-italic">@Model.BookDetails.Genre</a>
                     </p>
-                    <p>Chapter: @Model.BookDetails.Chapter</p><br>
+                    <p><span class="label-green fw-semibold">Chapter:</span> @Model.BookDetails.Chapter</p><br>
                 </div>
                 <div class="w3-right w3-col" style="width: 246px">
                     <div id="rate-review">
@@ -109,70 +113,9 @@
                 <p>@Model.BookDetails.Summary</p>
             </div><br><br>
             <!-- REVIEW LIST-->
+            <h7 class="w3-margin-bottom reviewsLabel fw-bold">REVIEWS</h7>
             <div id="leftRightPadding" class="w3-border w3-padding-32">
-                @if (reviewsToDisplay != null && reviewsToDisplay.Count > 0)
-                {
-                    @foreach (var review in reviewsToDisplay)
-                    {
-                        <div class="w3-border w3-padding">
-                            <div class="w3-row">
-                                <div id="userReviewDate" class="w3-rest w3-right w3-margin-bottom">
-                                    <small><i>@review.DateReviewed.ToString("MMMM dd, yyyy hh:mm tt")</i></small>
-                                </div>
-                                <div class="w3-third">
-                                    <span id="reviewName" style="width:150px;">@review.UserName</span>
-                                </div>
-                                <div class="w3-col">
-                                    @foreach (var star in Enumerable.Range(1, review.Rate))
-                                    {
-                                        <i class="fa fa-star star-color"></i>
-                                    }
-                                    @foreach (var star in Enumerable.Range(1, 5 - review.Rate))
-                                    {
-                                        <i class="fa fa-star"></i>
-                                    }
-                                </div>
-                            </div>
-                            <p id="userReview" class="w3-text-white">@review.ReviewText</p>
-                        </div>
-                        <br>
-                    }
-                    <!-- Pagination -->
-                    <div class="d-flex justify-content-center">
-                        <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
-                            <ul class="pagination">
-                                @if (currentPage > 1)
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = currentPage - 1 })" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                }
-
-                                @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
-                                {
-                                    <li class="page-item @(i == currentPage ? "active" : "")">
-                                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = i })">@i</a>
-                                    </li>
-                                }
-
-                                @if (currentPage < totalPages)
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = currentPage + 1 })" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        </nav>
-                    </div>
-                }
-                else
-                {
-                    <p>No reviews available.</p>
-                }
+                @await Html.PartialAsync("~/Views/Review/ReviewDetails.cshtml", Model.Reviews)
             </div>
         </div>
     </div>

@@ -117,7 +117,7 @@
                 </nav>
             </div>
         </div>
-        <!-- Filter button section -->
+@*         <!-- Filter button section -->
         <div class="col-12 mt-4">
             @foreach (var filterOption in new[] { "all", "title", "author" })
             {
@@ -146,7 +146,7 @@
                     }
                 </div>
             </div>
-        </div>
+        </div> *@
         <!-- Book List -->
         <div class="col-md-12 mt-3">
             <ul class="row mt-3 list-unstyled" style="padding-left: 0;">
@@ -165,44 +165,13 @@
                                     </div>
                                     <img class="card-img-top" height="250" width="100" src="@books.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
                                     <div class="card-body text-center d-flex justify-content-center" style="height:110px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                        @if (string.Equals(requestQuery["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            <h6 class="card-title ellipsis text-white">@books.BookTitle</h6>
-                                        }
-                                        else
-                                        {
-                                            <h6 class="card-title ellipsis text-white">@books.BookTitle</h6>
-                                        }
+                                        <h6 class="card-title ellipsis text-white">@books.BookTitle</h6>
                                     </div>
                                     <div class="card-footer text-start d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
-                                        @if (string.Equals(requestQuery["filter"].ToString(), "title", StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
-                                                <i class="fas fa-book"></i>
-                                                    @books.ReviewCount Reviews
-                                            </span>
-                                        }
-                                                    else if (string.Equals(requestQuery["filter"].ToString(), "author", StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
-                                                <i class="fas fa-user"></i>
-                                                @books.Author
-                                            </span>
-                                        }
-                                        else if (string.Equals(requestQuery["filter"].ToString(), "genre", StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            <span class="card-title ellipsis-genre text-white" style="margin-top:-5px; font-size:12px;">
-                                                <i class="fas fa-folder"></i>
-                                                @books.Genre
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="card-title ellipsis text-white" style="margin-top:-5px;font-size:12px;">
-                                                <i class="far fa-calendar"></i>
-                                                @(books.AddedTime.ToString("MMMM d, yyyy"))
-                                            </span>
-                                        }
+                                        <span class="card-title ellipsis text-white" style="margin-top:-5px;font-size:12px;">
+                                            <i class="far fa-calendar"></i>
+                                            @(books.AddedTime.ToString("MMMM d, yyyy"))
+                                        </span>
                                     </div>
                                 </a>
                             </div>

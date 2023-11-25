@@ -152,13 +152,31 @@
             <div class="col-12 mt-4">
                 @foreach (var filterOption in new[] { "all", "ratings", "title", "author" })
                 {
-                    var isActive = string.Equals(requestQuery["filter"].ToString(), filterOption, StringComparison.OrdinalIgnoreCase);
+                    var isActive = string.Equals(requestQuery["filter"].ToString(), filterOption, StringComparison.OrdinalIgnoreCase) || (string.IsNullOrEmpty(requestQuery["filter"].ToString()) && filterOption == "all");
                     var buttonText = filterOption.First().ToString().ToUpper() + filterOption.Substring(1);
 
                     <a href="?filter=@filterOption&sort=@filterOption" class="btn btn-outline-warning @(isActive ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:5px;">
                         @buttonText
                     </a>
                 }
+                <button type="button" style="box-shadow:none; text-decoration: none; color: inherit;" class="btn btn-outline-warning text-white" data-toggle="collapse" data-target="#genreFilter">Genre</button>
+            </div>
+        </div>
+        <!-- Genre list section -->
+        <div id="genreFilter" class="@(string.Equals(requestQuery["filter"], "genre", StringComparison.OrdinalIgnoreCase) ? "" : "collapse")">
+            <div class="row ms-1">
+                <div class="col-md-12 mt-3">
+                    <h4 class="text-white font-weight-light mt-2">Genre</h4>
+                    @for (var i = 0; i < Model.Genres.Count; i++)
+                    {
+                        var genre = Model.Genres[i];
+                        var selectedGenres = requestQuery["sort"];
+                        var currentGenre = genre.GenreName;
+                        var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
+
+                        <button type="button" class="mb-2 shadow-none btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?filter=genre&sort=@(isSelected == "active text-dark" ? "" : currentGenre)'">@currentGenre</button>
+                    }
+                </div>
             </div>
         </div>
         <div class="w3-row w3-padding-30 bookLists ms-4" id="bookListContainer">

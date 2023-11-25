@@ -6,42 +6,39 @@
     var (currentPage, totalItems, totalPages, startIndex, reviewNumber, reviewsToDisplay) =
         ReviewPaginationHelper.GetPagination(pageSize, Model, currentPageQueryString);
 }
+<style>
 
-@if (reviewsToDisplay != null && reviewsToDisplay.Count > 0)
-{
-    @foreach (var review in reviewsToDisplay)
-    {
-        <div class="w3-border w3-padding">
-            <div class="w3-row">
-                <div id="userReviewDate" class="w3-rest w3-right w3-margin-bottom">
-                    <small><i>@review.DateReviewed.ToString("MMMM dd, yyyy hh:mm tt")</i></small>
-                </div>
-                <div class="w3-third">
-                    <span id="reviewName" style="width:150px;">@review.UserName</span>
-                </div>
-                <div class="w3-col">
-                    @foreach (var star in Enumerable.Range(1, review.Rate))
-                    {
-                        <i class="fa fa-star yellow-star"></i>
-                    }
-                    @foreach (var star in Enumerable.Range(1, 5 - review.Rate))
-                    {
-                        <i class="fa fa-star"></i>
-                    }
-                </div>
-            </div>
-            <p id="userReview" class="w3-text-white">@review.ReviewText</p>
-        </div>
-        <br>
+    .pagination .page-item.active a {
+        background-color: #00A651;
+        box-shadow: none;
     }
+
+    .pagination .page-item:not(.active) a {
+        background-color: #FFC119;
+        color: #000;
+        box-shadow: none;
+    }
+
+    .pagination .page-item a {
+        border: none;
+        box-shadow: none;
+    }
+
+    .pagination .page-item a:hover {
+        background-color: #00A651;
+        color: white;
+        box-shadow: none;
+    }
+</style>
+<div id="reviews-container">
     <!-- Pagination -->
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-end mb-2">
         <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
             <ul class="pagination">
                 @if (currentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = currentPage - 1 })" aria-label="Previous">
+                        <a class="page-link" href="#" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -50,14 +47,14 @@
                 @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
                 {
                     <li class="page-item @(i == currentPage ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = i })">@i</a>
+                        <a class="page-link" href="#" data-page="@i">@i</a>
                     </li>
                 }
 
                 @if (currentPage < totalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"], page = currentPage + 1 })" aria-label="Next">
+                        <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -65,8 +62,82 @@
             </ul>
         </nav>
     </div>
-}
-else
-{
-    <p>No reviews available.</p>
-}
+    @if (reviewsToDisplay != null && reviewsToDisplay.Count > 0)
+    {
+        @foreach (var review in reviewsToDisplay)
+        {
+            <div class="w3-border w3-padding">
+                <div class="w3-row">
+                    <div id="userReviewDate" class="w3-rest w3-right w3-margin-bottom">
+                        <small><i>@review.DateReviewed.ToString("MMMM dd, yyyy hh:mm tt")</i></small>
+                    </div>
+                    <div class="w3-third">
+                        <span id="reviewName" style="width:150px;">@review.UserName</span>
+                    </div>
+                    <div class="w3-col">
+                        @foreach (var star in Enumerable.Range(1, review.Rate))
+                        {
+                            <i class="fa fa-star yellow-star"></i>
+                        }
+                        @foreach (var star in Enumerable.Range(1, 5 - review.Rate))
+                        {
+                            <i class="fa fa-star"></i>
+                        }
+                    </div>
+                </div>
+                <p id="userReview" class="w3-text-white">@review.ReviewText</p>
+            </div>
+            <br>
+        }
+    }
+    else
+    {
+        <p>No reviews available.</p>
+    }
+</div>
+<script>
+    function loadReviews(page) {
+        var xhr = new XMLHttpRequest();
+        var url = '@Url.Action("BookDetails", "Book", new { BookId = Context.Request.Query["BookId"] })';
+        url += '&page=' + encodeURIComponent(page);
+
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    var reviewsContainerHtml = extractReviewsContainer(xhr.responseText);
+                    document.getElementById('reviews-container').innerHTML = reviewsContainerHtml;
+
+                    addPaginationEventListeners();
+                } else {
+                    console.error('Error loading reviews. Status:', xhr.status);
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    // Function to extract the reviews container HTML from the response
+    function extractReviewsContainer(responseText) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(responseText, 'text/html');
+        var reviewsContainer = doc.getElementById('reviews-container');
+
+        return reviewsContainer.innerHTML;
+    }
+
+    // Function to add event listeners to pagination links
+    function addPaginationEventListeners() {
+        document.querySelectorAll('.pagination .page-link').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                var page = this.getAttribute('data-page');
+                loadReviews(page);
+            });
+        });
+    }
+    addPaginationEventListeners();
+</script>
+
+
+
