@@ -32,10 +32,13 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
             _reviewService = reviewService;
         }
+        /// <summary>
+        /// Display Reviews
+        /// </summary>
+        /// <returns></returns>
         public IActionResult ReviewDetails()
         {
             return View();
-            //return PartialView("BookDetails", "Book");
         }
     }
 }

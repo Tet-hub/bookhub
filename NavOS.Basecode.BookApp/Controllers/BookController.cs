@@ -87,8 +87,6 @@ namespace NavOS.Basecode.BookApp.Controllers
 
             return View(data);
         }
-
-
         /// <summary>
         /// BookDetails
         /// </summary>

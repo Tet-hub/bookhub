@@ -20,12 +20,25 @@ namespace NavOS.Basecode.Services.Services
         private readonly IAdminRepository _adminRepository;
         private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AdminService"/> class.
+        /// </summary>
+        /// <param name="repository">The repository.</param>
+        /// <param name="mapper">The mapper.</param>
+        /// <param name="emailSender">The email sender.</param>
         public AdminService(IAdminRepository repository, IMapper mapper, IEmailSender emailSender)
         {
             _adminRepository = repository;
             _mapper = mapper;
             _emailSender = emailSender;
         }
+        /// <summary>
+        /// Authenticates the admin.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="admin">The admin.</param>
+        /// <returns></returns>
         public LoginResult AuthenticateAdmin(string email, string password, ref Admin admin)
         {
             admin = new Admin();
@@ -34,7 +47,12 @@ namespace NavOS.Basecode.Services.Services
                                                             x.Password == passwordKey).FirstOrDefault();
             return admin != null ? LoginResult.Success : LoginResult.Failed;
         }
-
+        /// <summary>
+        /// Adds the admin.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <param name="user">The user.</param>
+        /// <exception cref="System.IO.InvalidDataException"></exception>
         public void AddAdmin(AdminViewModel model, string user) 
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -71,17 +89,10 @@ namespace NavOS.Basecode.Services.Services
             }
         }
 
-        private static bool CheckAdminProfile(string adminId)
-        {
-            var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
-            var coverImageFileName = Path.Combine(coverImagesPath, adminId) + ".png";
-            if (File.Exists(coverImageFileName))
-            {
-                return true;
-            }
-            return false;
-        }
-
+        /// <summary>
+        /// Gets all admins.
+        /// </summary>
+        /// <returns></returns>
         public List<AdminViewModel> GetAllAdmins()
         {
             var url = "https://127.0.0.1:8080";
@@ -102,6 +113,11 @@ namespace NavOS.Basecode.Services.Services
             return data;
         }
 
+        /// <summary>
+        /// Gets the admin.
+        /// </summary>
+        /// <param name="adminId">The admin identifier.</param>
+        /// <returns></returns>
         public AdminViewModel GetAdmin(string adminId)
         {
 			var url = "https://127.0.0.1:8080";
@@ -123,7 +139,11 @@ namespace NavOS.Basecode.Services.Services
 			return null;
 
 		}
-
+        /// <summary>
+        /// Deletes the admin.
+        /// </summary>
+        /// <param name="adminId">The admin identifier.</param>
+        /// <returns></returns>
         public bool DeleteAdmin(string adminId)
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -137,7 +157,12 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
-
+        /// <summary>
+        /// Inserts the token.
+        /// </summary>
+        /// <param name="adminViewModel">The admin view model.</param>
+        /// <param name="host">The host.</param>
+        /// <returns></returns>
         public bool InsertToken(AdminViewModel adminViewModel, string host)
         {
             Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminEmail ==  adminViewModel.AdminEmail).FirstOrDefault();
@@ -150,7 +175,12 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
-
+        /// <summary>
+        /// Checks the query paramater.
+        /// </summary>
+        /// <param name="AdminId">The admin identifier.</param>
+        /// <param name="Token">The token.</param>
+        /// <returns></returns>
         public bool CheckQueryParamater(string AdminId, string Token)
         {
             if (_adminRepository.AdminExists_v2(AdminId, Token))
@@ -159,7 +189,11 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
-
+        /// <summary>
+        /// Changes the password.
+        /// </summary>
+        /// <param name="adminViewModel">The admin view model.</param>
+        /// <returns></returns>
         public bool ChangePassword(AdminViewModel adminViewModel)
         {
             Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId && x.Token == adminViewModel.Token).FirstOrDefault();
@@ -172,7 +206,11 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
-
+        /// <summary>
+        /// Checks the email exist.
+        /// </summary>
+        /// <param name="adminViewModel">The admin view model.</param>
+        /// <returns></returns>
         public bool CheckEmailExist(AdminViewModel adminViewModel)
         {
             Admin admin = _adminRepository.GetAdmins().FirstOrDefault(x => x.AdminEmail == adminViewModel.AdminEmail);
@@ -184,7 +222,12 @@ namespace NavOS.Basecode.Services.Services
 
             return false;
         }
-
+        /// <summary>
+        /// Edits the admin.
+        /// </summary>
+        /// <param name="adminViewModel">The admin view model.</param>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
         public bool EditAdmin(AdminViewModel adminViewModel, string user)
         {
 			var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -214,5 +257,24 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
+        #region private methods
+
+        /// <summary>
+        /// Checks the admin profile.
+        /// </summary>
+        /// <param name="adminId">The admin identifier.</param>
+        /// <returns></returns>
+        private static bool CheckAdminProfile(string adminId)
+        {
+            var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
+            var coverImageFileName = Path.Combine(coverImagesPath, adminId) + ".png";
+            if (File.Exists(coverImageFileName))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
     }
 }
