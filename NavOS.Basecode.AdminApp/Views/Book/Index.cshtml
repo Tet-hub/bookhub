@@ -76,7 +76,7 @@
         <div class="col-md-12 mx-2 mt-2">
             <div class="row mx-3">
                 <!-- Latest Books-->
-                <div class="col-12 col-md-12 px-2 justify-content-between">
+                <div class="col-11 col-md-11 px-2 justify-content-between" style="margin-left:44px;">
                     <div class="btn-slide float-end mt-2">
                         <a class="trigger fw-semibold" asp-action="NewBooks" asp-controller="Book">View New Books</a>
                         <div class="slide"></div>
@@ -86,7 +86,9 @@
                     <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">NEW BOOKS</span>
                 </div>
             </div>
-            <hr class="mx-4" />
+            <div class="col-md-11 mx-4" style="margin-left:44px;">
+                <hr />
+            </div>
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
                 @foreach (var latestBook in Model.LatestBooks)
                 {
@@ -122,8 +124,7 @@
         <div class="col-md-12 mx-2">
             <!--View Top Books-->
             <div class="row mx-3">
-                <!-- Latest Books-->
-                <div class="col-12 col-md-12 px-2 justify-content-between">
+                <div class="col-11 col-md-11 px-2 justify-content-between" style="margin-left:44px;">
                     <div class="btn-slide float-end mt-2">
                         <a class="trigger fw-semibold" asp-action="TopBooks" asp-controller="Book">View Top Books</a>
                         <div class="slide"></div>
@@ -133,31 +134,33 @@
                     <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">TOP BOOKS</span>
                 </div>
             </div>
-            <hr class="mx-4" />
+            <div class="col-md-11 mx-4" style="margin-left:44px;">
+                <hr />
+            </div>
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
                 @foreach (var topBook in Model.TopRatedBooks)
                 {
-                    <li class="col-5 col-md-3 col-xl-2 mb-3 mx-2">
-                        <div class="card w-100 mb-3" style="height: 100%;">
-                            <div class="rating-badge">
-                                <span class="badge badge-primary rounded-circle text-dark">
-                                    @topBook.TotalRating
-                                    <i class="fa fa-star checked"></i>
-                                </span>
-                            </div>
+                    <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
+                        <div class="card w-100" style="height: 100%;">
                             <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@topBook.BookId" class="text-decoration-none text-dark">
-                                <img class="card-img-top" height="250" width="100" src="@topBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
-                            </a>
-                            <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                <h6 class="card-title ellipsis text-white">@topBook.BookTitle</h6>
-                            </div>
-                            <div class="card-body" style="height: 60px; background-color: #212529; border-bottom: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-top:-10px;">
-                                <!-- Edit and Delete Buttons -->
-                                <div class="d-flex justify-content-around">
-                                <a asp-action="EditBook" asp-controller="Book" asp-route-BookId="@topBook.BookId" class="btn btn-sm btn-outline-warning text-white shadow-none"><i class="bi bi-pencil"></i> Edit</a>
-                                <button type="button" class="btn btn-sm btn-outline-danger text-white shadow-none" onclick="openDeleteModal('@topBook.BookId')"><i class="bi bi-trash"></i> Delete</button>
+                                <div class="rating-badge">
+                                    <span class="badge badge-primary rounded-circle text-dark">
+                                        @topBook.TotalRating
+                                        <i class="fa fa-star checked"></i>
+                                    </span>
                                 </div>
-                            </div>
+                                <img class="card-img-top" height="250" width="100" src="@topBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
+                                    <h6 class="card-title ellipsis text-white">@topBook.BookTitle</h6>
+                                </div>
+                                <div class="card-body" style="height: 60px; background-color: #212529; border-bottom: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-top:-10px;">
+                                    <!-- Edit and Delete Buttons -->
+                                    <div class="d-flex justify-content-around">
+                                        <a asp-action="EditBook" asp-controller="Book" asp-route-BookId="@topBook.BookId" class="btn btn-sm btn-outline-warning text-white shadow-none"><i class="bi bi-pencil"></i> Edit</a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger text-white shadow-none" onclick="openDeleteModal('@topBook.BookId')"><i class="bi bi-trash"></i> Delete</button>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     </li>
                 }

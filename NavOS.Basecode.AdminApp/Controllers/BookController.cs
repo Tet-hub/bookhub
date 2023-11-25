@@ -96,16 +96,13 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult BookList(string searchQuery, string filter, string sort)
+        public IActionResult BookList(string searchQuery = null, string filter = null, string sort = null)
         {
-            var book = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
+            var data = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
             string[] headers = new string[] { "Book Profile", "Title", "Author", "Reviews", "Actions" };
 
-            CommonViewData();
-
-            ViewData["AllBooks"] = book;
             ViewBag.headers = headers;
-            return View();
+            return View(data);
         }
 
         /// <summary>

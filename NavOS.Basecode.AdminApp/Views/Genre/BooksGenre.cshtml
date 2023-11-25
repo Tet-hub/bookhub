@@ -8,9 +8,54 @@
 
 @section styles {
     <link rel="stylesheet" type="text/css" href="~/css/list.css">
+    <style>
+        .btn-slide {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .trigger {
+            padding: 10px 20px;
+            background-color: transparent;
+            color: #FFC119;
+            border: 2px solid #f39c12;
+            cursor: pointer;
+            transition: color 0.5s, background-color 0.5s;
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background-color: #f39c12;
+            transition: left 0.5s ease;
+            z-index: 1;
+        }
+
+        .btn-slide:hover .slide {
+            left: 0;
+        }
+
+        .btn-slide:hover .trigger {
+            color: #000;
+            background-color: #FFC119;
+        }
+    </style>
 }
-<div style="margin-top: 40px; text-align: right; margin-bottom: 40px">
-    <h3><a asp-controller="Book" asp-action="AddBook" style="text-decoration: none; font-weight: bold;color: #FFC119">+ ADD BOOK</a></h3>
+<div class="row">
+    <div class="col-12 col-md-12 px-2 justify-content-between">
+        <div class="btn-slide float-end mt-2">
+            <a class="trigger fw-semibold" asp-action="AddBook" asp-controller="Book">+ Add Book</a>
+            <div class="slide"></div>
+        </div>
+    </div>
 </div>
 
 @* <form asp-controller="Book" asp-action="BookList" method="get" class="form-inline my-2 my-lg-0" style="margin-top: 40px">
@@ -36,7 +81,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(var book in Model)
+                @foreach (var book in Model)
                 {
                     <tr>
                         <td>
@@ -45,7 +90,7 @@
                         <td class="align-middle">@book.BookTitle</td>
                         <td class="align-middle">@book.Author</td>
                         <td class="align-middle">@((book.TotalRating % 2 == 0) ? book.TotalRating.ToString("0") : book.TotalRating.ToString("0.0")) Ratings / @book.ReviewCount Reviews</td>
-                        
+
                     </tr>
                 }
             </tbody>
@@ -58,39 +103,40 @@ else
 }
 
 @* Pagination *@
-@if (ViewBag.CurrentPage != null){
+@if (ViewBag.CurrentPage != null)
+{
     <nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-end">
-        @if (ViewBag.CurrentPage > 1)
-        {
-            <li class="page-item">
-                <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)" style="background-color: #FFC119;color: black;" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-        }
-        @for (int i = ViewBag.CurrentPage - 2; i <= ViewBag.CurrentPage + 2; i++)
-        {
-            if (i >= 1 && i <= ViewBag.TotalPages)
+        <ul class="pagination justify-content-end">
+            @if (ViewBag.CurrentPage > 1)
             {
-                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                    <a class="page-link" style="background-color: #FFC119;color: black;"
-                       asp-controller="Book" asp-action="BookList" asp-route-page="@i">@i</a>
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)" style="background-color: #FFC119;color: black;" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
                 </li>
             }
-        }
-        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-        {
-            <li class="page-item">
-                <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)" style="background-color: #FFC119;color: black;" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        }
-    </ul>
-</nav>
+            @for (int i = ViewBag.CurrentPage - 2; i <= ViewBag.CurrentPage + 2; i++)
+            {
+                if (i >= 1 && i <= ViewBag.TotalPages)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" style="background-color: #FFC119;color: black;"
+                           asp-controller="Book" asp-action="BookList" asp-route-page="@i">@i</a>
+                    </li>
+                }
+            }
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)" style="background-color: #FFC119;color: black;" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
 }
-   
+
 
 @* Modal Area *@
 <div class="w3-modal" id="deleteModal">

@@ -6,7 +6,7 @@
     var genreModal = new NavOS.Basecode.Services.ServiceModels.GenreViewModel();
     var colorClasses = new string[] { "green", "yellow", "orange" };
     var requestQuery = ViewContext.HttpContext.Request.Query;
-    int pageSize = 5;
+    int pageSize = 6;
     var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = GenrePaginationHelper
         .GetPagination(pageSize, Model, requestQuery["page"].FirstOrDefault());
 }

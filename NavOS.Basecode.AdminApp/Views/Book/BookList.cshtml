@@ -1,13 +1,12 @@
-﻿@using NavOS.Basecode.Services.ServiceModels;
+﻿@model NavOS.Basecode.Services.ServiceModels.FilteredBooksViewModel
 @using NavOS.Basecode.Services.Helper;
 @{
     ViewData["Title"] = "Book List";
     string[] headers = ViewBag.headers as string[];
-    var book = ViewData["AllBooks"] as List<NavOS.Basecode.Services.ServiceModels.BookViewModel>;
 
     int pageSize = 5;
     var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = PaginationHelper
-    .GetPagination(pageSize, book, ViewContext.HttpContext.Request.Query["page"]
+    .GetPagination(pageSize, Model.Books, ViewContext.HttpContext.Request.Query["page"]
     .FirstOrDefault());
 
     var (displayText, textColor, fontStyle) = HeaderHelper.GetDisplayProperties(Context);
@@ -16,76 +15,10 @@
 
 @section styles {
     <link rel="stylesheet" type="text/css" href="~/css/list.css">
-    <style>
-        .summary-truncate {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-        }
-
-        .pagination .page-item.active a {
-            background-color: #00A651;
-            box-shadow: none;
-        }
-
-        .pagination .page-item:not(.active) a {
-            background-color: transparent;
-            color: #000;
-        }
-
-        .pagination .page-item a {
-            border: none;
-        }
-
-        .pagination .page-item a:hover {
-            background-color: #00A651;
-            color: white;
-        }
-
-        .btn-slide {
-            position: relative;
-            display: inline-block;
-            overflow: hidden;
-        }
-
-        .trigger {
-            padding: 10px 20px;
-            background-color: transparent;
-            color: #FFC119;
-            border: 2px solid #f39c12;
-            cursor: pointer;
-            transition: color 0.5s, background-color 0.5s;
-            position: relative;
-            z-index: 2;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background-color: #f39c12;
-            transition: left 0.5s ease;
-            z-index: 1;
-        }
-
-        .btn-slide:hover .slide {
-            left: 0;
-        }
-
-        .btn-slide:hover .trigger {
-            color: #000;
-            background-color: #FFC119;
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/Pagination.css" />
 }
 <div class="row">
-    <div class="col-12 col-md-12 px-2 justify-content-between">
+    <div class="col-12 col-md-12 px-2 justify-content-between ms-2">
         <div class="btn-slide float-end mt-2">
             <a class="trigger fw-semibold" asp-action="AddBook" asp-controller="Book">+ Add Book</a>
             <div class="slide"></div>
@@ -102,28 +35,10 @@
                     <!-- Pagination -->
                     <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
                         <ul class="pagination">
-                            @if (currentPage > 1)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" href="@FilterHelper.GetQueryString(currentPage - 1, Context)" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                            }
-
                             @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
                             {
                                 <li class="page-item @(i == currentPage ? "active" : "")">
                                     <a class="page-link" href="@FilterHelper.GetQueryString(i, Context)">@i</a>
-                                </li>
-                            }
-
-                            @if (currentPage < totalPages)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" href="@FilterHelper.GetQueryString(currentPage + 1, Context)" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
                                 </li>
                             }
                         </ul>
