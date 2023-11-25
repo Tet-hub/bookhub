@@ -6,54 +6,43 @@
 
 }
 @section styles {
-    <link rel="stylesheet" href="~/css/addbook.css" />
+    <link rel="stylesheet" href="~/css/addEditBook.css" />
+    <script src="~/js/editBook.js"></script>
 }
-<!-- script for image-->
-<script>
-    function displayImage(input) {
-        var imageElement = document.getElementById("bookImage");
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                imageElement.src = e.target.result;
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-</script>
+
 <div class="container">
-    <div class="row" style="border: 1px solid #fff;">
+    <div class="row bodyBorder">
         <div class="col-md-12">
             <form method="post" enctype="multipart/form-data" asp-action="EditBook" onsubmit="return validateForm()">
     <input type="hidden" asp-for="BookId" />
     <div class="row">
         <!--EDIT BUTTON-->
         <div class="addNow">
-            <button type="submit" class="addbtn text-dark float-end">+EDIT NOW</button>
+            Edit Book
         </div>
         <div class="bodyDetails">
             <div class="w3-row w3-margin-bottom">
 
                 <!--BOOK IMAGE-->
-                <div class="w3-col imgPaddingRight" style="width:230px">
-                    <img id="bookImage" src="@Model.ImageUrl" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="width:100%; height:280px; object-fit: cover">
+                <div class="w3-col imgPaddingRight">
+                    <img class="bookImgStyle" id="bookImage" src="@Model.ImageUrl" onerror="this.src='@Url.Content("~/img/default-book.jpg")'">
                     <input type="file" class="form-control mt-2" asp-for="ImageFile" accept="image/*" onchange="displayImage(this)">
-                    @* <span asp-validation-for="ImageFile" class="text-warning" style="height:20px; margin-top:-10px; margin-bottom:10px;"></span> *@
+                    @* <span asp-validation-for="ImageFile" class="text-warning spanImgFile"></span> *@
                 </div>
 
                 <!--INPUT DETAILS-->
                 <div class="w3-half">
                     <div class="form-container">
-                        <div class="form-row" style="display: flex; align-items: center;">
+                        <div class="form-row">
                             <p>Title:</p>
-                            <input class="form-control" asp-for="BookTitle" style="box-shadow:none;" />
+                            <input class="form-control boxShadow" asp-for="BookTitle" />
                         </div>
-                        <span asp-validation-for="BookTitle" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
+                        <span asp-validation-for="BookTitle" class="text-warning bookInputSpan"></span>
                         <div class="form-row">
                             <p>Author:</p>
-                            <input class="form-control" asp-for="Author" style="box-shadow:none;" />
+                            <input class="form-control boxShadow" asp-for="Author" />
                         </div>
-                        <span asp-validation-for="Author" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
+                        <span asp-validation-for="Author" class="text-warning bookInputSpan"></span>
                         <div class="form-row">
                             <p>Status:</p>
                             <select id="status" name="Status" asp-for="Status" required>
@@ -63,48 +52,55 @@
                                 <option value="Hiatus" class="text-dark">Hiatus</option>
                             </select>
                         </div>
-                        <span asp-validation-for="Status" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
+                        <span asp-validation-for="Status" class="text-warning bookInputSpan"></span>
                         <div class="form-row">
                             <p>Chapter:</p>
-                            <input class="form-control" asp-for="Chapter" style="box-shadow:none;" />
+                            <input class="form-control boxShadow" asp-for="Chapter" />
                         </div>
-                        <span asp-validation-for="Chapter" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
+                        <span asp-validation-for="Chapter" class="text-warning bookInputSpan"></span>
                         <div class="form-row">
                             <p>Date:</p>
-                            <input type="date" class="form-control" asp-for="DateReleased" style="box-shadow:none;" />
+                            <input type="date" class="form-control boxShadow" asp-for="DateReleased" />
                         </div>
-                        <span asp-validation-for="DateReleased" class="text-warning" style="margin-left: 80px; height:20px; margin-top:-20px; margin-bottom:10px;"></span>
+                        <span asp-validation-for="DateReleased" class="text-warning bookInputSpan"></span>
                         <div class="form-row">
-                            <label style="margin-right: 25px;">Genre:</label>
+                            <p>Genre:</p>
                             <div class="dropdown genre-dropdown">
-                                <button id="genreDropdownBtn">Choose Genre</button>
+                                <button class="genreText" id="genreDropdownBtn">Choose Genre</button>
                                 <div class="dropdown-content">
                                     @{
                                         string[] separatedGenre = Model.Genre.Split(", ");
                                     }
                                     @if (genres != null)
                                     {
+                                        <div class="scrollable-genres">
                                         @foreach (var genre in genres)
                                         {
                                             <label>
-                                                <input type="checkbox" name="SelectedGenres" value="@genre.GenreName" @((separatedGenre.Contains(genre.GenreName)) ? "checked" : "") required>
-                                                @genre.GenreName
+                                                <input type="checkbox" onchange="updateButtonText()" name="SelectedGenres" value="@genre.GenreName" @((separatedGenre.Contains(genre.GenreName)) ? "checked" : "") required>
+                                               <span class="genre-style">@genre.GenreName</span>
+                                                
                                             </label>
                                         }
+                                        </div>
                                     }
+                                    
                                 </div>
                             </div>
                         </div>
-                        <span id="genreValidationError" class="text-warning" style="height:20px; margin-left:80px;margin-top: -20px; margin-bottom:10px;"></span>
+                        <span id="genreValidationError" class="text-warning bookInputSpan"></span>
                     </div>
                 </div>
             </div>
 
             <!--INPUT SUMMARY-->
-            <h7 class="w3-margin-bottom summaryLabel">SUMMARY</h7>
-            <span asp-validation-for="Summary" class="text-warning" style="height:20px; margin-bottom:10px;"></span>
+            <div class="w3-row">
+                <h7 class="w3-margin-bottom summaryLabel w3-half">SUMMARY</h7>
+                <button type="submit" class="addbtn text-white float-end">+EDIT NOW</button>
+            </div>
+            <span asp-validation-for="Summary" class="text-warning summarySpan"></span>
             <div class="w3-border">
-                <textarea rows="7" class="w3-justify w3-text-white w3-padding" asp-for="Summary" style="outline:none;"></textarea>
+                <textarea rows="7" class="w3-justify w3-text-white w3-padding" asp-for="Summary"></textarea>
             </div>
         </div>
     </div>
