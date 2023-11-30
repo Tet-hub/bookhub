@@ -1,9 +1,7 @@
-﻿@using NavOS.Basecode.Services.ServiceModels;
-@model BookViewModel
+﻿@model NavOS.Basecode.Services.ServiceModels.BookViewModel
 @{
-    ViewData["Title"] = "Edit Book - " + Model.BookTitle;
-    var genres = ViewData["Genre"] as List<GenreViewModel>;
-
+    ViewData["Title"] = "Edit Book";
+    string[] separatedGenre = Model.Genre.Split(", ");
 }
 @section styles {
     <link rel="stylesheet" href="~/css/addEditBook.css" />
@@ -75,15 +73,12 @@
                         <div class="form-row">
                             <p>Genre:</p>
                             <div class="dropdown genre-dropdown">
-                                <a type="button" class="genreText text-decoration-none text-white" id="genreDropdownBtn">Choose Genre</a>
+                                <div class="genreText text-decoration-none text-white" id="genreDropdownBtn">Choose Genre</div>
                                 <div class="dropdown-content">
-                                    @{
-                                        string[] separatedGenre = Model.Genre.Split(", ");
-                                    }
-                                    @if (genres != null)
+                                    @if (Model.Genres != null)
                                     {
                                         <div class="scrollable-genres">
-                                        @foreach (var genre in genres)
+                                        @foreach (var genre in Model.Genres)
                                         {
                                             <label>
                                                 <input class="ms-2" type="checkbox" onchange="updateButtonText()" name="SelectedGenres" value="@genre.GenreName" @((separatedGenre.Contains(genre.GenreName)) ? "checked" : "") required>
