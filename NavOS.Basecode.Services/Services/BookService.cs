@@ -132,7 +132,7 @@ namespace NavOS.Basecode.Services.Services
         {
             var url = "https://127.0.0.1:8080/";
             var book = _bookRepository.GetBooks().FirstOrDefault(s => s.BookId == BookId);
-
+            var genres = _genreService.GetGenres();
             var bookViewModel = new BookViewModel
             {
                 BookId = book.BookId,
@@ -145,6 +145,7 @@ namespace NavOS.Basecode.Services.Services
                 DateReleased = book.DateReleased,
                 AddedTime = book.AddedTime,
                 ImageUrl = Path.Combine(url, book.BookId + ".png"),
+                Genres = genres
 
             };
             return bookViewModel;
@@ -157,21 +158,29 @@ namespace NavOS.Basecode.Services.Services
         /// <param name="user">The user.</param>
         public void AddBook(BookViewModel book, string user)
         {
+            var genres = _genreService.GetGenres();
+
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
 
-            var model = new Book();
-            model.BookId = Guid.NewGuid().ToString();
-            model.BookTitle = book.BookTitle;
-            model.Summary = book.Summary;
-            model.Author = book.Author;
-            model.Status = book.Status;
-            model.Genre = book.Genre;
-            model.Chapter = book.Chapter;
-            model.DateReleased = book.DateReleased;
-            model.AddedBy = user;
-            model.UpdatedBy = user;
-            model.AddedTime = DateTime.Now;
-            model.UpdatedTime = DateTime.Now;
+            var model = new Book
+            {
+                BookId = Guid.NewGuid().ToString(),
+                BookTitle = book.BookTitle,
+                Summary = book.Summary,
+                Author = book.Author,
+                Status = book.Status,
+                Chapter = book.Chapter,
+                DateReleased = book.DateReleased,
+                AddedBy = user,
+                UpdatedBy = user,
+                AddedTime = DateTime.Now,
+                UpdatedTime = DateTime.Now
+            };
+
+            if (book.SelectedGenres != null && book.SelectedGenres.Any())
+            {
+                model.Genre = string.Join(", ", book.SelectedGenres);
+            }
 
             if (book.ImageFile != null)
             {
@@ -181,8 +190,10 @@ namespace NavOS.Basecode.Services.Services
                     book.ImageFile.CopyTo(fileStream);
                 }
             }
+            book.Genres = genres;
             _bookRepository.AddBook(model);
         }
+
         public bool DeleteBook(string bookId)
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -201,7 +212,9 @@ namespace NavOS.Basecode.Services.Services
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
             Book book = _bookRepository.GetBooks().Where(x => x.BookId == bookViewModel.BookId).FirstOrDefault();
-            if (book != null) 
+            var genres = _genreService.GetGenres();
+
+            if (book != null)
             {
                 book.BookTitle = bookViewModel.BookTitle;
                 book.Summary = bookViewModel.Summary;
@@ -213,6 +226,11 @@ namespace NavOS.Basecode.Services.Services
                 book.UpdatedBy = user;
                 book.UpdatedTime = DateTime.Now;
 
+                if (bookViewModel.SelectedGenres != null && bookViewModel.SelectedGenres.Count > 0)
+                {
+                    book.Genre = string.Join(", ", bookViewModel.SelectedGenres);
+                }
+
                 if (bookViewModel.ImageFile != null)
                 {
                     var coverImageFileName = Path.Combine(coverImagesPath, book.BookId) + ".png";
@@ -220,17 +238,32 @@ namespace NavOS.Basecode.Services.Services
                     {
                         bookViewModel.ImageFile.CopyTo(fileStream);
                     }
-                    _bookRepository.UpdateBook(book);
-                    return true;
                 }
+
+                bookViewModel.Genres = genres;
+
                 _bookRepository.UpdateBook(book);
                 return true;
             }
+
             return false;
         }
         public bool Validate(string BookTitle)
         {
             var isExist = _bookRepository.GetBooks().Where(x => x.BookTitle == BookTitle).Any();
+            return isExist;
+        }
+        /// <summary>
+        /// Validates for edit.
+        /// </summary>
+        /// <param name="BookTitle">The book title.</param>
+        /// <param name="bookId">The book identifier.</param>
+        /// <returns></returns>
+        public bool ValidateForEdit(string BookTitle, string bookId)
+        {
+            var isExist = _bookRepository.GetBooks()
+                            .Any(x => x.BookTitle == BookTitle && x.BookId != bookId.ToString());
+
             return isExist;
         }
         /// <summary>

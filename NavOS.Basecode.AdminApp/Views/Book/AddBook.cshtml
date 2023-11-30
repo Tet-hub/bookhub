@@ -1,16 +1,8 @@
-﻿@using NavOS.Basecode.Services.ServiceModels;
-@model NavOS.Basecode.Services.ServiceModels.BookViewModel
-@{
-    ViewData["Title"] = "Add Book";
-    var genres = ViewData["Genre"] as List<NavOS.Basecode.Services.ServiceModels.GenreViewModel>;
-
-}
-
+﻿@model NavOS.Basecode.Services.ServiceModels.BookViewModel
 @section styles {
     <link rel="stylesheet" href="~/css/addEditBook.css" />
-    <script src="~/js/addBook.js"></script>
+    <script src="~/js/editBook.js"></script>
 }
-
 
 <div class="container">
     <div class="bodyBorder row">
@@ -56,7 +48,7 @@
                                     <span asp-validation-for="Status" class="text-warning bookInputSpan"></span>
                                     <div class="form-row">
                                         <p>Chapter:</p>
-                                        <input type="text" class="form-control" asp-for="Chapter" min="1"/>
+                                        <input type="number" class="form-control" asp-for="Chapter" min="1"/>
                                     </div>
                                     <span asp-validation-for="Chapter" class="text-warning bookInputSpan"></span>
                                     <div class="form-row">
@@ -67,17 +59,18 @@
                                     <div class="form-row">
                                         <p>Genre:</p>
                                         <div class="dropdown genre-dropdown">
-                                            <a type="button" class="genreText text-decoration-none text-white" id="genreDropdownBtn">Choose Genre</a>
+                                            <div class="genreText text-decoration-none text-white" id="genreDropdownBtn">Choose Genre</div>
                                             <div class="dropdown-content">
-                                                @if (genres != null)
+                                                @if (Model.Genres != null)
                                                 {
                                                     <div class="scrollable-genres">
-                                                        @foreach (var genre in genres)
+                                                        @foreach (var genre in Model.Genres)
                                                         {
                                                             <label>
-                                                                <input class="ms-2" type="checkbox" name="SelectedGenres" value="@genre.GenreName" onchange="updateButtonText()" required>
+                                                                <input class="ms-2" type="checkbox" name="SelectedGenres" value="@genre.GenreName" onchange="updateButtonText()"
+                                                                @(Model.SelectedGenres != null && Model.SelectedGenres.Contains(genre.GenreName) ? "checked" : "")
+                                                                       required>
                                                                 <span class="genre-style">@genre.GenreName</span>
-                                                                
                                                             </label>
                                                         }
                                                     </div>

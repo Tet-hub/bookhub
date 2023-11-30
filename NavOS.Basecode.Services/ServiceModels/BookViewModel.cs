@@ -39,5 +39,8 @@ namespace NavOS.Basecode.Services.ServiceModels
         public List<ReviewViewModel> Reviews { get; set; }
         public double TotalRatingAndReviewsCount { get; set; }
         public double TotalScore { get; set; }
+
+        //populate the genre
+        public List<GenreViewModel> Genres { get; set; }
     }
 }

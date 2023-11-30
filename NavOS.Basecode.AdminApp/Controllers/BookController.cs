@@ -10,6 +10,7 @@ using NavOS.Basecode.Services.ServiceModels;
 using NavOS.Basecode.Services.Services;
 using System;
 using System.Linq;
+using System.Net;
 
 namespace NavOS.Basecode.BookApp.Controllers
 {
@@ -103,62 +104,20 @@ namespace NavOS.Basecode.BookApp.Controllers
             ViewBag.headers = headers;
             return View(data);
         }
-
         /// <summary>
-        /// Edits the book.
-        /// </summary>
-        /// <param name="BookId">The book identifier.</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult EditBook(string BookId)
-        {
-            var book = _bookService.GetBook(BookId);
-            if (book == null)
-            {
-                TempData["ErrorMessage"] = "No Book Found";
-                return RedirectToAction("BookList");
-            }
-            var genre = _genreService.GetGenres();
-            ViewData["Genre"] = genre;
-            return View(book);
-        }
-
-        /// <summary>
-        /// Edits the book.
-        /// </summary>
-        /// <param name="book">The book.</param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult EditBook(BookViewModel book)
-        {
-            if (book.SelectedGenres != null && book.SelectedGenres.Count > 0)
-            {
-                book.Genre = string.Join(", ", book.SelectedGenres);
-            }
-            else
-            {
-                if (!ModelState.IsValid)
-                {
-                    var genres = _genreService.GetGenres();
-                    ViewData["Genre"] = genres;
-                }
-            }
-            _bookService.UpdateBook(book, this.UserName);
-            TempData["SuccessMessage"] = "Book Updated Successfully";
-            return RedirectToAction("BookList");
-
-        }
-
-        /// <summary>
-        /// Adds the book.
+        /// Display the list of Genre in Add Book
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IActionResult AddBook()
         {
-            var genre = _genreService.GetGenres();
-            ViewData["Genre"] = genre;
-            return View();
+            var genres = _genreService.GetGenres();
+            var data = new BookViewModel
+            {
+                Genres = genres
+            };
+
+            return View(data);
         }
         /// <summary>
         /// Adds the book.
@@ -169,32 +128,62 @@ namespace NavOS.Basecode.BookApp.Controllers
         public IActionResult AddBook(BookViewModel book)
         {
             var isExist = _bookService.Validate(book.BookTitle);
+            var genres = _genreService.GetGenres();
             if (isExist)
             {
-                if (!ModelState.IsValid)
-                {
-                    var genres = _genreService.GetGenres();
-                    ViewData["Genre"] = genres;
-                }
+                book.Genres = genres;
                 ModelState.AddModelError("BookTitle", "Title already exists");
-                return View();
+                return View(book);
             }
-            if (book.SelectedGenres != null && book.SelectedGenres.Count > 0)
-            {
-                book.Genre = string.Join(", ", book.SelectedGenres);
-            }
-            else
-            {
-                if (!ModelState.IsValid)
-                {
-                    var genres = _genreService.GetGenres();
-                    ViewData["Genre"] = genres;
-                }
-            }
+
             _bookService.AddBook(book, this.UserName);
             TempData["SuccessMessage"] = "Book Added Successfully";
             return RedirectToAction("BookList");
         }
+
+        /// <summary>
+        /// Edits the book.
+        /// </summary>
+        /// <param name="BookId">The book identifier.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult EditBook(string BookId)
+        {
+            var data = _bookService.GetBook(BookId);
+            if (data == null)
+            {
+                TempData["ErrorMessage"] = "No Book Found";
+                return RedirectToAction("BookList");
+            }
+            //re-process the data when validation is executed
+            data.Genres = !ModelState.IsValid ? _genreService.GetGenres() : data.Genres;
+
+            return View(data);
+        }
+
+        /// <summary>
+        /// Edits the book.
+        /// </summary>
+        /// <param name="book">The book.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult EditBook(BookViewModel book)
+        {
+            var isExist = _bookService.ValidateForEdit(book.BookTitle, book.BookId);
+            var genres = _genreService.GetGenres();
+            if (isExist)
+            {
+
+                book.Genres = genres;
+                TempData["ErrorMessage"] = "Book Title already existed!";
+                return RedirectToAction("EditBook", "Book", new { bookId = book.BookId });
+            }
+
+            _bookService.UpdateBook(book, this.UserName);
+            TempData["SuccessMessage"] = "Book Updated Successfully";
+            return RedirectToAction("BookList");
+        }
+
         /// <summary>
         /// Deletes the book.
         /// </summary>
