@@ -1,26 +1,42 @@
-﻿.pagination {
-    text-align: right; /* Optional: Align the pagination to the right */
-}
-
-::placeholder {
+﻿::placeholder {
     color: white;
 }
 
-.pagination-list {
-    list-style: none;
-    display: flex;
-    justify-content: flex-end; /* Aligns items to the end (right) of the flex container */
-    padding: 0;
-    margin: 0;
+.btn-slide {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
 }
 
-.page-item {
-    margin: 0 5px; /* Adjust spacing between pagination items */
-}
-
-.page-link {
+.trigger {
+    padding: 10px 20px;
+    background-color: transparent;
+    color: #FFC119;
+    border: 2px solid #f39c12;
+    cursor: pointer;
+    transition: color 0.5s, background-color 0.5s;
+    position: relative;
+    z-index: 2;
+    display: inline-block;
     text-decoration: none;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    /* Other styling properties */
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #f39c12;
+    transition: left 0.5s ease;
+    z-index: 1;
+}
+
+.btn-slide:hover .slide {
+    left: 0;
+}
+
+.btn-slide:hover .trigger {
+    color: #000;
+    background-color: #FFC119;
 }

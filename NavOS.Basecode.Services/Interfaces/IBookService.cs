@@ -12,16 +12,22 @@ namespace NavOS.Basecode.Services.Interfaces
         List<BookViewModel> GetBooks();
         BookViewModel GetBook(string BookId);
         void AddBook(BookViewModel book, string user);
-        bool Validate(string BookTitle);
-        bool ValidateForEdit(string BookTitle, string bookId);
         bool DeleteBook(string bookId);
         bool UpdateBook(BookViewModel bookViewModel, string user);
         List<BookViewModel> GetBooksForGenre(string genreName);
         BookWithReviewViewModel GetBooksWithReviews();
         BookWithReviewViewModel GetBookWithReviews(string bookId);
+
+        #region Filter Books
         FilteredBooksViewModel FilterAndSortBooks(string searchQuery = null, string filter = null, string sort = null);
         FilteredBooksViewModel FilterAndSortAllBookList(string searchQuery = null, string filter = null, string sort = null);
         FilteredBooksViewModel FilterAndSortTopBooks(string searchQuery = null, string filter = null, string sort = null);
         FilteredBooksViewModel FilterAndSortNewBooks(string searchQuery = null, string filter = null, string sort = null);
+        #endregion
+
+        #region Validate BookTitles
+        bool Validate(string BookTitle);
+        bool ValidateForEdit(string BookTitle, string bookId);
+        #endregion
     }
 }

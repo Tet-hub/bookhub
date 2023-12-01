@@ -56,7 +56,7 @@ namespace NavOS.Basecode.Services.Services
             return data;
         }
         /// <summary>
-        /// Gets the reviews.
+        /// Gets the reviews based on bookId
         /// </summary>
         /// <param name="bookId">The book identifier.</param>
         /// <returns></returns>

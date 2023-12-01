@@ -112,6 +112,20 @@ namespace NavOS.Basecode.Services.Services
               .ToList();
             return data;
         }
+        public List<AdminViewModel> GetAllAdminWithSearch(string searchQuery)
+        {
+            var allAdmins = GetAllAdmins();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                allAdmins = allAdmins.Where(a =>
+                    a.AdminName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    a.Role.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    a.AdminEmail.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            return allAdmins;
+        }
 
         /// <summary>
         /// Gets the admin.

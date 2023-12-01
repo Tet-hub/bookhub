@@ -9,6 +9,7 @@ using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.ServiceModels;
 using NavOS.Basecode.Services.Services;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NavOS.Basecode.AdminApp.Controllers
 {
@@ -47,19 +48,10 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult ViewGenre()
+        public IActionResult ViewGenre(string searchQuery)
         {
-            var data = _genreService.GetGenres();
+            var data = _genreService.GetGenresWithBook(searchQuery);
             return View(data);
-        }
-        /// <summary>
-        /// Adds the genre.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult AddGenre()
-        {
-            return View();
         }
         /// <summary>
         /// Adds the genre.
@@ -73,36 +65,23 @@ namespace NavOS.Basecode.AdminApp.Controllers
 
             if (isExist)
             {
-                TempData["ErrorMessage"] = "Title already exist.";
-                return View(genre);
+                TempData["ErrorMessage"] = "Genre already exist.";
+                return RedirectToAction("ViewGenre");
             }
             _genreService.AddGenre(genre, this.UserName);
+            TempData["SuccessMessage"] = "Genre Added Successfully";
             return RedirectToAction("ViewGenre");
         }
         /// <summary>
-        /// Edits the genre.
+        /// Get the value of Selected Genre for editinng
         /// </summary>
         /// <param name="Genreid">The genreid.</param>
         /// <returns></returns>
         [HttpGet] 
         public IActionResult EditGenre(string Genreid)
         {
-
-            var genre = _genreService.GetGenre(Genreid); 
-            if (genre != null)
-            {
-                GenreViewModel genreViewModel = new()
-                {
-                    GenreId = Genreid,
-                    GenreName = genre.GenreName,
-                    GenreDescription = genre.GenreDescription,
-                    
-                };
-
-                
-                return View(genreViewModel);
-            }
-            return NotFound();
+            var genre = _genreService.GetGenre(Genreid);
+            return View(genre);
         }
         /// <summary>
         /// Edits the genre.
@@ -110,16 +89,18 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// <param name="genreViewModel">The genre view model.</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult EditGenre(GenreViewModel genreViewModel)
+        public IActionResult EditGenre(GenreViewModel genre)
         {
-            bool isUpdated = _genreService.UpdateGenre(genreViewModel, this.UserName);
-            if (isUpdated)
+            var isExist = _genreService.ValidateForEdit(genre.GenreName, genre.GenreId);
+            if (isExist)
             {
-                TempData["SuccessMessage"] = "Genre Successfully Edited";
+                TempData["ErrorMessage"] = "Genre already existed!";
                 return RedirectToAction("ViewGenre");
-
             }
-            return NotFound();
+
+            _genreService.UpdateGenre(genre, this.UserName);
+            TempData["SuccessMessage"] = "Genre Updated Successfully";
+            return RedirectToAction("ViewGenre");
         }
         /// <summary>
         /// Deletes the specified genre identifier.
@@ -136,20 +117,6 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 return RedirectToAction("ViewGenre");
             }
             return NotFound();
-        }
-        /// <summary>
-        /// Bookses the genre.
-        /// </summary>
-        /// <param name="genreName">Name of the genre.</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult BooksGenre(string genreName)
-        {
-
-            var booksForGenre = _bookService.GetBooksForGenre(genreName);
-            ViewData["GenreName"] = genreName;
-
-            return View(booksForGenre);
         }
         /// <summary>
         /// Deletes the book.

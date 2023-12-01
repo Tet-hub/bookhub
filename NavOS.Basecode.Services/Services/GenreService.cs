@@ -31,23 +31,36 @@ namespace NavOS.Basecode.Services.Services
                 GenreDescription = s.GenreDescription,
                 UpdatedBy = s.UpdatedBy,
                 AddedBy = s.AddedBy,
-                
+
             })
             .ToList();
 
             return data;
         }
         /// <summary>
-        /// Validates the specified title.
+        /// Gets the genres with book.
         /// </summary>
-        /// <param name="title">The title.</param>
+        /// <param name="searchQuery">The search query.</param>
         /// <returns></returns>
-        public bool Validate(string title)
+        public List<GenreViewModel> GetGenresWithBook(string searchQuery)
         {
-            
-            var isExist = _genreRepository.GetGenre().Where(x => x.GenreName == title).Any();
+            var data = _genreRepository.GetGenre().Select(s => new GenreViewModel
+            {
+                GenreId = s.GenreId,
+                GenreName = s.GenreName,
+                GenreDescription = s.GenreDescription,
+                UpdatedBy = s.UpdatedBy,
+                AddedBy = s.AddedBy,
 
-            return isExist;
+            })
+            .ToList();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                data = ApplySearch(data, searchQuery);
+            }
+
+            return data;
         }
         /// <summary>
         /// Gets the genre.
@@ -118,5 +131,51 @@ namespace NavOS.Basecode.Services.Services
 
             return false;
         }
+
+        #region Validate GenreName
+        /// <summary>
+        /// Validates the genre title.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <returns></returns>
+        public bool Validate(string title)
+        {
+            var isExist = _genreRepository.GetGenre().Where(x => x.GenreName == title).Any();
+            return isExist;
+        }
+        /// <summary>
+        /// Validates for genre title during editing.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="GenreId">The genre identifier.</param>
+        /// <returns></returns>
+        public bool ValidateForEdit(string title, string GenreId)
+        {
+            var isExist = _genreRepository.GetGenre()
+                            .Any(x => x.GenreName == title && x.GenreId != GenreId.ToString());
+            return isExist;
+        }
+        #endregion
+        #region private methods        
+        /// <summary>
+        /// Applies the search.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="searchQuery">The search query.</param>
+        /// <returns></returns>
+        private List<GenreViewModel> ApplySearch(List<GenreViewModel> data, string searchQuery)
+        {
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+                return data;
+            }
+
+            searchQuery = searchQuery.ToLowerInvariant();
+
+            return data
+                .Where(g => g.GenreName.ToLowerInvariant().Contains(searchQuery))
+                .ToList();
+        }
+        #endregion
     }
 }

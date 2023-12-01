@@ -22,5 +22,7 @@ namespace NavOS.Basecode.Services.Interfaces
         public bool CheckQueryParamater(string AdminId, string Token);
         public bool ChangePassword(AdminViewModel adminViewModel);
 
+        List<AdminViewModel> GetAllAdminWithSearch(string searchQuery);
+
     }
 }

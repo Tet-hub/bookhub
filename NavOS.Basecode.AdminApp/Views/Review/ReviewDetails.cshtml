@@ -54,7 +54,7 @@
                         <small><i>@review.DateReviewed.ToString("MMMM dd, yyyy hh:mm tt")</i></small>
                     </div>
                     <div class="w3-third">
-                        <span id="reviewName" style="width:150px;">@review.UserName</span>
+                        <span id="reviewName" style="width:150px;" class="fw-bold">@review.UserName</span>
                     </div>
                     <div class="w3-col">
                         @foreach (var star in Enumerable.Range(1, review.Rate))
