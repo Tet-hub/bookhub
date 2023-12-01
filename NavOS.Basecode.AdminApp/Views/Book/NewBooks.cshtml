@@ -45,10 +45,10 @@
         border: none;
     }
 
-    .pagination .page-item a:hover {
-        background-color: #00A651;
-        color: white;
-    }
+        .pagination .page-item a:hover {
+            background-color: #00A651;
+            color: white;
+        }
 
     .rating-badge {
         position: absolute;
@@ -76,6 +76,16 @@
         overflow-y: auto;
     }
 
+    .card-title {
+        color: white;
+        transition: color 0.3s ease;
+    }
+
+        .card-title:hover {
+            color: #FFC119;
+            cursor: pointer;
+        }
+
 </style>
 
 <div class="container mt-5">
@@ -99,36 +109,6 @@
                 </nav>
             </div>
         </div>
-        @*         <!-- Filter button section -->
-        <div class="col-12 mt-4">
-        @foreach (var filterOption in new[] { "all", "title", "author" })
-        {
-        var isActive = string.Equals(requestQuery["filter"].ToString(), filterOption, StringComparison.OrdinalIgnoreCase);
-        var buttonText = filterOption.First().ToString().ToUpper() + filterOption.Substring(1);
-
-        <a href="?filter=@filterOption&sort=@filterOption" class="btn btn-outline-warning @(isActive ? "active text-dark" : "text-white")" style="box-shadow:none; text-decoration: none; color: inherit; margin-left:5px;">
-        @buttonText
-        </a>
-        }
-        <button type="button" style="box-shadow:none; text-decoration: none; color: inherit;" class="btn btn-outline-warning text-white" data-toggle="collapse" data-target="#genreFilter">Genre</button>
-        </div>
-        <!-- Genre list section -->
-        <div id="genreFilter" class="@(string.IsNullOrEmpty(requestQuery["searchQuery"]) ? "collapse" : "")">
-        <div class="row ms-1">
-        <div class="col-md-12 mt-3">
-        <h4 class="text-white font-weight-light mt-2">Genre</h4>
-        @for (var i = 0; i < Model.Genres.Count; i++)
-        {
-        var genre = Model.Genres[i];
-        var selectedGenres = requestQuery["searchQuery"];
-        var currentGenre = genre.GenreName;
-        var isSelected = selectedGenres.ToString() == currentGenre ? "active text-dark" : "text-white";
-
-        <button type="button" class="shadow-none btn btn-outline-warning @(isSelected)" style="min-width: 100px" onclick="location.href='?filter=genre&searchQuery=@(isSelected == "active text-dark" ? "" : currentGenre)'">@currentGenre</button>
-        }
-        </div>
-        </div>
-        </div> *@
         <!-- Book List -->
         <div class="col-md-12 mt-3">
             <ul class="row mt-3 list-unstyled" style="padding-left: 0;">
@@ -138,24 +118,24 @@
                     {
                         <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                             <div class="card w-100" style="height: 100%;">
+                                <div class="rating-badge">
+                                    <span class="badge badge-primary rounded-circle text-dark">
+                                        @books.TotalRating
+                                        <i class="fa fa-star checked"></i>
+                                    </span>
+                                </div>
                                 <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@books.BookId" class="text-decoration-none text-dark">
-                                    <div class="rating-badge">
-                                        <span class="badge badge-primary rounded-circle text-dark">
-                                            @books.TotalRating
-                                            <i class="fa fa-star checked"></i>
-                                        </span>
-                                    </div>
                                     <img class="card-img-top" height="250" width="100" src="@books.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
-                                    <div class="card-body text-center d-flex justify-content-center" style="height:110px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                        <h6 class="card-title ellipsis text-white">@books.BookTitle</h6>
-                                    </div>
-                                    <div class="card-footer text-start d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
-                                        <span class="card-title ellipsis text-white" style="margin-top:-5px;font-size:12px;">
-                                            <i class="far fa-calendar"></i>
-                                            @(books.AddedTime.ToString("MMMM d, yyyy"))
-                                        </span>
-                                    </div>
                                 </a>
+                                <div class="card-body text-center d-flex justify-content-center" style="height:110px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
+                                    <h6 class="card-title ellipsis">@books.BookTitle</h6>
+                                </div>
+                                <div class="card-footer text-start d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
+                                    <span class="card-title ellipsis text-white" style="margin-top:-5px;font-size:12px;">
+                                        <i class="far fa-calendar"></i>
+                                        @(books.AddedTime.ToString("MMMM d, yyyy"))
+                                    </span>
+                                </div>
                             </div>
                         </li>
                     }

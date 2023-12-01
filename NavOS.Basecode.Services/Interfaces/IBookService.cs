@@ -14,7 +14,6 @@ namespace NavOS.Basecode.Services.Interfaces
         void AddBook(BookViewModel book, string user);
         bool DeleteBook(string bookId);
         bool UpdateBook(BookViewModel bookViewModel, string user);
-        List<BookViewModel> GetBooksForGenre(string genreName);
         BookWithReviewViewModel GetBooksWithReviews();
         BookWithReviewViewModel GetBookWithReviews(string bookId);
 

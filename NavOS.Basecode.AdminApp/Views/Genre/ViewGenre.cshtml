@@ -70,6 +70,15 @@
         color: #000;
         background-color: #FFC119;
     }
+
+    .modal-content {
+        --bs-modal-border-width: 0;
+        --bs-modal-border-color: transparent;
+        --bs-modal-border-radius: 0;
+        border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
+        background-color:transparent;
+    }
+
 </style>
 <div class="row">
     <div class="col-12 col-md-12 px-2 justify-content-between">
@@ -135,9 +144,9 @@
                                     </a>
                                 </td>
                                 <td class="align-middle">
-                                    <a href="#" class="text-white text-decoration-none" data-bs-toggle="modal"
+                                    <a href="#" class="text-white text-decoration-underline" data-bs-toggle="modal"
                                        data-bs-target="#exampleModal-@genre.GenreId" data-toggle="tooltip" data-bs-placement="right"
-                                       title="Click here to view description" style="font-size:12px;">View Description</a>
+                                       title="Click here to view description" style="font-size:15px;">View Description</a>
                                 </td>
                                 <td class="align-middle">@genre.AddedBy</td>
                                 <td class="align-middle">@genre.UpdatedBy</td>
