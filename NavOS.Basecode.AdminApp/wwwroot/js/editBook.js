@@ -22,7 +22,7 @@ function updateButtonText(event) {
 
     var selectedGenres = document.querySelectorAll('input[name="SelectedGenres"]:checked');
     var buttonText = "Choose Genre";
-    var maxTextLength = 50;
+    var maxTextLength = 40;
 
     if (selectedGenres.length > 0) {
         var selectedGenresText = Array.from(selectedGenres).map(function (genre) {

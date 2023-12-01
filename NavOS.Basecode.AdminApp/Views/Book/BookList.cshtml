@@ -50,7 +50,7 @@
                     <span class="input-group-text" style="border: none;">
                         <i class="bi bi-search" style="color: #000;"></i>
                     </span>
-                    <input type="text" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow: none; border: none;" id="liveSearchInput">
+                    <input type="text" autocomplete="off" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow: none; border: none;" id="liveSearchInput">
                     <input type="hidden" name="filter" value="@requestQuery["filter"]" />
                     <input type="hidden" name="sort" value="@requestQuery["sort"]" />
                 </div>
@@ -72,7 +72,7 @@
                             {
                                 <tr>
                                     <td>
-                                        <img src="@books.ImageUrl" class="rounded" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" alt="@books.BookTitle" height="125" width="100" style="object-fit: cover; cursor: pointer" onclick="location.href='/Book/BookDetails?BookId=@books.BookId'" title="View Book Detail">
+                                        <img src="@books.ImageUrl" class="rounded" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" alt="@books.BookTitle" height="80" width="80" style="object-fit: cover; cursor: pointer" onclick="location.href='/Book/BookDetails?BookId=@books.BookId'" title="View Book Detail">
                                     </td>
                                     <td class="align-middle">@books.BookTitle</td>
                                     <td class="align-middle">@books.Author</td>
@@ -81,10 +81,10 @@
                                         <div class="btn-group" role="group">
                                             <form asp-action="EditBook" method="get">
                                                 <input type="hidden" name="BookId" value="@books.BookId">
-                                                <button type="submit" class="btn btn-warning" title="Edit Admin"><i class="fas fa-edit"></i></button>
+                                                <button type="submit" class="btn btn-warning shadow-none" title="Edit Admin"><i class="fas fa-edit"></i></button>
                                             </form>
                                             &nbsp;
-                                            <button class="btn btn-outline-warning rounded" title="Delete Admin" onclick='openModalSet("@books.BookId", "@books.BookTitle")'><i class="fas fa-trash"></i></button>
+                                            <button class="btn btn-outline-warning rounded shadow-none" title="Delete Admin" onclick='openModalSet("@books.BookId", "@books.BookTitle")'><i class="fas fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>

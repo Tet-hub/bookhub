@@ -10,15 +10,16 @@ namespace NavOS.Basecode.Services.Interfaces
 {
     public interface IGenreService
     {
-        public List<GenreViewModel> GetGenres();
-        public void AddGenre(GenreViewModel genre, string user);
-        
-        public bool Validate(string title);
-      
-        public Genre GetGenre(string Genreid);
-        public bool UpdateGenre(GenreViewModel genreViewModel, string user);
-
-        public bool DeleteGenre(string GenreId);
+        #region GenreName Validation
+        bool Validate(string title);
+        bool ValidateForEdit(string title, string GenreId);
+        #endregion
+        List<GenreViewModel> GetGenres();
+        void AddGenre(GenreViewModel genre, string user);   
+        Genre GetGenre(string Genreid);
+        bool UpdateGenre(GenreViewModel genreViewModel, string user);
+        bool DeleteGenre(string GenreId);
+        List<GenreViewModel> GetGenresWithBook(string searchTerm);
 
     }
 }

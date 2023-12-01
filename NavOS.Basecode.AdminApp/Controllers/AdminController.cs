@@ -33,43 +33,15 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
 			_adminService = adminService;
         }
-
-		/// <summary>
-		/// Lists the specified search query.
-		/// </summary>
-		/// <param name="searchQuery">The search query.</param>
-		/// <param name="page">The page.</param>
-		/// <param name="pageSize">Size of the page.</param>
-		/// <returns></returns>
-		public IActionResult List(string searchQuery, int page = 1, int pageSize = 5)
+        public IActionResult AdminList(string searchQuery)
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
                 return RedirectToAction("Index", "Book");
             }
-
-            var allAdmins = _adminService.GetAllAdmins();
-
-            if (!string.IsNullOrEmpty(searchQuery))
-            {
-                allAdmins = allAdmins.Where(a => a.AdminName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-												 a.Role.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-												 a.AdminEmail.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-
-            string[] headers = new string[] { "Admin Profile", "Name", "Email", "Role", "Actions" };
-
-            var paginatedAdmins = allAdmins.Skip((page - 1) * pageSize).Take(pageSize).ToList(); 
-
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalPages = (int)Math.Ceiling(allAdmins.Count / (double)pageSize);
-            ViewBag.SearchString = searchQuery;
-            ViewBag.headers = headers;
-
-            return View(paginatedAdmins);
+            var data = _adminService.GetAllAdminWithSearch(searchQuery);
+            return View(data);
         }
-
 
         /// <summary>
         /// Adds this instance.
@@ -101,7 +73,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
             {
 				_adminService.AddAdmin(model, this.UserName);
 				TempData["SuccessMessage"] = "Admin added successfully.";
-				return RedirectToAction("List");
+				return RedirectToAction("AdminList");
 			}
             catch (InvalidDataException ex) {
                 TempData["ErrorMessage"] = ex.Message;
@@ -126,10 +98,10 @@ namespace NavOS.Basecode.AdminApp.Controllers
             if (_isAdminDeleted)
             {
                 TempData["SuccessMessage"] = "Admin deleted successfully.";
-                return RedirectToAction("List");
+                return RedirectToAction("AdminList");
             }
 			TempData["ErrorMessage"] = "No Admin was deleted.";
-			return RedirectToAction("List");
+			return RedirectToAction("AdminList");
 		}
 
         /// <summary>
@@ -150,7 +122,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 return View(admin);
 			}
 			TempData["ErrorMessage"] = "Admin not found.";
-			return RedirectToAction("List");
+			return RedirectToAction("AdminList");
 
 		}
 
@@ -174,10 +146,10 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 if (_isAdminUpdated)
                 {
                     TempData["SuccessMessage"] = "Admin updated successfully.";
-                    return RedirectToAction("List");
+                    return RedirectToAction("AdminList");
                 }
                 TempData["ErrorMessage"] = "No Admin was updated.";
-                return RedirectToAction("List");
+                return RedirectToAction("AdminList");
             }
             TempData["ErrorMessage"] = "Admin Email already existed!";
             return RedirectToAction("Edit", "Admin", new { adminId = model.AdminId });

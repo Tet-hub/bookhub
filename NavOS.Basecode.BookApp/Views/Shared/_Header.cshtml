@@ -32,7 +32,10 @@
                         <span class="input-group-text" style="background-color: #333; border: none;">
                             <i class="bi bi-search" style="color: #fff;"></i>
                         </span>
-                        <input type="text" name="searchQuery" class="form-control" placeholder="Search..." value="@ViewBag.SearchQuery" style="box-shadow: none; background-color: #333; color: #fff; border: none;" id="liveSearchInput">
+                        <input type="text" name="searchQuery" class="form-control"
+                               placeholder="Search..." value="@ViewBag.SearchQuery"
+                               style="box-shadow: none; background-color: #333; color: #fff; border: none;"
+                               id="liveSearchInput" autocomplete="off">
                         <input type="hidden" name="filter" value="@requestQuery["filter"]" />
                         <input type="hidden" name="sort" value="@requestQuery["sort"]" />
                     </div>

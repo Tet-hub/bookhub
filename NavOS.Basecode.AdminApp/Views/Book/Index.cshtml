@@ -24,11 +24,11 @@
         align-items: center;
     }
 
-    .rating-badge .badge {
-        display: inline-block;
-        padding: 8px 15px;
-        border-radius: 50%;
-    }
+        .rating-badge .badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 50%;
+        }
 
     .btn-slide {
         position: relative;
@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 d-flex justify-content-between">
-                    <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">NEW BOOKS</span>
+                    <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">LATEST BOOKS</span>
                 </div>
             </div>
             <div class="col-md-11 mx-4" style="margin-left:44px;">
@@ -92,27 +92,20 @@
             <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
                 @foreach (var latestBook in Model.LatestBooks)
                 {
-                    <li class="col-5 col-md-3 col-xl-2 mb-3 mx-3">
-                        <div class="card w-100" style="height: 100%;">                         
-                            <div class="rating-badge">
-                                <span class="badge badge-primary rounded-circle text-dark">
-                                    @latestBook.TotalRating
-                                    <i class="fa fa-star checked"></i>
-                                </span>
-                            </div>
+                    <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
+                        <div class="card w-100" style="height: 100%;">
                             <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@latestBook.BookId" class="text-decoration-none text-dark">
-                                <img class="card-img-top" height="250" width="100" src="@latestBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
-                            </a>
-                            <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                <h6 class="card-title ellipsis text-white">@latestBook.BookTitle</h6>
-                            </div>
-                            <div class="card-body" style="height: 60px; background-color: #212529; border-bottom: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-top:-10px;">
-                                <!-- Edit and Delete Buttons -->
-                                <div class="d-flex justify-content-around">
-                                    <a asp-action="EditBook" asp-controller="Book" asp-route-BookId="@latestBook.BookId" class="btn btn-sm btn-outline-warning text-white shadow-none"><i class="bi bi-pencil"></i> Edit</a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger text-white shadow-none" onclick="openDeleteModal('@latestBook.BookId')"><i class="bi bi-trash"></i> Delete</button>
+                                <div class="rating-badge">
+                                    <span class="badge badge-primary rounded-circle text-dark">
+                                        @latestBook.TotalRating
+                                        <i class="fa fa-star checked"></i>
+                                    </span>
                                 </div>
-                            </div>
+                                <img class="card-img-top" height="250" width="100" src="@latestBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
+                                    <h6 class="card-title ellipsis text-white">@latestBook.BookTitle</h6>
+                                </div>
+                            </a>
                         </div>
                     </li>
                 }
@@ -153,13 +146,6 @@
                                 <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
                                     <h6 class="card-title ellipsis text-white">@topBook.BookTitle</h6>
                                 </div>
-                                <div class="card-body" style="height: 60px; background-color: #212529; border-bottom: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-top:-10px;">
-                                    <!-- Edit and Delete Buttons -->
-                                    <div class="d-flex justify-content-around">
-                                        <a asp-action="EditBook" asp-controller="Book" asp-route-BookId="@topBook.BookId" class="btn btn-sm btn-outline-warning text-white shadow-none"><i class="bi bi-pencil"></i> Edit</a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger text-white shadow-none" onclick="openDeleteModal('@topBook.BookId')"><i class="bi bi-trash"></i> Delete</button>
-                                    </div>
-                                </div>
                             </a>
                         </div>
                     </li>
@@ -168,6 +154,7 @@
         </div>
     </div>
 </div>
+
 @section scripts {
     <script>
         var errorMessage = '@TempData["ErrorMessage"]';

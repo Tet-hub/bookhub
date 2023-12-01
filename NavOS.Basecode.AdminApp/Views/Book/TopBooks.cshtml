@@ -44,10 +44,10 @@
         border: none;
     }
 
-    .pagination .page-item a:hover {
-        background-color: #00A651;
-        color: white;
-    }
+        .pagination .page-item a:hover {
+            background-color: #00A651;
+            color: white;
+        }
 
     .rating-badge {
         position: absolute;
@@ -138,32 +138,24 @@
                     {
                         <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                             <div class="card w-100" style="height: 100%;">
-                                <div class="rating-badge">
-                                    <span class="badge badge-primary rounded-circle text-dark">
-                                        @books.TotalRating
-                                        <i class="fa fa-star checked"></i>
-                                    </span>
-                                </div>
                                 <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@books.BookId" class="text-decoration-none text-dark">
-                                    <img class="card-img-top" height="250" width="100" src="@books.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
-                                </a>
-                                <div class="card-body text-center d-flex justify-content-center" style="height:110px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                   <h6 class="card-title ellipsis text-white">@books.BookTitle</h6>
-
-                                </div>
-                                <div class="card-footer text-start d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
-                                    <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
-                                        <i class="fas fa-book"></i>
-                                        @books.ReviewCount Reviews
-                                    </span>
-                                </div>
-                                <div class="card-body" style="height: 60px; background-color: #212529; border-bottom: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-top:-10px;">
-                                    <!-- Edit and Delete Buttons -->
-                                    <div class="d-flex justify-content-around">
-                                        <a asp-action="EditBook" asp-controller="Book" asp-route-BookId="@books.BookId" class="btn btn-sm btn-outline-warning text-white shadow-none"><i class="bi bi-pencil"></i> Edit</a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger text-white shadow-none" onclick="openDeleteModal('@books.BookId')"><i class="bi bi-trash"></i> Delete</button>
+                                    <div class="rating-badge">
+                                        <span class="badge badge-primary rounded-circle text-dark">
+                                            @books.TotalRating
+                                            <i class="fa fa-star checked"></i>
+                                        </span>
                                     </div>
-                                </div>
+                                    <img class="card-img-top" height="250" width="100" src="@books.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                    <div class="card-body text-center d-flex justify-content-center" style="height:110px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
+                                        <h6 class="card-title ellipsis text-white">@books.BookTitle</h6>
+                                    </div>
+                                    <div class="card-footer text-start d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
+                                        <span class="card-title ellipsis text-white" style="margin-top:-5px; font-size:12px;">
+                                            <i class="fas fa-book"></i>
+                                            @books.ReviewCount Reviews
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                         </li>
                     }

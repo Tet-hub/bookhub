@@ -193,7 +193,11 @@ namespace NavOS.Basecode.Services.Services
             book.Genres = genres;
             _bookRepository.AddBook(model);
         }
-
+        /// <summary>
+        /// Deletes the book.
+        /// </summary>
+        /// <param name="bookId">The book identifier.</param>
+        /// <returns></returns>
         public bool DeleteBook(string bookId)
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -208,6 +212,12 @@ namespace NavOS.Basecode.Services.Services
             return false;
 
         }
+        /// <summary>
+        /// Updates the book.
+        /// </summary>
+        /// <param name="bookViewModel">The book view model.</param>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
         public bool UpdateBook(BookViewModel bookViewModel, string user)
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
@@ -247,52 +257,6 @@ namespace NavOS.Basecode.Services.Services
             }
 
             return false;
-        }
-        public bool Validate(string BookTitle)
-        {
-            var isExist = _bookRepository.GetBooks().Where(x => x.BookTitle == BookTitle).Any();
-            return isExist;
-        }
-        /// <summary>
-        /// Validates for edit.
-        /// </summary>
-        /// <param name="BookTitle">The book title.</param>
-        /// <param name="bookId">The book identifier.</param>
-        /// <returns></returns>
-        public bool ValidateForEdit(string BookTitle, string bookId)
-        {
-            var isExist = _bookRepository.GetBooks()
-                            .Any(x => x.BookTitle == BookTitle && x.BookId != bookId.ToString());
-
-            return isExist;
-        }
-        /// <summary>
-        /// Filters the and sort books. <= used from BookList
-        /// </summary>
-        /// <param name="searchQuery">The search query.</param>
-        /// <param name="filter">The filter.</param>
-        /// <param name="sort">The sort.</param>
-        /// <returns></returns>
-        public FilteredBooksViewModel FilterAndSortBooks(string searchQuery = null, string filter = null, string sort = null)
-        {
-            var result = new FilteredBooksViewModel();
-            result.Books = GetBooks();
-
-            var currentDate = DateTime.Now;
-
-            result.Books = result.Books
-                .Where(book => book.AddedTime <= currentDate)
-                .OrderByDescending(book => book.AddedTime)
-                .ToList();
-
-            ApplyFilter(new BookFilterOptions
-            {
-                SearchQuery = searchQuery,
-                Filter = filter
-            }, result);
-
-            result.Genres = _genreService.GetGenres();
-            return result;
         }
 
         /// <summary>
@@ -365,12 +329,42 @@ namespace NavOS.Basecode.Services.Services
 
             return null;
         }
+
+        #region Filter Books Logic
+        /// <summary>
+        /// Filters the and sort books. <= used from BookList
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        public FilteredBooksViewModel FilterAndSortBooks(string searchQuery = null, string filter = null, string sort = null)
+        {
+            var result = new FilteredBooksViewModel();
+            result.Books = GetBooks();
+
+            var currentDate = DateTime.Now;
+
+            result.Books = result.Books
+                .Where(book => book.AddedTime <= currentDate)
+                .OrderByDescending(book => book.AddedTime)
+                .ToList();
+
+            ApplyFilter(new BookFilterOptions
+            {
+                SearchQuery = searchQuery,
+                Filter = filter
+            }, result);
+
+            result.Genres = _genreService.GetGenres();
+            return result;
+        }
         /// <summary>
         /// Filters the and sort all book list.
         /// </summary>
         /// <param name="options">The options.</param>
         /// <returns></returns>
-        public FilteredBooksViewModel FilterAndSortAllBookList(string searchQuery = null,string filter = null,string sort = null)
+        public FilteredBooksViewModel FilterAndSortAllBookList(string searchQuery = null, string filter = null, string sort = null)
         {
             var result = new FilteredBooksViewModel();
             result.Books = GetBooks();
@@ -406,14 +400,12 @@ namespace NavOS.Basecode.Services.Services
                 Filter = filter,
                 Sort = sort
             };
-            var reviewScore = 0.6;
-            var ratingScore = 0.4;
-            result.Books.ForEach(book => {
-                double compositeScore = (reviewScore * book.ReviewCount) + (ratingScore * book.TotalRating);
-                book.TotalScore = compositeScore;
-                book.TotalRatingAndReviewsCount = book.TotalRating + book.ReviewCount + compositeScore;
-            });
-            result.Books = result.Books.OrderByDescending(book => book.TotalRatingAndReviewsCount).ToList();
+
+            result.Books = result.Books
+            .Where(book => book.TotalRating >= 3 && book.ReviewCount > 5)
+            .OrderByDescending(book => book.ReviewCount)
+            .ToList();
+
 
             ApplyFilter(options, result);
             ApplySort(options, result);
@@ -453,6 +445,33 @@ namespace NavOS.Basecode.Services.Services
             result.Genres = _genreService.GetGenres();
             return result;
         }
+        #endregion
+
+        #region Validate Book titles
+        /// <summary>
+        /// Validates the specified book title.
+        /// </summary>
+        /// <param name="BookTitle">The book title.</param>
+        /// <returns></returns>
+        public bool Validate(string BookTitle)
+        {
+            var isExist = _bookRepository.GetBooks().Where(x => x.BookTitle == BookTitle).Any();
+            return isExist;
+        }
+        /// <summary>
+        /// Validates for edit.
+        /// </summary>
+        /// <param name="BookTitle">The book title.</param>
+        /// <param name="bookId">The book identifier.</param>
+        /// <returns></returns>
+        public bool ValidateForEdit(string BookTitle, string bookId)
+        {
+            var isExist = _bookRepository.GetBooks()
+                            .Any(x => x.BookTitle == BookTitle && x.BookId != bookId.ToString());
+
+            return isExist;
+        }
+        #endregion
 
         #region private methods
         /// <summary>

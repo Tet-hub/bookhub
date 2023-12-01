@@ -3,6 +3,25 @@
 @{
     ViewData["Title"] = "Add Genre";
 }
+<Style>
+    div.modal-header,
+    div.modal-body,
+    div.modal-footer{
+        background-color: #212529;
+        color:white;
+    }
+    h5.modal-title,
+    label {
+        color: #FFC119;
+    }
+
+    input.text-control,
+    textarea.text-control{
+        background-color: #212529;
+        color:white;
+    }
+</Style>
+
 <form enctype="multipart/form-data" asp-action="AddGenre" class="modal-content text-dark">
     <div class="modal-header">
         <h5 class="modal-title">@ViewData["Title"]</h5>
@@ -11,19 +30,20 @@
     <div class="modal-body">
         <div class="form-group">
             <label>Title:</label>
-            <input class="form-control border-1" asp-for="GenreName" />
+            <input class="form-control border-1 shadow-none text-control" asp-for="GenreName" autocomplete="off" />
+            <div id="modalErrorMessage" class="text-danger"></div>
             <span asp-validation-for="GenreName" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label>Description:</label>
-            <textarea class="form-control border-1" rows="4" asp-for="GenreDescription"></textarea>
+            <textarea class="form-control border-1 shadow-none text-control" rows="4" asp-for="GenreDescription" autocomplete="off"></textarea>
             <span asp-validation-for="GenreDescription" class="text-danger"></span>
         </div>
     </div>
 
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Add Genre</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-outline-warning shadow-none">Add Genre</button>
+        <button type="button" class="btn btn-danger shadow-none" data-dismiss="modal">Close</button>
     </div>
 </form>

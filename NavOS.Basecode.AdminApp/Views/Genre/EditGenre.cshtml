@@ -3,23 +3,50 @@
 @{
     ViewData["Title"] = "Edit Genre";
 }
+<style>
+    div.modal-body,
+    div.modal-footer {
+        background-color: #212529;
+        color: white;
+        border-color: #212529;
+    }
+    h5.modal-title,
+    label {
+        color: #FFC119;
+    }
+
+    input.text-control,
+    textarea.text-control {
+        background-color: transparent;
+        color: white;
+    }
+    input.text-control:focus,
+    textarea.text-control:focus{
+    background-color: transparent;
+    color: white;
+}
+</style>
 <form asp-action="EditGenre" method="post">
     <input type="hidden" asp-for="GenreId" />
-    
-    <div class="form-group">
-        <label class="text-dark">Name: </label>
-        <input type="text" class="form-control" asp-for="GenreName">
-        <span asp-validation-for="GenreName" class="text-danger"></span>
+    <div class="modal-header">
+        <h5 class="modal-title fw-bold">Edit Genre</h5>
     </div>
-    
-    <div class="form-group">
-        <label class="text-dark">Description: </label>
-        <textarea class="form-control" rows="4" asp-for="GenreDescription"></textarea>
-        <span asp-validation-for="GenreDescription" class="text-danger"></span>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Name: </label>
+            <input type="text" class="form-control text-control shadow-none" asp-for="GenreName" autocomplete="off">
+            <span asp-validation-for="GenreName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Description: </label>
+            <textarea class="form-control text-control shadow-none" rows="4" asp-for="GenreDescription" autocomplete="off"></textarea>
+            <span asp-validation-for="GenreDescription" class="text-danger"></span>
+        </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-outline-warning shadow-none">Edit Genre</button>
+        <button type="button" class="btn btn-danger shadow-none" data-bs-dismiss="modal">Close</button>
     </div>
 </form>
 
