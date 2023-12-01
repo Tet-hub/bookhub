@@ -93,7 +93,9 @@ namespace NavOS.Basecode.Services.Services
                 Reviews = new List<ReviewViewModel>()
             };
 
-            foreach (var book in booksData)
+            if (bookWithReviews != null)
+            {
+                foreach (var book in booksData)
             {
                 if (reviewsData.TryGetValue(book.BookId, out var bookReviews))
                 {
@@ -113,7 +115,8 @@ namespace NavOS.Basecode.Services.Services
                 .ToList();
 
             var topRatedBooks = bookWithReviews.Books
-                .OrderByDescending(book => book.TotalRating)
+                .Where(book => book.TotalRating >= 3 && book.ReviewCount > 5)
+                .OrderByDescending(book => book.ReviewCount)
                 .Take(5)
                 .ToList();
 
@@ -121,6 +124,9 @@ namespace NavOS.Basecode.Services.Services
             bookWithReviews.TopRatedBooks = topRatedBooks;
 
             return bookWithReviews;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -257,33 +263,6 @@ namespace NavOS.Basecode.Services.Services
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Gets the books for genre.
-        /// </summary>
-        /// <param name="genreName">Name of the genre.</param>
-        /// <returns></returns>
-        public List<BookViewModel> GetBooksForGenre(string genreName)
-        {
-            var url = "https://127.0.0.1:8080/";
-            var data = _bookRepository.GetBooks().Where(s => s.Genre == genreName)
-                .Select(s => new BookViewModel
-                {
-                    BookId = s.BookId,
-                    BookTitle = s.BookTitle,
-                    Summary = s.Summary,
-                    Author = s.Author,
-                    Status = s.Status,
-                    Genre = s.Genre,
-                    Chapter = s.Chapter,
-                    DateReleased = s.DateReleased,
-                    AddedTime = s.AddedTime,
-                    ImageUrl = Path.Combine(url, s.BookId + ".png"),
-                })
-                .ToList();
-
-            return data;
         }
         /// <summary>
         /// Gets the book with reviews.

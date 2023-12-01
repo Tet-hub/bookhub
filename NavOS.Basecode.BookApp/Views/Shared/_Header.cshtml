@@ -2,6 +2,9 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     var requestQuery = ViewContext.HttpContext.Request.Query;
+    string IsActive(string controller, string action) =>
+        (ViewContext.RouteData.Values["Controller"].ToString() == controller &&
+         ViewContext.RouteData.Values["Action"].ToString() == action) ? "active" : "";
 }
 <nav class="navbar navbar-expand-lg navbar-dark @((ViewBag.LoginView == true) ? "hide-navbar" : "")" style="background-color:#111111" id="top">
     <div class="container-fluid">
@@ -13,17 +16,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item me-5">
-                    <a class="nav-link" asp-action="Index" asp-controller="Book">Home</a>
+                <li class="nav-item me-5  @IsActive("Book", "Index")">
+                    <a class="nav-link @IsActive("Book", "Index")" asp-action="Index" asp-controller="Book">Home</a>
                 </li>
-                <li class="nav-item me-5">
-                    <a class="nav-link" asp-action="AllBooks" asp-controller="Book">All Books</a>
+
+                <li class="nav-item me-5  @IsActive("Book", "AllBooks")">
+                    <a class="nav-link @IsActive("Book", "AllBooks")" asp-action="AllBooks" asp-controller="Book">All Books</a>
                 </li>
-                <li class="nav-item me-5">
-                    <a class="nav-link" asp-action="TopBooks" asp-controller="Book">Top Books</a>
+
+                <li class="nav-item me-5  @IsActive("Book", "TopBooks")">
+                    <a class="nav-link @IsActive("Book", "TopBooks")" asp-action="TopBooks" asp-controller="Book">Top Books</a>
                 </li>
-                <li class="nav-item me-5">
-                    <a class="nav-link" asp-action="NewBooks" asp-controller="Book">New Books</a>
+
+                <li class="nav-item me-5 @IsActive("Book", "NewBooks")">
+                    <a class="nav-link @IsActive("Book", "NewBooks")" asp-action="NewBooks" asp-controller="Book">New Books</a>
                 </li>
             </ul>
             <div class="navbar-nav ms-auto pe-5 me-5" style="margin-top: -15px;">
@@ -56,5 +62,32 @@
         -webkit-box-shadow: 0 0 0 30px #333 inset !important;
     }
 
+    .navbar-nav .nav-link.active,
+    .nav-link:hover {
+        color: #FFC119;
+    }
+
+    ul li {
+        list-style-type: none;
+        display: inline-block;
+        margin-right: 10px;
+        padding-bottom: 3px;
+    }
+
+    li:after {
+        content: '';
+        margin: auto;
+        display: block;
+        height: 2px;
+        width: 0%;
+        background-color: transparent;
+        transition: width 0.5s ease, background-color 0.5s ease;
+    }
+
+    li:hover:after,
+    li.active:after {
+        width: 100%;
+        background-color: #FFC119;
+    }
 
 </style>

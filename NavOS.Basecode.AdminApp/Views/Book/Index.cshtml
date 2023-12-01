@@ -69,6 +69,16 @@
         background-color: #FFC119;
     }
 
+    .card-title {
+        color: white;
+        transition: color 0.3s ease;
+    }
+
+        .card-title:hover {
+            color: #FFC119;
+            cursor: pointer;
+        }
+
 </style>
 <div class="col-md-12 mt-5">
     <div class="row">
@@ -94,18 +104,19 @@
                 {
                     <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                         <div class="card w-100" style="height: 100%;">
+                            <div class="rating-badge">
+                                <span class="badge badge-primary rounded-circle text-dark">
+                                    @latestBook.TotalRating
+                                    <i class="fa fa-star checked"></i>
+                                </span>
+                            </div>
                             <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@latestBook.BookId" class="text-decoration-none text-dark">
-                                <div class="rating-badge">
-                                    <span class="badge badge-primary rounded-circle text-dark">
-                                        @latestBook.TotalRating
-                                        <i class="fa fa-star checked"></i>
-                                    </span>
-                                </div>
                                 <img class="card-img-top" height="250" width="100" src="@latestBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
-                                <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                    <h6 class="card-title ellipsis text-white">@latestBook.BookTitle</h6>
-                                </div>
                             </a>
+                            <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
+                                <h6 class="card-title ellipsis">@latestBook.BookTitle</h6>
+                            </div>
+
                         </div>
                     </li>
                 }
@@ -135,18 +146,19 @@
                 {
                     <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                         <div class="card w-100" style="height: 100%;">
+                            <div class="rating-badge">
+                                <span class="badge badge-primary rounded-circle text-dark">
+                                    @topBook.TotalRating
+                                    <i class="fa fa-star checked"></i>
+                                </span>
+                            </div>
                             <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@topBook.BookId" class="text-decoration-none text-dark">
-                                <div class="rating-badge">
-                                    <span class="badge badge-primary rounded-circle text-dark">
-                                        @topBook.TotalRating
-                                        <i class="fa fa-star checked"></i>
-                                    </span>
-                                </div>
                                 <img class="card-img-top" height="250" width="100" src="@topBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
-                                <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                    <h6 class="card-title ellipsis text-white">@topBook.BookTitle</h6>
-                                </div>
                             </a>
+                            <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
+                                <h6 class="card-title ellipsis">@topBook.BookTitle</h6>
+                            </div>
+
                         </div>
                     </li>
                 }
@@ -154,6 +166,7 @@
         </div>
     </div>
 </div>
+
 
 @section scripts {
     <script>
