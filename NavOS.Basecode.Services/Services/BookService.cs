@@ -1,4 +1,5 @@
-﻿using NavOS.Basecode.Data;
+﻿using Microsoft.Extensions.Options;
+using NavOS.Basecode.Data;
 using NavOS.Basecode.Data.Interfaces;
 using NavOS.Basecode.Data.Models;
 using NavOS.Basecode.Data.Repositories;
@@ -119,7 +120,13 @@ namespace NavOS.Basecode.Services.Services
                 .OrderByDescending(book => book.ReviewCount)
                 .Take(5)
                 .ToList();
-
+            var topReviewedBooks = bookWithReviews.Books
+                .Where(book => book.ReviewCount > 0)
+                .OrderByDescending(book => book.ReviewCount)
+                .Take(10)
+                .ToList();
+                
+            bookWithReviews.Books = topReviewedBooks;
             bookWithReviews.LatestBooks = latestBooks;
             bookWithReviews.TopRatedBooks = topRatedBooks;
 
@@ -329,11 +336,16 @@ namespace NavOS.Basecode.Services.Services
                 .OrderByDescending(book => book.AddedTime)
                 .ToList();
 
-            ApplyFilter(new BookFilterOptions
+
+            var options = new BookFilterOptions
             {
                 SearchQuery = searchQuery,
-                Filter = filter
-            }, result);
+                Filter = filter,
+                Sort = sort
+            };
+
+            ApplyFilter(options, result);
+            ApplySort(options, result);
 
             result.Genres = _genreService.GetGenres();
             return result;

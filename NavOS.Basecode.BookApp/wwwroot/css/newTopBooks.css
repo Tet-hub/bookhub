@@ -1,0 +1,71 @@
+﻿.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.ellipsis-genre {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.pagination .page-item.active a {
+    background-color: #00A651;
+    box-shadow: none;
+}
+
+.pagination .page-item:not(.active) a {
+    background-color: transparent;
+    color: #000;
+}
+
+.pagination .page-item a {
+    border: none;
+}
+
+    .pagination .page-item a:hover {
+        background-color: #00A651;
+        color: white;
+    }
+
+.rating-badge {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    z-index: 1;
+    width: 40px;
+    height: 40px;
+    background-color: #FFC119;
+    color: #f000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rating-badge .badge {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 50%;
+}
+
+.scrollable-dropdown {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.card-title {
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.card-title:hover {
+    color: #FFC119;
+    cursor: pointer;
+}
+

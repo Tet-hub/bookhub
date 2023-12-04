@@ -11,93 +11,22 @@
         .FirstOrDefault());
 
     var (displayText, textColor, fontStyle) = HeaderHelper.GetDisplayProperties(Context);
+
 }
-
-<style>
-    .ellipsis {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-    }
-
-    .ellipsis-genre {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-    }
-
-    .pagination .page-item.active a {
-        background-color: #00A651;
-        box-shadow: none;
-    }
-
-    .pagination .page-item:not(.active) a {
-        background-color: transparent;
-        color: #000;
-    }
-
-    .pagination .page-item a {
-        border: none;
-    }
-
-    .pagination .page-item a:hover {
-        background-color: #00A651;
-        color: white;
-    }
-
-    .rating-badge {
-        position: absolute;
-        top: -12px;
-        right: -12px;
-        z-index: 1;
-        width: 40px;
-        height: 40px;
-        background-color: #FFC119;
-        color: #f000;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .rating-badge .badge {
-        display: inline-block;
-        padding: 8px 15px;
-        border-radius: 50%;
-    }
-
-    .scrollable-dropdown {
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .card-title {
-        color: white;
-        transition: color 0.3s ease;
-    }
-
-    .card-title:hover {
-        color: #FFC119;
-        cursor: pointer;
-    }
-
-</style>
-
+@section styles {
+    <link rel="stylesheet" href="~/css/newTopBooks.css" />
+}
 
 <div class="container mt-5">
     <div class="row" style="border: 1px solid #fff;">
         <!-- Header Container -->
         <div class="col-md-12" style="background-color:#FFC119">
             <div class="d-flex justify-content-between align-items-center">
-                <span class="float-start text-center fst-italic my-2 text-dark fw-bold" style="color: @(textColor); font-style: @(fontStyle);">
-                   TOP | @displayText
+                <span class="float-start text-center fst-italic my-2 text-dark fw-bold" style="color: @textColor; font-style: @fontStyle;">
+                    TOP  | @displayText
                 </span>
                 <!-- Pagination -->
-                <nav aria-label="Page navigation" style="margin-bottom:-14.5px;">
+                <nav aria-label="Page navigation" style="margin-bottom:-20px;">
                     <ul class="pagination">
                         @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
                         {
@@ -117,26 +46,26 @@
                     @foreach (var books in pageData)
                     {
                         <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
-                            <div class="card w-100" style="height: 100%;">
-                                <div class="rating-badge">
-                                    <span class="badge badge-primary rounded-circle text-dark">
-                                        @books.TotalRating
-                                        <i class="fa fa-star checked"></i>
-                                    </span>
-                                </div>
-                                <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@books.BookId" class="text-decoration-none text-dark">
-                                   <img class="card-img-top" height="250" width="100" src="@books.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
-                                </a>
-                                <div class="card-body text-center d-flex justify-content-center" style="height:110px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
+                            <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@books.BookId" class="text-decoration-none text-dark">
+                                <div class="card w-100" style="height: 100%;">
+                                    <div class="rating-badge">
+                                        <span class="badge badge-primary rounded-circle text-dark">
+                                            @books.TotalRating
+                                            <i class="fa fa-star checked"></i>
+                                        </span>
+                                    </div>
+                                    <img class="card-img-top" height="250" width="100" src="@books.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                    <div class="card-body text-center d-flex justify-content-center" style="height:110px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
                                         <h6 class="card-title ellipsis">@books.BookTitle</h6>
+                                    </div>
+                                    <div class="card-footer text-start d-flex justify-content-center" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
+                                        <span class="card-title ellipsis text-white" style="margin-top:-5px;font-size:12px;">
+                                            <i class="fas fa-book"></i>
+                                            @books.ReviewCount Reviews
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="card-footer text-start d-flex justify-content-start" style="height:40px; background-color:#212529; border: 1px solid #fff; border-top: none;">
-                                    <span class="card-title ellipsis" style="margin-top:-5px; font-size:12px;">
-                                        <i class="fas fa-book"></i>
-                                        @books.ReviewCount Reviews
-                                    </span>
-                                </div>
-                            </div>
+                            </a>
                         </li>
                     }
                 }
@@ -146,5 +75,6 @@
                 }
             </ul>
         </div>
+
     </div>
 </div>
