@@ -2,7 +2,7 @@
 @model List<NavOS.Basecode.Services.ServiceModels.AdminViewModel>
 @{
     ViewData["Title"] = "Admin List";
-    int pageSize = 5;
+    int pageSize = 10;
     var requestQuery = ViewContext.HttpContext.Request.Query;
     var (currentPage, totalItems, totalPages, startIndex, bookNumber, pageData) = AdminPaginationHelper
     .GetPagination(pageSize, Model, requestQuery["page"]
@@ -18,7 +18,7 @@
 <div class="row mb-5">
     <div class="col-12 col-md-12 px-2 justify-content-between">
         <div class="btn-slide float-end mt-2">
-            <a class="trigger fw-semibold" asp-action="Add" asp-controller="Admin">+ Add Admin</a>
+            <a class="trigger fw-semibold" asp-action="AddAdmin" asp-controller="Admin">+ Add Admin</a>
             <div class="slide"></div>
         </div>
     </div>
@@ -81,7 +81,7 @@
                             <td class="align-middle">@admin.Role</td>
                             <td class="align-middle">
                                 <div class="btn-group" role="group">
-                                    <form asp-action="Edit" method="get">
+                                    <form asp-action="EditAdmin" method="get">
                                         <input type="hidden" name="AdminId" value="@admin.AdminId">
                                         <button type="submit" class="btn btn-warning shadow-none" title="Edit Admin"><i class="fas fa-edit"></i></button>
                                     </form>
