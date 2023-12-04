@@ -9,6 +9,7 @@ using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.ServiceModels;
 using NavOS.Basecode.Services.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,19 +43,26 @@ namespace NavOS.Basecode.BookApp.Controllers
         {
             var isEmailValid = await _reviewService.CheckEmailValidAsync(review.UserEmail);
 
-            if (isEmailValid)
+            review.ReviewText = string.IsNullOrEmpty(review.ReviewText) ? string.Empty : review.ReviewText;
+
+            if (_reviewService.ContainsBadWords(review.ReviewText) || _reviewService.ContainsBadWords(review.UserName))
             {
-				if (string.IsNullOrEmpty(review.ReviewText))
-				{
-					review.ReviewText = string.Empty;
-				}
-                string host = HttpContext.Request.Host.ToString();
-                _reviewService.AddReview(review, host);
-				return RedirectToAction("BookDetails", "Book", new { review.BookId });
-			}
-            TempData["ErrorMessage"] = "Invalid Email";
-			return RedirectToAction("BookDetails", "Book", new { review.BookId });
-		}
+                TempData["ErrorMessage"] = "Prohibited words detected.";
+                return RedirectToAction("BookDetails", "Book", new { review.BookId });
+            }
+
+            if (!isEmailValid)
+            {
+                TempData["ErrorMessage"] = "Invalid Email";
+                return RedirectToAction("BookDetails", "Book", new { review.BookId });
+            }
+
+            string host = HttpContext.Request.Host.ToString();
+            _reviewService.AddReview(review, host);
+
+            return RedirectToAction("BookDetails", "Book", new { review.BookId });
+        }
+
         /// <summary>
         /// Reviews the details.
         /// </summary>

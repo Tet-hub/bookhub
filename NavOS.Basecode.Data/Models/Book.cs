@@ -16,7 +16,7 @@ namespace NavOS.Basecode.Data.Models
         public string Author { get; set; }
         public string Status { get; set; }
         public string Genre { get; set; }
-        public string Chapter { get; set; }
+        public string Pages { get; set; }
         public DateTime DateReleased { get; set; }
         public string AddedBy { get; set; }
         public DateTime AddedTime { get; set; }

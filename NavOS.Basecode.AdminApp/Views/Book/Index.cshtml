@@ -33,7 +33,7 @@
                                 <div class="card w-100" style="height: 100%;">
                                     <div class="rating-badge">
                                         <span class="badge badge-primary rounded-circle text-dark">
-                                            @latestBook.TotalRating
+                                            @latestBook.AvgRatings
                                             <i class="fa fa-star checked"></i>
                                         </span>
                                     </div>
@@ -78,7 +78,7 @@
                                 <div class="card w-100" style="height: 100%;">
                                     <div class="rating-badge">
                                         <span class="badge badge-primary rounded-circle text-dark">
-                                            @topBook.TotalRating
+                                            @topBook.AvgRatings
                                             <i class="fa fa-star checked"></i>
                                         </span>
                                     </div>
@@ -117,7 +117,7 @@
                 <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@topBook.BookId" class="text-decoration-none text-dark model-images mt-3">
                     <div class="rating-badge me-2 mt-1">
                         <span class="badge badge-primary rounded-circle text-dark">
-                            @topBook.TotalRating
+                            @topBook.AvgRatings
                             <i class="fa fa-star checked"></i>
                         </span>
                     </div>

@@ -46,13 +46,13 @@ namespace NavOS.Basecode.Services.Services
                 Author = s.Author,
                 Status = s.Status,
                 Genre = s.Genre,
-                Chapter = s.Chapter,
+                Pages = s.Pages,
                 DateReleased = s.DateReleased,
                 AddedTime = s.AddedTime,
                 Source = s.Source,
                 ImageUrl = Path.Combine(url, s.BookId + ".png"),
                 ReviewCount = s.Reviews.Count,
-                TotalRating = s.Reviews.Any() ? Math.Round((double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count, 1) : 0,
+                AvgRatings = s.Reviews.Any() ? Math.Round((double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count, 1) : 0,
         })
             .ToList();
 
@@ -76,13 +76,13 @@ namespace NavOS.Basecode.Services.Services
                     Author = s.Author,
                     Status = s.Status,
                     Genre = s.Genre,
-                    Chapter = s.Chapter,
+                    Pages = s.Pages,
                     DateReleased = s.DateReleased,
                     AddedTime = s.AddedTime,
                     Source = s.Source,
                     ImageUrl = Path.Combine(url, s.BookId + ".png"),
                     ReviewCount = s.Reviews.Count,
-                    TotalRating = s.Reviews.Any() ? Math.Round((double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count, 1) : 0,
+                    AvgRatings = s.Reviews.Any() ? Math.Round((double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count, 1) : 0,
                 })
                 .ToList();
 
@@ -118,7 +118,7 @@ namespace NavOS.Basecode.Services.Services
                 .ToList();
 
             var topRatedBooks = bookWithReviews.Books
-                .Where(book => book.TotalRating >= 3 && book.ReviewCount > 5)
+                .Where(book => book.AvgRatings >= 3 && book.ReviewCount > 5)
                 .OrderByDescending(book => book.ReviewCount)
                 .Take(5)
                 .ToList();
@@ -156,7 +156,7 @@ namespace NavOS.Basecode.Services.Services
                 Author = book.Author,
                 Status = book.Status,
                 Genre = book.Genre,
-                Chapter = book.Chapter,
+                Pages = book.Pages,
                 DateReleased = book.DateReleased,
                 AddedTime = book.AddedTime,
                 Source = book.Source,
@@ -185,7 +185,7 @@ namespace NavOS.Basecode.Services.Services
                 Summary = book.Summary,
                 Author = book.Author,
                 Status = book.Status,
-                Chapter = book.Chapter,
+                Pages = book.Pages,
                 DateReleased = book.DateReleased,
                 AddedBy = user,
                 UpdatedBy = user,
@@ -248,7 +248,7 @@ namespace NavOS.Basecode.Services.Services
                 book.Author = bookViewModel.Author;
                 book.Status = bookViewModel.Status;
                 book.Genre = bookViewModel.Genre;
-                book.Chapter = bookViewModel.Chapter;
+                book.Pages = bookViewModel.Pages;
                 book.DateReleased = bookViewModel.DateReleased;
                 book.UpdatedBy = user;
                 book.UpdatedTime = DateTime.Now;
@@ -300,7 +300,7 @@ namespace NavOS.Basecode.Services.Services
                         Author = book.Author,
                         Status = book.Status,
                         Genre = book.Genre,
-                        Chapter = book.Chapter,
+                        Pages = book.Pages,
                         DateReleased = book.DateReleased,
                         AddedTime = book.AddedTime,
                         Source = book.Source,
@@ -399,7 +399,7 @@ namespace NavOS.Basecode.Services.Services
             };
 
             result.Books = result.Books
-            .Where(book => book.TotalRating >= 3 && book.ReviewCount > 5)
+            .Where(book => book.AvgRatings >= 3 && book.ReviewCount > 5)
             .OrderByDescending(book => book.ReviewCount)
             .ToList();
 
@@ -551,7 +551,7 @@ namespace NavOS.Basecode.Services.Services
                     result.Books = result.Books.OrderBy(book => book.Author, StringComparer.OrdinalIgnoreCase).ToList();
                     break;
                 case "ratings":
-                    result.Books = result.Books.OrderByDescending(book => book.TotalRating).ToList();
+                    result.Books = result.Books.OrderByDescending(book => book.AvgRatings).ToList();
                     break;
             }
         }
