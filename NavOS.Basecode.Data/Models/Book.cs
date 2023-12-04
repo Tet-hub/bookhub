@@ -22,6 +22,7 @@ namespace NavOS.Basecode.Data.Models
         public DateTime AddedTime { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime UpdatedTime { get; set; }
+        public string Source { get; set; }
 
         public virtual ICollection<Review> Reviews { get; set; }
     }

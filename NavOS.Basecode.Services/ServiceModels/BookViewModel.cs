@@ -33,6 +33,8 @@ namespace NavOS.Basecode.Services.ServiceModels
 
         public DateTime AddedTime { get; set; }
 
+        public string Source { get; set; }
+
         public int ReviewCount { get; set; }
         public double TotalRating { get; set;}
         public double AverageRate { get; set; }

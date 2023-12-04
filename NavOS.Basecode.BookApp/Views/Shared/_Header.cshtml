@@ -31,6 +31,9 @@
                 <li class="nav-item me-5 @IsActive("Book", "NewBooks")">
                     <a class="nav-link @IsActive("Book", "NewBooks")" asp-action="NewBooks" asp-controller="Book">New Books</a>
                 </li>
+                <li class="nav-item me-5 @IsActive("BookRequests", "SendRequest")">
+                    <a class="nav-link @IsActive("BookRequests", "SendRequest")" asp-action="SendRequest" asp-controller="BookRequests">Book Request</a>
+                </li>
             </ul>
             <div class="navbar-nav ms-auto pe-5 me-5" style="margin-top: -15px;">
                 <form asp-controller="Book" asp-action="AllBooks" method="get" class="form-inline d-flex align-items-center mt-3">

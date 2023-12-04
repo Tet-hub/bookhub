@@ -19,10 +19,9 @@ namespace NavOS.Basecode.Data
 
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<BookRequest> BookRequests { get; set; }
         public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Admin>(entity =>
@@ -99,6 +98,39 @@ namespace NavOS.Basecode.Data
                 entity.Property(e => e.Summary).IsRequired();
 
                 entity.Property(e => e.UpdatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<BookRequest>(entity =>
+            {
+                entity.HasKey(e => e.BookReqId);
+
+                entity.ToTable("BookRequest");
+
+                entity.Property(e => e.BookReqId)
+                    .HasMaxLength(50)
+                    .HasColumnName("BookReqID");
+
+                entity.Property(e => e.BookReqAuthor)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.BookReqChapter)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.BookReqGenre)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.BookReqSource).IsRequired();
+
+                entity.Property(e => e.BookReqTitle)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.BookReqUserEmail)
                     .IsRequired()
                     .HasMaxLength(50);
             });
