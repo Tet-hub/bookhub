@@ -6,10 +6,11 @@
     string AdminName = HttpContextAccessor.HttpContext.Session.GetString("AdminName");
     string Role = HttpContextAccessor.HttpContext.Session.GetString("Role");
     string AdminProfile = HttpContextAccessor.HttpContext.Session.GetString("AdminProfile");
+    var requestQuery = ViewContext.HttpContext.Request.Query;
 
     string IsActive(string controller, string action) =>
     (ViewContext.RouteData.Values["Controller"].ToString() == controller &&
-     ViewContext.RouteData.Values["Action"].ToString() == action) ? "active" : "";
+     ViewContext.RouteData.Values["Action"].ToString() == action) ? "nav-active" : "";
 }
 
 @if (ViewBag.LoginView != true)
@@ -39,9 +40,23 @@
                         <a class="nav-link @IsActive("Genre", "ViewGenre")" asp-action="ViewGenre" asp-controller="Genre" id="Genre">Genre List</a>
                   </li>
                 </ul>
-              
+                <div class="navbar-nav ms-auto" style="margin-top: -15px;">
+                    <form asp-controller="Book" asp-action="AllBooks" method="get" class="form-inline d-flex align-items-center mt-3">
+                        <div class="input-group" style="width: 490px;">
+                            <span class="input-group-text" style="background-color: #333; border: none;">
+                                <i class="bi bi-search" style="color: #fff;"></i>
+                            </span>
+                            <input type="text" name="searchQuery" class="form-control"
+                                   placeholder="Search..." value="@ViewBag.SearchQuery"
+                                   style="box-shadow: none; background-color: #333; color: #fff; border: none;"
+                                   id="liveSearchInput" autocomplete="off">
+                            <input type="hidden" name="filter" value="@requestQuery["filter"]" />
+                            <input type="hidden" name="sort" value="@requestQuery["sort"]" />
+                        </div>
+                    </form>
+                </div>
+          
                 <div class="logosec float-start ms-auto">
-                    @AdminName
                     <div class="mr-20 hover-pointer" style="position: relative">
                         <div class="dp">
                             <img src="@AdminProfile"
@@ -68,7 +83,8 @@
     </nav>
 }
 <style>
-    .navbar-nav .nav-link.active,
+    /*Navbar effects*/
+    .navbar-nav .nav-link.nav-active,
     .nav-link:hover {
         color: #FFC119;
     }
@@ -91,11 +107,10 @@
     }
 
     li:hover:after,
-    li.active:after {
+    li.nav-active:after {
         width: 100%;
         background-color: #FFC119;
     }
-
 </style>
 
 

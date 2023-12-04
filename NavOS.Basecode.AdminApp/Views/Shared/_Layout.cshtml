@@ -57,27 +57,6 @@
             progressBar: true
         };
     </script>
-    <script>
-        $(document).ready(function () {
-            var loadingContainer = $('#loading');
-            var bookListContainer = $('.book-list-container');
-
-            // Display loading animation
-            loadingContainer.show();
-
-            // Simulate an AJAX request (you should replace this with your actual data fetching logic)
-            setTimeout(function () {
-                // Hide loading animation
-                loadingContainer.hide();
-
-                // Show the book list container
-                bookListContainer.show();
-
-                // Update isLoading to indicate data is loaded
-                isLoading = false;
-            }, 500); // Simulate a 2-second delay (adjust as needed)
-        });
-    </script>
     <!--Script for rating-->
     <script>
         const stars = document.querySelectorAll('.star-rating');

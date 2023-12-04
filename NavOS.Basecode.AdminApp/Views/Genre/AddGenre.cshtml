@@ -30,7 +30,7 @@
     <div class="modal-body">
         <div class="form-group">
             <label>Title:</label>
-            <input class="form-control border-1 shadow-none text-control" asp-for="GenreName" autocomplete="off" />
+            <input class="form-control border-1 shadow-none text-control" asp-for="GenreName" autocomplete="off" maxlength="30" />
             <div id="modalErrorMessage" class="text-danger"></div>
             <span asp-validation-for="GenreName" class="text-danger"></span>
         </div>

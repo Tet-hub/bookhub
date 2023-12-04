@@ -1,53 +1,84 @@
-﻿::placeholder {
-    color: white;
+﻿.w3-col {
+    display: inline-block;
+    vertical-align: top;
 }
 
-.btn-slide {
-    position: relative;
-    display: inline-block;
+.bookLists {
+    color: white;
+    margin: 10px;
+}
+
+    .bookLists a {
+        text-decoration: none;
+    }
+
+    .bookLists img {
+        width: 85%;
+    }
+
+    .bookLists .wantToRead {
+        color: black;
+        background-color: #FFC119;
+        padding: 10px;
+    }
+
+.line {
+    border: 1px solid black;
+}
+
+.buttonFlex {
+    display: flex;
+    padding: 7px;
+}
+
+.wantToReadText {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.wantToReadIcon {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.bookLists button {
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+p.summary {
+    max-height: 100px;
     overflow: hidden;
 }
 
-.trigger {
-    padding: 10px 20px;
+p.expanded {
+    max-height: none;
+}
+
+button.showMore {
     background-color: transparent;
-    color: #FFC119;
-    border: 2px solid #f39c12;
-    cursor: pointer;
-    transition: color 0.5s, background-color 0.5s;
-    position: relative;
-    z-index: 2;
-    display: inline-block;
-    text-decoration: none;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-style: italic;
 }
 
-.slide {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background-color: #f39c12;
-    transition: left 0.5s ease;
-    z-index: 1;
+.summary-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 
-.btn-slide:hover .slide {
-    left: 0;
-}
-
-.btn-slide:hover .trigger {
-    color: #000;
-    background-color: #FFC119;
-}
-/*Pagination, fitlers and modal css*/
 .pagination .page-item.active a {
     background-color: #00A651;
     box-shadow: none;
 }
 
 .pagination .page-item:not(.active) a {
-    background-color: #FFC119;
+    background-color: transparent;
     color: #000;
 }
 
@@ -97,12 +128,4 @@
 .btn-slide:hover .trigger {
     color: #000;
     background-color: #FFC119;
-}
-
-.modal-content {
-    --bs-modal-border-width: 0;
-    --bs-modal-border-color: transparent;
-    --bs-modal-border-radius: 0;
-    border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
-    background-color: transparent;
 }

@@ -19,10 +19,9 @@
                             <!--BOOK IMAGE-->
                             <div class="w3-col imgPaddingRight">
                                 <img id="bookImage" src="~/img/default-book.jpg" class="bookImgStyle">
-                                <input type="file" class="form-control mt-2" asp-for="ImageFile" accept="image/*" onchange="displayImage(this)">
+                                <input type="file" class="form-control mt-2" asp-for="ImageFile" accept="image/*" onchange="displayImage(this)" required>
                                 <span asp-validation-for="ImageFile" class="text-warning spanImgFile"></span><br><br>
                             </div>
-
                             <!--INPUT DETAILS-->
                             <div class="w3-half">
                                 <div class="form-container">
