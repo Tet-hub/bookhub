@@ -41,6 +41,7 @@ namespace NavOS.Basecode.AdminApp
             this._services.AddScoped<IReviewService, ReviewService>();
             this._services.AddScoped<IEmailSender, EmailSender>();
             this._services.AddScoped<IEmailChecker, EmailChecker>();
+            this._services.AddScoped<IBookRequestService, BookRequestService>();
 
 
             // Repositories
@@ -48,6 +49,8 @@ namespace NavOS.Basecode.AdminApp
             this._services.AddScoped<IBookRepository, BookRepository>();
             this._services.AddScoped<IGenreRepository, GenreRepository>();
             this._services.AddScoped<IReviewRepository, ReviewRepository>();
+            this._services.AddScoped<IBookRequestRepository, BookRequestRepository>();
+
 
             // Manager Class
             this._services.AddScoped<SignInManager>();

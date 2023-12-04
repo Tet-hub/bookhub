@@ -49,6 +49,7 @@ namespace NavOS.Basecode.Services.Services
                 Chapter = s.Chapter,
                 DateReleased = s.DateReleased,
                 AddedTime = s.AddedTime,
+                Source = s.Source,
                 ImageUrl = Path.Combine(url, s.BookId + ".png"),
                 ReviewCount = s.Reviews.Count,
                 TotalRating = s.Reviews.Any() ? Math.Round((double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count, 1) : 0,
@@ -78,6 +79,7 @@ namespace NavOS.Basecode.Services.Services
                     Chapter = s.Chapter,
                     DateReleased = s.DateReleased,
                     AddedTime = s.AddedTime,
+                    Source = s.Source,
                     ImageUrl = Path.Combine(url, s.BookId + ".png"),
                     ReviewCount = s.Reviews.Count,
                     TotalRating = s.Reviews.Any() ? Math.Round((double)s.Reviews.Sum(r => r.Rate) / s.Reviews.Count, 1) : 0,
@@ -157,6 +159,7 @@ namespace NavOS.Basecode.Services.Services
                 Chapter = book.Chapter,
                 DateReleased = book.DateReleased,
                 AddedTime = book.AddedTime,
+                Source = book.Source,
                 ImageUrl = Path.Combine(url, book.BookId + ".png"),
                 Genres = genres
 
@@ -187,6 +190,7 @@ namespace NavOS.Basecode.Services.Services
                 AddedBy = user,
                 UpdatedBy = user,
                 AddedTime = DateTime.Now,
+                Source = book.Source,
                 UpdatedTime = DateTime.Now
             };
 
@@ -248,6 +252,7 @@ namespace NavOS.Basecode.Services.Services
                 book.DateReleased = bookViewModel.DateReleased;
                 book.UpdatedBy = user;
                 book.UpdatedTime = DateTime.Now;
+                book.Source = bookViewModel.Source;
 
                 if (bookViewModel.SelectedGenres != null && bookViewModel.SelectedGenres.Count > 0)
                 {
@@ -298,6 +303,7 @@ namespace NavOS.Basecode.Services.Services
                         Chapter = book.Chapter,
                         DateReleased = book.DateReleased,
                         AddedTime = book.AddedTime,
+                        Source = book.Source,
                         ImageUrl = Path.Combine(url, book.BookId + ".png"),
                         Reviews = reviews,
                         AverageRate = reviews.Any() ? reviews.Average(r => r.Rate) : 0.0,

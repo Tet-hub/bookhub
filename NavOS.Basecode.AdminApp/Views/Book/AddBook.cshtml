@@ -56,6 +56,11 @@
                                     </div>
                                     <span asp-validation-for="DateReleased" class="text-warning bookInputSpan"></span>
                                     <div class="form-row">
+                                        <p>Book Source:</p>
+                                        <input class="form-control" asp-for="Source" />
+                                    </div>
+                                    <span asp-validation-for="Source" class="text-warning bookInputSpan"></span>
+                                    <div class="form-row">
                                         <p>Genre:</p>
                                         <div class="dropdown genre-dropdown">
                                             <div class="genreText text-decoration-none text-white" id="genreDropdownBtn">Choose Genre</div>
