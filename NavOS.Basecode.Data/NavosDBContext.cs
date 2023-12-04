@@ -22,6 +22,7 @@ namespace NavOS.Basecode.Data
         public virtual DbSet<BookRequest> BookRequests { get; set; }
         public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Admin>(entity =>

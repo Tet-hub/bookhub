@@ -37,6 +37,9 @@
                     <th style="background-color: #FFC119;color: black;">Genre: </th>
                     <th style="background-color: #FFC119;color: black;">Source: </th>
                     <th style="background-color: #FFC119;color: black;">User Email: </th>
+                    <th style="background-color: #FFC119;color: black;">Time Added: </th>
+
+
 
                 </tr>
             </thead>
@@ -51,7 +54,7 @@
                         <td class="align-middle">@book.BookReqGenre</td>
                         <td class="align-middle">@book.BookReqSource</td>
                         <td class="align-middle">@book.BookReqUserEmail</td>
-
+                        <td class="align-middle">@book.BookReqTime</td>
 
                     </tr>
                 }
@@ -59,10 +62,10 @@
         </table>
     </div>
 }
-else
+@* else
 {
     <span class="text-white w3-display-middle">No Book found </span>
-}
+} *@
 
 @* Pagination *@
 @if (ViewBag.CurrentPage != null)
