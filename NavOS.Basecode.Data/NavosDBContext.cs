@@ -19,7 +19,6 @@ namespace NavOS.Basecode.Data
 
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<Book> Books { get; set; }
-        public virtual DbSet<BookRequest> BookRequests { get; set; }
         public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
 
@@ -84,13 +83,15 @@ namespace NavOS.Basecode.Data
 
                 entity.Property(e => e.BookTitle).IsRequired();
 
-                entity.Property(e => e.Chapter)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
                 entity.Property(e => e.DateReleased).HasColumnType("date");
 
                 entity.Property(e => e.Genre).IsRequired();
+
+                entity.Property(e => e.Pages)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Source).IsRequired();
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -99,39 +100,6 @@ namespace NavOS.Basecode.Data
                 entity.Property(e => e.Summary).IsRequired();
 
                 entity.Property(e => e.UpdatedBy)
-                    .IsRequired()
-                    .HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<BookRequest>(entity =>
-            {
-                entity.HasKey(e => e.BookReqId);
-
-                entity.ToTable("BookRequest");
-
-                entity.Property(e => e.BookReqId)
-                    .HasMaxLength(50)
-                    .HasColumnName("BookReqID");
-
-                entity.Property(e => e.BookReqAuthor)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.BookReqChapter)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.BookReqGenre)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.BookReqSource).IsRequired();
-
-                entity.Property(e => e.BookReqTitle)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.BookReqUserEmail)
                     .IsRequired()
                     .HasMaxLength(50);
             });

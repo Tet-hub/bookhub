@@ -14,6 +14,8 @@ namespace NavOS.Basecode.Services.Interfaces
         List<ReviewViewModel> GetReviews();
         List<ReviewViewModel> GetReviews(string bookId);
         Task<bool> CheckEmailValidAsync(string Email);
+        public bool ContainsBadWords(string text);
 
-	}
+
+    }
 }

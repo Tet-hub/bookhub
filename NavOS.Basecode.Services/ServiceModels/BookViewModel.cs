@@ -23,8 +23,8 @@ namespace NavOS.Basecode.Services.ServiceModels
         public string Genre { get; set; }
         [Required(ErrorMessage = "Please Choose a Genre")]
         public List<string> SelectedGenres { get; set; }
-        [Required(ErrorMessage = "Chapter is required")]
-        public string Chapter { get; set; }
+        [Required(ErrorMessage = "Page is required")]
+        public string Pages { get; set; }
         //[Required(ErrorMessage = "Please upload an image")]
         public IFormFile ImageFile { get; set; }
         public string ImageUrl { get; set; }
@@ -36,7 +36,7 @@ namespace NavOS.Basecode.Services.ServiceModels
         public string Source { get; set; }
 
         public int ReviewCount { get; set; }
-        public double TotalRating { get; set;}
+        public double AvgRatings { get; set;}
         public double AverageRate { get; set; }
         public List<ReviewViewModel> Reviews { get; set; }
         public double TotalRatingAndReviewsCount { get; set; }

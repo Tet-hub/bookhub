@@ -53,6 +53,10 @@ namespace NavOS.Basecode.Data
             {
                 get { return GetFolderPath(SetupRootDirectory, "emailTemplates"); }
             }
+            public static string ProfanityTextDirectory
+            {
+                get { return GetFolderPath(SetupRootDirectory, "txtFiles"); }
+            }
         }
 
         /// <summary>
