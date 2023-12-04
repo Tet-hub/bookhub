@@ -16,5 +16,7 @@ namespace NavOS.Basecode.Services.ServiceModels
         public string BookReqSource { get; set; }
         public string BookReqUserEmail { get; set; }
 
+        public DateTime BookReqTime { get; set; }
+
     }
 }

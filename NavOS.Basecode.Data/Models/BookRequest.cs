@@ -12,5 +12,6 @@ namespace NavOS.Basecode.Data.Models
         public string BookReqGenre { get; set; }
         public string BookReqSource { get; set; }
         public string BookReqUserEmail { get; set; }
+        public DateTime BookReqTime { get; set; }
     }
 }

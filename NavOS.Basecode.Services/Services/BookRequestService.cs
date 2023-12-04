@@ -34,6 +34,7 @@ namespace NavOS.Basecode.Services.Services
                 BookReqGenre = s.BookReqGenre,
                 BookReqSource = s.BookReqSource,
                 BookReqUserEmail = s.BookReqUserEmail,
+                BookReqTime = s.BookReqTime,
 
             })
             .ToList();
@@ -53,6 +54,7 @@ namespace NavOS.Basecode.Services.Services
                 BookReqGenre = book.BookReqGenre,
                 BookReqSource = book.BookReqSource,
                 BookReqUserEmail = book.BookReqUserEmail,
+                BookReqTime = book.BookReqTime,
 
             };
             return bookRequestViewModel;
@@ -70,6 +72,7 @@ namespace NavOS.Basecode.Services.Services
                 BookReqGenre = book.BookReqGenre,
                 BookReqSource = book.BookReqSource,
                 BookReqUserEmail = book.BookReqUserEmail,
+                BookReqTime = DateTime.Now,
             };
             //BookRequest.BookReqGenre = BookReqGenre;
             _bookRequestRepository.SendRequest(model);
