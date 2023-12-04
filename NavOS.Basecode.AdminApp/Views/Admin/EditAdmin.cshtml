@@ -13,7 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="~/css/imageUploader.css" />
 }
 
-<form asp-action="Edit" style="margin-top:30px" enctype="multipart/form-data">
+<form asp-action="EditAdmin" style="margin-top:30px" enctype="multipart/form-data">
 	<input type="hidden" class="form-control" asp-for="AdminId" />
 	<div class="row">
 		<div class="col-sm-4">
@@ -93,7 +93,7 @@
 
 			<div class="d-flex justify-content-end">
 				<div class="btn-group" role="group">
-					<a asp-controller="Admin" asp-action="List" class="btn btn-outline-warning rounded"><i class="fa fa-arrow-left" aria-hidden="true"></i> BACK</a>
+					<a asp-controller="Admin" asp-action="AdminList" class="btn btn-outline-warning rounded"><i class="fa fa-arrow-left" aria-hidden="true"></i> BACK</a>
 					<button class="btn btn-warning rounded" type="submit" style="margin-left: 20px">SUBMIT</button>
 				</div>
 			</div>

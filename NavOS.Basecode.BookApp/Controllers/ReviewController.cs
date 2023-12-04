@@ -10,6 +10,7 @@ using NavOS.Basecode.Services.ServiceModels;
 using NavOS.Basecode.Services.Services;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NavOS.Basecode.BookApp.Controllers
 {
@@ -37,15 +38,23 @@ namespace NavOS.Basecode.BookApp.Controllers
         /// </summary>
         /// <param name="review">The review.</param>
         /// <returns></returns>
-        public IActionResult AddReview(ReviewViewModel review)
+        public async Task<IActionResult> AddReview(ReviewViewModel review)
         {
-            if (string.IsNullOrEmpty(review.ReviewText))
+            var isEmailValid = await _reviewService.CheckEmailValidAsync(review.UserEmail);
+
+            if (isEmailValid)
             {
-                review.ReviewText = string.Empty;
-            }
-            _reviewService.AddReview(review);
-            return RedirectToAction("BookDetails", "Book", new { review.BookId });
-        }
+				if (string.IsNullOrEmpty(review.ReviewText))
+				{
+					review.ReviewText = string.Empty;
+				}
+                string host = HttpContext.Request.Host.ToString();
+                _reviewService.AddReview(review, host);
+				return RedirectToAction("BookDetails", "Book", new { review.BookId });
+			}
+            TempData["ErrorMessage"] = "Invalid Email";
+			return RedirectToAction("BookDetails", "Book", new { review.BookId });
+		}
         /// <summary>
         /// Reviews the details.
         /// </summary>

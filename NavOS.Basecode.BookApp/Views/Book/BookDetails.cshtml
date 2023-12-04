@@ -105,3 +105,21 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script>
+        // Check for error message and display Toastr notification
+        var errorMessage = '@TempData["ErrorMessage"]';
+        var successMessage = '@TempData["SuccessMessage"]';
+
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+
+
+    </script>
+}

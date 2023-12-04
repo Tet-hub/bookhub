@@ -9,5 +9,7 @@ namespace NavOS.Basecode.Services.Interfaces
     public interface IEmailSender
     {
         public void PasswordReset(string email, string host, string adminName, string adminId, string token);
-    }
+        public void UserFeedBackReview(string email, string host, string username, string bookTitle);
+
+	}
 }

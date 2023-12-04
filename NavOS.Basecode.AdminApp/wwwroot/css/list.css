@@ -40,6 +40,13 @@
     color: #000;
     background-color: #FFC119;
 }
+
+.truncate-general {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 /*Pagination, fitlers and modal css*/
 .pagination .page-item.active a {
     background-color: #00A651;
