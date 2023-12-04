@@ -82,7 +82,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 {
                     _adminService.AddAdmin(model, this.UserName);
                     TempData["SuccessMessage"] = "Admin added successfully.";
-                    return RedirectToAction("List");
+                    return RedirectToAction("AdminList");
                 }
                 TempData["ErrorMessage"] = "Invalid Email";
                 return View(model);
