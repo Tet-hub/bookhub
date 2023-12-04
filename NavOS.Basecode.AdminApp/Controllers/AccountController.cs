@@ -16,6 +16,7 @@ using System.IO;
 using System.Threading.Tasks;
 using static NavOS.Basecode.Resources.Constants.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace NavOS.Basecode.AdminApp.Controllers
 {
@@ -96,6 +97,9 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 this._session.SetString("SessionId", Guid.NewGuid().ToString());
                 this._session.SetString("AdminId", admin.AdminId);
                 this._session.SetString("AdminName", admin.AdminName);
+                this._session.SetString("ContactNo", admin.ContactNo);
+                this._session.SetString("AdminEmail", admin.AdminEmail);
+                this._session.SetString("Dob", admin.Dob.ToString("yyyy-MM-dd"));
                 this._session.SetString("Role", admin.Role);
                 this._session.SetString("AdminProfile", Path.Combine(imagePath, admin.AdminId + ".png"));
                 TempData["SuccessMessage"] = "Welcome " + admin.AdminName + "!";

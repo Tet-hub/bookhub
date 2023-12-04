@@ -10,8 +10,10 @@ namespace NavOS.Basecode.Services.Interfaces
 {
     public interface IReviewService
     {
-        void AddReview(ReviewViewModel review);
+        void AddReview(ReviewViewModel review, string host);
         List<ReviewViewModel> GetReviews();
         List<ReviewViewModel> GetReviews(string bookId);
-    }
+        Task<bool> CheckEmailValidAsync(string Email);
+
+	}
 }

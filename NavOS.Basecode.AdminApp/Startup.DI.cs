@@ -40,6 +40,7 @@ namespace NavOS.Basecode.AdminApp
             this._services.AddScoped<IGenreService, GenreService>();
             this._services.AddScoped<IReviewService, ReviewService>();
             this._services.AddScoped<IEmailSender, EmailSender>();
+            this._services.AddScoped<IEmailChecker, EmailChecker>();
 
 
             // Repositories

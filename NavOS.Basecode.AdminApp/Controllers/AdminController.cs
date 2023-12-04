@@ -10,6 +10,7 @@ using NavOS.Basecode.Services.ServiceModels;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NavOS.Basecode.AdminApp.Controllers
 {
@@ -33,6 +34,11 @@ namespace NavOS.Basecode.AdminApp.Controllers
         {
 			_adminService = adminService;
         }
+        /// <summary>
+        /// List of Admin.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <returns></returns>
         public IActionResult AdminList(string searchQuery)
         {
             if (this._session.GetString("Role") != "Master Admin")
@@ -47,7 +53,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// Adds this instance.
         /// </summary>
         /// <returns></returns>
-        public IActionResult Add()
+        public IActionResult AddAdmin()
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
@@ -62,20 +68,27 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// <param name="model">The model.</param>
         /// <returns></returns>
         [HttpPost]
-		public IActionResult Add(AdminViewModel model)
-		{
+        public async Task<IActionResult> AddAdmin(AdminViewModel model)
+        {
             if (this._session.GetString("Role") != "Master Admin")
             {
                 return RedirectToAction("Index", "Book");
             }
 
-			try
+            try
             {
-				_adminService.AddAdmin(model, this.UserName);
-				TempData["SuccessMessage"] = "Admin added successfully.";
-				return RedirectToAction("AdminList");
-			}
-            catch (InvalidDataException ex) {
+                var _isEmailValid = await _adminService.CheckEmailValidAsync(model.AdminEmail);
+                if (_isEmailValid)
+                {
+                    _adminService.AddAdmin(model, this.UserName);
+                    TempData["SuccessMessage"] = "Admin added successfully.";
+                    return RedirectToAction("List");
+                }
+                TempData["ErrorMessage"] = "Invalid Email";
+                return View(model);
+            }
+            catch (InvalidDataException ex)
+            {
                 TempData["ErrorMessage"] = ex.Message;
                 return View(model);
             }
@@ -110,7 +123,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// <param name="adminId">The admin identifier.</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Edit(string adminId) 
+        public IActionResult EditAdmin(string adminId) 
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
@@ -132,27 +145,67 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// <param name="model">The model.</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Edit(AdminViewModel model) 
+        public async Task<IActionResult> EditAdmin(AdminViewModel model) 
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
                 return RedirectToAction("Index", "Book");
             }
 
-            bool isEmailExisted = _adminService.CheckEmailExist(model);
-            if (!isEmailExisted)
+            var isEmailValid = await _adminService.CheckEmailValidAsync(model.AdminEmail);
+            if (isEmailValid)
             {
-                bool _isAdminUpdated = _adminService.EditAdmin(model, this.UserName);
-                if (_isAdminUpdated)
+                bool isEmailExisted = _adminService.CheckEmailExist(model);
+                if (!isEmailExisted)
                 {
-                    TempData["SuccessMessage"] = "Admin updated successfully.";
+                    bool _isAdminUpdated = _adminService.EditAdmin(model, this.UserName);
+                    if (_isAdminUpdated)
+                    {
+                        TempData["SuccessMessage"] = "Admin updated successfully.";
+                        return RedirectToAction("AdminList");
+                    }
+                    TempData["ErrorMessage"] = "No Admin was updated.";
                     return RedirectToAction("AdminList");
                 }
-                TempData["ErrorMessage"] = "No Admin was updated.";
-                return RedirectToAction("AdminList");
+                TempData["ErrorMessage"] = "Admin Email already existed!";
+                return RedirectToAction("EditAdmin", "Admin", new { adminId = model.AdminId });
             }
-            TempData["ErrorMessage"] = "Admin Email already existed!";
-            return RedirectToAction("Edit", "Admin", new { adminId = model.AdminId });
+            TempData["ErrorMessage"] = "Invalid Email!";
+            return RedirectToAction("EditAdmin", "Admin", new { adminId = model.AdminId });
         }
-	}
+
+        [HttpGet]
+        public IActionResult AdminSetting()
+        {
+            string adminId = this._session.GetString("AdminId");
+            var data = _adminService.GetAdmin(adminId);
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAdminInfo(AdminViewModel model)
+        {
+            var isEmailValid = await _adminService.CheckEmailValidAsync(model.AdminEmail);
+            if (isEmailValid)
+            {
+                bool isEmailExisted = _adminService.CheckEmailExist(model);
+                if (!isEmailExisted)
+                {
+                    bool _isAdminUpdated = _adminService.EditAdmin(model, this.UserName);
+                    if (_isAdminUpdated)
+                    {
+                        TempData["SuccessMessage"] = "Admin updated successfully.";
+                        return RedirectToAction("AdminSetting");
+                    }
+                    TempData["ErrorMessage"] = "No Admin was updated.";
+                    return RedirectToAction("AdminSetting");
+                }
+                TempData["ErrorMessage"] = "Admin Email already existed!";
+                return RedirectToAction("AdminSetting");
+            }
+            TempData["ErrorMessage"] = "Invalid Email!";
+            return RedirectToAction("AdminSetting");
+        }
+
+    }
 }

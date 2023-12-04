@@ -5,6 +5,7 @@ using NavOS.Basecode.Data.Models;
 using NavOS.Basecode.Services.Interfaces;
 using NavOS.Basecode.Services.Manager;
 using NavOS.Basecode.Services.ServiceModels;
+using NavOS.Basecode.Services.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,7 @@ namespace NavOS.Basecode.Services.Services
     {
         private readonly IAdminRepository _adminRepository;
         private readonly IEmailSender _emailSender;
+        private readonly IEmailChecker _emailChecker;
         private readonly IMapper _mapper;
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminService"/> class.
@@ -26,11 +28,12 @@ namespace NavOS.Basecode.Services.Services
         /// <param name="repository">The repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="emailSender">The email sender.</param>
-        public AdminService(IAdminRepository repository, IMapper mapper, IEmailSender emailSender)
+        public AdminService(IAdminRepository repository, IMapper mapper, IEmailSender emailSender, IEmailChecker emailChecker)
         {
             _adminRepository = repository;
             _mapper = mapper;
             _emailSender = emailSender;
+            _emailChecker = emailChecker;
         }
         /// <summary>
         /// Authenticates the admin.
@@ -139,20 +142,23 @@ namespace NavOS.Basecode.Services.Services
 
             if (admin != null)
             {
-				AdminViewModel adminViewModel = new AdminViewModel();
-				adminViewModel.AdminId = adminId;
-				adminViewModel.AdminName = admin.AdminName;
-				adminViewModel.AdminEmail = admin.AdminEmail;
-				adminViewModel.ContactNo = admin.ContactNo;
-				adminViewModel.Dob = admin.Dob;
-				adminViewModel.Role = admin.Role;
-				adminViewModel.ImageUrl = (CheckAdminProfile(adminId)) ? Path.Combine(url, admin.AdminId + ".png") : "#";
+                AdminViewModel adminViewModel = new AdminViewModel
+                {
+                    AdminId = adminId,
+                    AdminName = admin.AdminName,
+                    AdminEmail = admin.AdminEmail,
+                    ContactNo = admin.ContactNo,
+                    Dob = admin.Dob,
+                    Role = admin.Role,
+                    ImageUrl = (CheckAdminProfile(adminId)) ? url + "/" + admin.AdminId + ".png" : "#"
+                };
 
                 return adminViewModel;
 			}
 			return null;
 
 		}
+
         /// <summary>
         /// Deletes the admin.
         /// </summary>
@@ -221,7 +227,7 @@ namespace NavOS.Basecode.Services.Services
             return false;
         }
         /// <summary>
-        /// Checks the email exist.
+        /// Checks if the email exist.
         /// </summary>
         /// <param name="adminViewModel">The admin view model.</param>
         /// <returns></returns>
@@ -236,6 +242,22 @@ namespace NavOS.Basecode.Services.Services
 
             return false;
         }
+
+        /// <summary>
+        /// Checks if the email is valid asynchronous.
+        /// </summary>
+        /// <param name="Email">The email.</param>
+        /// <returns></returns>
+        public async Task<bool> CheckEmailValidAsync(string Email)
+        {
+            var isEmailValid = await _emailChecker.IsEmailValidAsync(Email);
+            if (isEmailValid)
+            {
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Edits the admin.
         /// </summary>
@@ -252,9 +274,13 @@ namespace NavOS.Basecode.Services.Services
                 admin.ContactNo = adminViewModel.ContactNo;
                 admin.Dob = adminViewModel.Dob;
                 admin.AdminEmail = adminViewModel.AdminEmail;
-                admin.Role = adminViewModel.Role;
                 admin.UpdatedBy = user;
                 admin.UpdatedTime = DateTime.Now;
+
+                if (adminViewModel.Role != null)
+                {
+                    admin.Role = adminViewModel.Role;
+                }
 
                 if (adminViewModel.AdminProfile != null)
                 {

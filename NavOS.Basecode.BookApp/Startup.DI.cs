@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using NavOS.Basecode.Services.Utilities;
 
 namespace NavOS.Basecode.BookApp
 {
@@ -32,6 +33,8 @@ namespace NavOS.Basecode.BookApp
             this._services.AddScoped<IBookService, BookService>();
             this._services.AddScoped<IReviewService, ReviewService>();
             this._services.AddScoped<IGenreService, GenreService>();
+            this._services.AddScoped<IEmailSender, EmailSender>();
+            this._services.AddScoped<IEmailChecker, EmailChecker>();
           
 
             // Repositories

@@ -14,15 +14,21 @@ namespace NavOS.Basecode.Services.Services
     public class ReviewService : IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
-        public ReviewService(IReviewRepository reviewRepository)
+        private readonly IBookRepository _bookRepository;
+        private readonly IEmailChecker _emailChecker;
+        private readonly IEmailSender _emailSender;
+        public ReviewService(IReviewRepository reviewRepository, IEmailChecker emailChecker, IEmailSender emailSender, IBookRepository bookRepository)
         {
             _reviewRepository = reviewRepository;
+            _emailChecker = emailChecker;
+            _emailSender = emailSender;
+            _bookRepository = bookRepository;
         }
         /// <summary>
         /// Adds the review.
         /// </summary>
         /// <param name="review">The review.</param>
-        public void AddReview(ReviewViewModel review)
+        public void AddReview(ReviewViewModel review, string host)
         {
             var model = new Review();
 
@@ -33,9 +39,10 @@ namespace NavOS.Basecode.Services.Services
             model.ReviewText = review.ReviewText;
             model.Rate = review.Rate;
             model.DateReviewed = DateTime.Now;
-
+            
             _reviewRepository.AddReview(model);
-
+            var book = _bookRepository.GetBooks().FirstOrDefault(s => s.BookId == review.BookId);
+            _emailSender.UserFeedBackReview(model.UserEmail, host, model.UserName, book.BookTitle);
         }
         /// <summary>
         /// Gets the reviews.
@@ -76,7 +83,20 @@ namespace NavOS.Basecode.Services.Services
 
             return data;
         }
+		/// <summary>
+		/// Checks the email valid asynchronous.
+		/// </summary>
+		/// <param name="Email">The email.</param>
+		/// <returns></returns>
+		public async Task<bool> CheckEmailValidAsync(string Email)
+		{
+			var isEmailValid = await _emailChecker.IsEmailValidAsync(Email);
+			if (isEmailValid)
+			{
+				return true;
+			}
+			return false;
+		}
 
-
-    }
+	}
 }
