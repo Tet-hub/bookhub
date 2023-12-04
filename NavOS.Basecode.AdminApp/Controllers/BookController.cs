@@ -76,6 +76,20 @@ namespace NavOS.Basecode.BookApp.Controllers
             return View(data);
         }
         /// <summary>
+        /// Display all books.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <param name="filter">The filter.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult AllBooks(string searchQuery = null, string filter = null, string sort = null)
+        {
+            var data = _bookService.FilterAndSortAllBookList(searchQuery, filter, sort);
+
+            return View(data);
+        }
+        /// <summary>
         /// BookDetails
         /// </summary>
         /// <param name="BookId"></param>
@@ -99,9 +113,6 @@ namespace NavOS.Basecode.BookApp.Controllers
         public IActionResult BookList(string searchQuery = null, string filter = null, string sort = null)
         {
             var data = _bookService.FilterAndSortBooks(searchQuery, filter, sort);
-            string[] headers = new string[] { "Book Profile", "Title", "Author", "Reviews", "Actions" };
-
-            ViewBag.headers = headers;
             return View(data);
         }
         /// <summary>

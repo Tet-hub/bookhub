@@ -1,173 +1,158 @@
 ﻿@model NavOS.Basecode.Services.ServiceModels.BookWithReviewViewModel
 
-<style>
-    .ellipsis {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-    }
-
-    .rating-badge {
-        position: absolute;
-        top: -12px;
-        right: -12px;
-        z-index: 1;
-        width: 40px;
-        height: 40px;
-        background-color: #FFC119;
-        color: #f000;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-        .rating-badge .badge {
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 50%;
-        }
-
-    .btn-slide {
-        position: relative;
-        display: inline-block;
-        overflow: hidden;
-    }
-
-    .trigger {
-        padding: 10px 20px;
-        background-color: transparent;
-        color: #FFC119;
-        border: 2px solid #f39c12;
-        cursor: pointer;
-        transition: color 0.5s, background-color 0.5s;
-        position: relative;
-        z-index: 2;
-        display: inline-block;
-        text-decoration: none;
-    }
-
-    .slide {
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background-color: #f39c12;
-        transition: left 0.5s ease;
-        z-index: 1;
-    }
-
-    .btn-slide:hover .slide {
-        left: 0;
-    }
-
-    .btn-slide:hover .trigger {
-        color: #000;
-        background-color: #FFC119;
-    }
-
-    .card-title {
-        color: white;
-        transition: color 0.3s ease;
-    }
-
-        .card-title:hover {
-            color: #FFC119;
-            cursor: pointer;
-        }
-
-</style>
-<div class="col-md-12 mt-5">
-    <div class="row">
-        <!-- Book List -->
-        <div class="col-md-12 mx-2 mt-2">
-            <div class="row mx-3">
-                <!-- Latest Books-->
-                <div class="col-11 col-md-11 px-2 justify-content-between" style="margin-left:44px;">
-                    <div class="btn-slide float-end mt-2">
-                        <a class="trigger fw-semibold" asp-action="NewBooks" asp-controller="Book">View New Books</a>
-                        <div class="slide"></div>
+@section styles {
+    <link rel="stylesheet" href="~/css/index.css" />
+}
+<div class="tabs">
+    <div class="tab-2">
+        <label for="tab2-1">LATEST BOOKS</label>
+        <input id="tab2-1" name="tabs-two" type="radio" checked="checked">
+        <div class="row">
+            <!-- Book List -->
+            <div class="col-md-12 mx-2 mt-2">
+                <div class="row mx-3">
+                    <!-- Latest Books-->
+                    <div class="col-11 col-md-11 px-2 justify-content-between" style="margin-left:44px;">
+                        <div class="btn-slide float-end mt-2">
+                            <a class="trigger fw-semibold" asp-action="NewBooks" asp-controller="Book">View New Books</a>
+                            <div class="slide"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-between">
+                        <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">LATEST BOOKS</span>
                     </div>
                 </div>
-                <div class="col-md-4 d-flex justify-content-between">
-                    <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">LATEST BOOKS</span>
+                <div class="col-md-11 mx-4" style="margin-left:44px;">
+                    <hr />
                 </div>
-            </div>
-            <div class="col-md-11 mx-4" style="margin-left:44px;">
-                <hr />
-            </div>
-            <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
-                @foreach (var latestBook in Model.LatestBooks)
-                {
-                    <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
-                        <div class="card w-100" style="height: 100%;">
-                            <div class="rating-badge">
-                                <span class="badge badge-primary rounded-circle text-dark">
-                                    @latestBook.TotalRating
-                                    <i class="fa fa-star checked"></i>
-                                </span>
-                            </div>
+                <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
+                    @foreach (var latestBook in Model.LatestBooks)
+                    {
+                        <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                             <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@latestBook.BookId" class="text-decoration-none text-dark">
-                                <img class="card-img-top" height="250" width="100" src="@latestBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                <div class="card w-100" style="height: 100%;">
+                                    <div class="rating-badge">
+                                        <span class="badge badge-primary rounded-circle text-dark">
+                                            @latestBook.TotalRating
+                                            <i class="fa fa-star checked"></i>
+                                        </span>
+                                    </div>
+                                    <img class="card-img-top" height="320" width="100" src="@latestBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                    <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
+                                        <h6 class="card-title ellipsis">@latestBook.BookTitle</h6>
+                                    </div>
+                                </div>
                             </a>
-                            <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                <h6 class="card-title ellipsis">@latestBook.BookTitle</h6>
-                            </div>
-
-                        </div>
-                    </li>
-                }
-            </ul>
+                        </li>
+                    }
+                </ul>
+            </div>
         </div>
     </div>
-    <div class="row mt-2">
-        <!-- Book List -->
-        <div class="col-md-12 mx-2">
-            <!--View Top Books-->
-            <div class="row mx-3">
-                <div class="col-11 col-md-11 px-2 justify-content-between" style="margin-left:44px;">
-                    <div class="btn-slide float-end mt-2">
-                        <a class="trigger fw-semibold" asp-action="TopBooks" asp-controller="Book">View Top Books</a>
-                        <div class="slide"></div>
+    <div class="tab-2">
+        <label for="tab2-2">TOP BOOKS</label>
+        <input id="tab2-2" name="tabs-two" type="radio">
+        <div class="row mt-2">
+            <!-- Book List -->
+            <div class="col-md-12 mx-2">
+                <!--View Top Books-->
+                <div class="row mx-3">
+                    <div class="col-11 col-md-11 px-2 justify-content-between" style="margin-left:44px;">
+                        <div class="btn-slide float-end mt-2">
+                            <a class="trigger fw-semibold" asp-action="TopBooks" asp-controller="Book">View Top Books</a>
+                            <div class="slide"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-between">
+                        <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">TOP BOOKS</span>
                     </div>
                 </div>
-                <div class="col-md-4 d-flex justify-content-between">
-                    <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">TOP BOOKS</span>
+                <div class="col-md-11 mx-4" style="margin-left:44px;">
+                    <hr />
                 </div>
-            </div>
-            <div class="col-md-11 mx-4" style="margin-left:44px;">
-                <hr />
-            </div>
-            <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
-                @foreach (var topBook in Model.TopRatedBooks)
-                {
-                    <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
-                        <div class="card w-100" style="height: 100%;">
-                            <div class="rating-badge">
-                                <span class="badge badge-primary rounded-circle text-dark">
-                                    @topBook.TotalRating
-                                    <i class="fa fa-star checked"></i>
-                                </span>
-                            </div>
+                <ul class="row mt-3 list-unstyled mx-auto" style="padding-left: 0;">
+                    @foreach (var topBook in Model.TopRatedBooks)
+                    {
+                        <li class="col-10 col-md-3 col-xl-2 mb-3 mx-3">
                             <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@topBook.BookId" class="text-decoration-none text-dark">
-                                <img class="card-img-top" height="250" width="100" src="@topBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                <div class="card w-100" style="height: 100%;">
+                                    <div class="rating-badge">
+                                        <span class="badge badge-primary rounded-circle text-dark">
+                                            @topBook.TotalRating
+                                            <i class="fa fa-star checked"></i>
+                                        </span>
+                                    </div>
+                                    <img class="card-img-top" height="320" width="100" src="@topBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                                    <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
+                                        <h6 class="card-title ellipsis">@topBook.BookTitle</h6>
+                                    </div>
+                                </div>
                             </a>
-                            <div class="card-body text-center d-flex justify-content-center" style="height:90px;background-color:#212529; margin-top:-15px; border: 1px solid #fff; margin-bottom:-20px;">
-                                <h6 class="card-title ellipsis">@topBook.BookTitle</h6>
-                            </div>
-
-                        </div>
-                    </li>
-                }
-            </ul>
+                        </li>
+                    }
+                </ul>
+            </div>
         </div>
     </div>
 </div>
+<!-- All Books-->
+<div class="row">
+    <section class="slider-container">
+        <div class="col-11 col-md-11 justify-content-start">
+            <div class="btn-slide float-end mt-2">
+                <a class="trigger fw-semibold" asp-action="AllBooks" asp-controller="Book">View All Books</a>
+                <div class="slide"></div>
+            </div>
+        </div>
+        <div class="col-md-11 d-flex justify-content-start">
+            <span class="h4" style="color:#FFC119; margin-top:-35px; margin-bottom:-25px;">MOST REVIEWED BOOKS</span>
+        </div>
+        <div class="col-md-11 mx-4" style="margin-left:44px; margin-top:-5px; margin-bottom:-20px;">
+            <hr />
+        </div>
+        <!-- Image Container-->
+        <div id="image-container" class="image-container">
+            @foreach (var topBook in Model.Books)
+            {
+                <a asp-action="BookDetails" asp-controller="Book" asp-route-BookId="@topBook.BookId" class="text-decoration-none text-dark model-images mt-3">
+                    <div class="rating-badge me-2 mt-1">
+                        <span class="badge badge-primary rounded-circle text-dark">
+                            @topBook.TotalRating
+                            <i class="fa fa-star checked"></i>
+                        </span>
+                    </div>
+                    <img class=" card-img-top" height="350" src="@topBook.ImageUrl" alt="Card image cap" onerror="this.src='@Url.Content("~/img/default-book.jpg")'" style="border: 1px solid #fff;">
+                    <h6 class="card-title ellipsis text-center fw-bold">@topBook.BookTitle</h6>
+                    <h6 class="card-title genre-ellipsis text-center">@topBook.ReviewCount Reviews</h6>
+                </a>
+            }
+        </div>
+        <!-- Button Container-->
+        <div class="button-container">
+            <button class="direction-button" id="left-arrow">
+                <svg fill="#fff" height="800px" width="800px" version="1.1"
+                     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve">
+                <path id="XMLID_92_"
+                      d="M111.213,165.004L250.607,25.607c5.858-5.858,5.858-15.355,0-21.213c-5.858-5.858-15.355-5.858-21.213,0.001
+                    l-150,150.004C76.58,157.211,75,161.026,75,165.004c0,3.979,1.581,7.794,4.394,10.607l150,149.996
+                    C232.322,328.536,236.161,330,240,330s7.678-1.464,10.607-4.394c5.858-5.858,5.858-15.355,0-21.213L111.213,165.004z" />
+                    </svg>
+            </button>
 
+            <span id="progress-bar-container"><span id="progress-bar"></span></span>
 
+            <button class="direction-button" id="right-arrow">
+                <svg fill="#fff" height="800px" width="800px" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                     viewBox="0 0 330 330" xml:space="preserve">
+                <path id="XMLID_92_"
+                      d="M111.213,165.004L250.607,25.607c5.858-5.858,5.858-15.355,0-21.213c-5.858-5.858-15.355-5.858-21.213,0.001
+                                    l-150,150.004C76.58,157.211,75,161.026,75,165.004c0,3.979,1.581,7.794,4.394,10.607l150,149.996
+                                    C232.322,328.536,236.161,330,240,330s7.678-1.464,10.607-4.394c5.858-5.858,5.858-15.355,0-21.213L111.213,165.004z" />
+                    </svg>
+            </button>
+        </div>
+    </section>
+</div>
 @section scripts {
     <script>
         var errorMessage = '@TempData["ErrorMessage"]';
@@ -183,4 +168,7 @@
     </script>
     <script src="~/js/bookModal.js"></script>
     <script src="~/js/getQueryParam.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/CSSRulePlugin.min.js"></script>
+    <script src="~/js/index.js" asp-append-version="true"></script>
 }

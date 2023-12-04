@@ -31,8 +31,10 @@ namespace NavOS.Basecode.Services.Services
                 GenreDescription = s.GenreDescription,
                 UpdatedBy = s.UpdatedBy,
                 AddedBy = s.AddedBy,
-
+                UpdatedTime = s.UpdatedTime,
+                AddedTime = s.AddedTime,
             })
+            .OrderBy(g => g.GenreName)
             .ToList();
 
             return data;
@@ -51,8 +53,11 @@ namespace NavOS.Basecode.Services.Services
                 GenreDescription = s.GenreDescription,
                 UpdatedBy = s.UpdatedBy,
                 AddedBy = s.AddedBy,
+                UpdatedTime = s.UpdatedTime,
+                AddedTime = s.AddedTime,
 
             })
+            .OrderBy(g => g.GenreName)
             .ToList();
 
             if (!string.IsNullOrEmpty(searchQuery))
