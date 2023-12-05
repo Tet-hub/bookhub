@@ -15,14 +15,14 @@ namespace NavOS.Basecode.Services.Interfaces
         void AddAdmin(AdminViewModel model, string user);
         AdminViewModel GetAdmin(string adminId);
         bool CheckEmailExist(AdminViewModel adminViewModel);
-        List<AdminViewModel> GetAllAdmins();
+        List<AdminViewModel> GetAllAdmins(string SessionId);
         bool DeleteAdmin(string adminId);
         bool EditAdmin(AdminViewModel adminViewModel, string user);
         bool InsertToken(AdminViewModel adminViewModel, string host);
         bool CheckQueryParamater(string AdminId, string Token);
         bool ChangePassword(AdminViewModel adminViewModel);
         Task<bool> CheckEmailValidAsync(string Email);
-        List<AdminViewModel> GetAllAdminWithSearch(string searchQuery);
+        List<AdminViewModel> GetAllAdminWithSearch(string searchQuery, string SessionId);
         bool CheckCurrentPassword(AdminViewModel adminViewModel);
         bool NewPassword(AdminViewModel adminViewModel);
 
