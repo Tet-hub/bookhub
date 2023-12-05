@@ -101,7 +101,7 @@ namespace NavOS.Basecode.Services.Services
         /// Gets all admins.
         /// </summary>
         /// <returns></returns>
-        public List<AdminViewModel> GetAllAdmins()
+        public List<AdminViewModel> GetAllAdmins(string SessionId)
         {
             var url = "https://127.0.0.1:8080";
             var data = _adminRepository.GetAdmins().Select(s => new AdminViewModel
@@ -114,7 +114,8 @@ namespace NavOS.Basecode.Services.Services
                 Dob = s.Dob,
                 ImageUrl = (CheckAdminProfile(s.AdminId)) ? Path.Combine(url, s.AdminId + ".png") : Resources.Views.FileDir.AdminPicDefault,
 
-            }).OrderByDescending(admin => admin.Role == "Master Admin")
+            }).Where(admin => admin.AdminId != SessionId)
+              .OrderByDescending(admin => admin.Role == "Master Admin")
               .ThenBy(admin => admin.Role)
               .ThenBy(admin => admin.AdminName)
               .ToList();
@@ -126,9 +127,9 @@ namespace NavOS.Basecode.Services.Services
         /// </summary>
         /// <param name="searchQuery">The search query.</param>
         /// <returns></returns>
-        public List<AdminViewModel> GetAllAdminWithSearch(string searchQuery)
+        public List<AdminViewModel> GetAllAdminWithSearch(string searchQuery, string SessionId)
         {
-            var allAdmins = GetAllAdmins();
+            var allAdmins = GetAllAdmins(SessionId);
 
             if (!string.IsNullOrEmpty(searchQuery))
             {

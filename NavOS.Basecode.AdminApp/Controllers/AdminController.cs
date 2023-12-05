@@ -46,7 +46,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
             {
                 return RedirectToAction("Index", "Book");
             }
-            var data = _adminService.GetAllAdminWithSearch(searchQuery);
+            var data = _adminService.GetAllAdminWithSearch(searchQuery, this.UserId);
             return View(data);
         }
 
