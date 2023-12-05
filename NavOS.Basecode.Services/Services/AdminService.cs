@@ -35,6 +35,8 @@ namespace NavOS.Basecode.Services.Services
             _emailSender = emailSender;
             _emailChecker = emailChecker;
         }
+
+        #region Authentication Method
         /// <summary>
         /// Authenticates the admin.
         /// </summary>
@@ -50,17 +52,20 @@ namespace NavOS.Basecode.Services.Services
                                                             x.Password == passwordKey).FirstOrDefault();
             return admin != null ? LoginResult.Success : LoginResult.Failed;
         }
+        #endregion
+
+        #region CRUD Methods
         /// <summary>
         /// Adds the admin.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <param name="user">The user.</param>
         /// <exception cref="System.IO.InvalidDataException"></exception>
-        public void AddAdmin(AdminViewModel model, string user) 
+        public void AddAdmin(AdminViewModel model, string user)
         {
             var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
             var admin = new Admin();
-            if(!_adminRepository.AdminExists(model.AdminEmail))
+            if (!_adminRepository.AdminExists(model.AdminEmail))
             {
                 _mapper.Map(model, admin);
                 admin.AdminId = Guid.NewGuid().ToString();
@@ -77,15 +82,15 @@ namespace NavOS.Basecode.Services.Services
 
                 if (model.AdminProfile != null)
                 {
-					var coverImageFileName = Path.Combine(coverImagesPath, admin.AdminId) + ".png";
-					using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
-					{
-						model.AdminProfile.CopyTo(fileStream);
-					}
+                    var coverImageFileName = Path.Combine(coverImagesPath, admin.AdminId) + ".png";
+                    using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+                    {
+                        model.AdminProfile.CopyTo(fileStream);
+                    }
 
-				}
-				_adminRepository.AddAdmin(admin);
-			}
+                }
+                _adminRepository.AddAdmin(admin);
+            }
             else
             {
                 throw new InvalidDataException(Resources.Messages.Errors.AdminExists);
@@ -115,6 +120,12 @@ namespace NavOS.Basecode.Services.Services
               .ToList();
             return data;
         }
+
+        /// <summary>
+        /// Gets all admin with search.
+        /// </summary>
+        /// <param name="searchQuery">The search query.</param>
+        /// <returns></returns>
         public List<AdminViewModel> GetAllAdminWithSearch(string searchQuery)
         {
             var allAdmins = GetAllAdmins();
@@ -137,12 +148,12 @@ namespace NavOS.Basecode.Services.Services
         /// <returns></returns>
         public AdminViewModel GetAdmin(string adminId)
         {
-			var url = "https://127.0.0.1:8080";
-			var admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminId).FirstOrDefault();
+            var url = "https://127.0.0.1:8080";
+            var admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminId).FirstOrDefault();
 
             if (admin != null)
             {
-                AdminViewModel adminViewModel = new AdminViewModel
+                AdminViewModel adminViewModel = new()
                 {
                     AdminId = adminId,
                     AdminName = admin.AdminName,
@@ -154,10 +165,50 @@ namespace NavOS.Basecode.Services.Services
                 };
 
                 return adminViewModel;
-			}
-			return null;
+            }
+            return null;
 
-		}
+        }
+
+        /// <summary>
+        /// Edits the admin.
+        /// </summary>
+        /// <param name="adminViewModel">The admin view model.</param>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        public bool EditAdmin(AdminViewModel adminViewModel, string user)
+        {
+            var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
+            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
+            if (admin != null)
+            {
+                admin.AdminName = adminViewModel.AdminName;
+                admin.ContactNo = adminViewModel.ContactNo;
+                admin.Dob = adminViewModel.Dob;
+                admin.AdminEmail = adminViewModel.AdminEmail;
+                admin.UpdatedBy = user;
+                admin.UpdatedTime = DateTime.Now;
+
+                if (adminViewModel.Role != null)
+                {
+                    admin.Role = adminViewModel.Role;
+                }
+
+                if (adminViewModel.AdminProfile != null)
+                {
+                    var coverImageFileName = Path.Combine(coverImagesPath, admin.AdminId) + ".png";
+                    using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
+                    {
+                        adminViewModel.AdminProfile.CopyTo(fileStream);
+                    }
+                    _adminRepository.UpdateAdmin(admin);
+                    return true;
+                }
+                _adminRepository.UpdateAdmin(admin);
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>
         /// Deletes the admin.
@@ -177,6 +228,9 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
+        #endregion
+
+        #region Forgot Password Methods
         /// <summary>
         /// Inserts the token.
         /// </summary>
@@ -185,7 +239,7 @@ namespace NavOS.Basecode.Services.Services
         /// <returns></returns>
         public bool InsertToken(AdminViewModel adminViewModel, string host)
         {
-            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminEmail ==  adminViewModel.AdminEmail).FirstOrDefault();
+            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminEmail == adminViewModel.AdminEmail).FirstOrDefault();
             if (admin != null)
             {
                 admin.Token = Guid.NewGuid().ToString();
@@ -195,6 +249,7 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
+
         /// <summary>
         /// Checks the query paramater.
         /// </summary>
@@ -209,6 +264,7 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
+
         /// <summary>
         /// Changes the password.
         /// </summary>
@@ -226,6 +282,9 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
+        #endregion
+
+        #region Check Email Methods
         /// <summary>
         /// Checks if the email exist.
         /// </summary>
@@ -257,46 +316,8 @@ namespace NavOS.Basecode.Services.Services
             }
             return false;
         }
-
-        /// <summary>
-        /// Edits the admin.
-        /// </summary>
-        /// <param name="adminViewModel">The admin view model.</param>
-        /// <param name="user">The user.</param>
-        /// <returns></returns>
-        public bool EditAdmin(AdminViewModel adminViewModel, string user)
-        {
-			var coverImagesPath = PathManager.DirectoryPath.CoverImagesDirectory;
-			Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
-            if (admin != null)
-            {
-                admin.AdminName = adminViewModel.AdminName;
-                admin.ContactNo = adminViewModel.ContactNo;
-                admin.Dob = adminViewModel.Dob;
-                admin.AdminEmail = adminViewModel.AdminEmail;
-                admin.UpdatedBy = user;
-                admin.UpdatedTime = DateTime.Now;
-
-                if (adminViewModel.Role != null)
-                {
-                    admin.Role = adminViewModel.Role;
-                }
-
-                if (adminViewModel.AdminProfile != null)
-                {
-					var coverImageFileName = Path.Combine(coverImagesPath, admin.AdminId) + ".png";
-					using (var fileStream = new FileStream(coverImageFileName, FileMode.Create))
-					{
-						adminViewModel.AdminProfile.CopyTo(fileStream);
-					}
-					_adminRepository.UpdateAdmin(admin);
-					return true;
-				}
-                _adminRepository.UpdateAdmin(admin);
-                return true;
-            }
-            return false;
-        }
+        #endregion
+        
         #region private methods
 
         /// <summary>
@@ -315,6 +336,41 @@ namespace NavOS.Basecode.Services.Services
             return false;
         }
 
+        #endregion
+
+        #region Admin Change Password Methods        
+        /// <summary>
+        /// Checks the current password.
+        /// </summary>
+        /// <param name="adminViewModel">The admin view model.</param>
+        /// <returns></returns>
+        public bool CheckCurrentPassword(AdminViewModel adminViewModel)
+        {
+            Admin admin = _adminRepository.GetAdmins().FirstOrDefault(x => x.AdminId == adminViewModel.AdminId);
+
+            if (admin.Password == PasswordManager.EncryptPassword(adminViewModel.CurrentPassword))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Creates new password.
+        /// </summary>
+        /// <param name="adminViewModel">The admin view model.</param>
+        /// <returns></returns>
+        public bool NewPassword(AdminViewModel adminViewModel)
+        {
+            Admin admin = _adminRepository.GetAdmins().Where(x => x.AdminId == adminViewModel.AdminId).FirstOrDefault();
+            if (admin != null)
+            {
+                admin.Password = PasswordManager.EncryptPassword(adminViewModel.Password);
+                _adminRepository.UpdateAdmin(admin);
+                return true;
+            }
+            return false;
+        }
         #endregion
     }
 }

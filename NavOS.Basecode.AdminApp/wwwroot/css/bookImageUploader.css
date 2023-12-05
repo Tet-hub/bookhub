@@ -1,0 +1,28 @@
+﻿.ImageFile {
+    display: none;
+}
+
+.ImageFileLabel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 280px;
+    width: 100%;
+    margin-top: 12px;
+    border-radius: 6px;
+    border: 1px dashed #FFC119;
+    color: #FFC119;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+    .ImageFileLabel img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.UploadText {
+    position: absolute;
+}

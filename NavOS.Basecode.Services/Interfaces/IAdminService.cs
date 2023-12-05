@@ -23,6 +23,8 @@ namespace NavOS.Basecode.Services.Interfaces
         bool ChangePassword(AdminViewModel adminViewModel);
         Task<bool> CheckEmailValidAsync(string Email);
         List<AdminViewModel> GetAllAdminWithSearch(string searchQuery);
+        bool CheckCurrentPassword(AdminViewModel adminViewModel);
+        bool NewPassword(AdminViewModel adminViewModel);
 
     }
 }
