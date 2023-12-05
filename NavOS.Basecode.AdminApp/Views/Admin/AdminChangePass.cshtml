@@ -1,0 +1,31 @@
+﻿@model NavOS.Basecode.Services.ServiceModels.AdminViewModel
+
+<form asp-action="AdminChangePassword" style="margin-top:30px">
+	<input type="hidden" class="form-control" asp-for="AdminId" />
+	<div class="row mb-2 align-items-center">
+		<label class="form-label text-white" for="CurrentPassword">Current Password</label>
+		<div class="form-outline">
+			<input type="password" class="form-control" asp-for="CurrentPassword" />
+			<span asp-validation-for="CurrentPassword" class="text-danger" style=" margin-left:5px;"></span>
+		</div>
+	</div>
+	<div class="row mb-2 align-items-center">
+		<label class="form-label text-white" for="Password">New Password</label>
+		<div class="form-outline">
+			<input type="password" class="form-control" asp-for="Password" />
+			<span asp-validation-for="Password" class="text-danger" style=" margin-left:5px;"></span>
+		</div>
+	</div>
+	<div class="row mb-2 align-items-center">
+		<label class="form-label text-white" for="ConfirmPassword">Confirm Password</label>
+		<div class="form-outline">
+			<input type="password" class="form-control" asp-for="ConfirmPassword" />
+			<span asp-validation-for="ConfirmPassword" class="text-danger" style=" margin-left:5px;"></span>
+		</div>
+	</div>
+	<div class="d-flex justify-content-end">
+		<div class="btn-group mt-2" role="group">
+			<button class="btn btn-warning rounded" type="submit" style="margin-left: 20px">SUBMIT</button>
+		</div>
+	</div>
+</form>

@@ -5,6 +5,7 @@
 }
 @section styles {
     <link rel="stylesheet" href="~/css/addEditBook.css" />
+    <link rel="stylesheet" href="~/css/bookImageUploader.css" />
     <script src="~/js/editBook.js"></script>
     <style>
         .genre-ellipsis {
@@ -32,9 +33,11 @@
 
                 <!--BOOK IMAGE-->
                 <div class="w3-col imgPaddingRight">
-                    <img class="bookImgStyle" id="bookImage" src="@Model.ImageUrl" onerror="this.src='@Url.Content("~/img/default-book.jpg")'">
-                    <input type="file" class="form-control mt-2" asp-for="ImageFile" accept="image/*" onchange="displayImage(this)">
-                    @* <span asp-validation-for="ImageFile" class="text-warning spanImgFile"></span> *@
+                    <input type="file" accept="image/*" asp-for="ImageFile" onchange="displayImage(this)" class="ImageFile" required>
+                    <label for="ImageFile" class="ImageFileLabel">
+                        <span class="UploadText"></span>
+                        <img id="imagePreview" src="@Model.ImageUrl" alt="Preview" onerror="this.src='@Url.Content("~/img/default-book.jpg")'">
+                    </label>
                 </div>
 
                 <!--INPUT DETAILS-->
@@ -129,4 +132,5 @@
             toastr.error(errorMessage);
         }
     </script>
+    <script src="~/js/bookImagePreview.js"></script>
 }

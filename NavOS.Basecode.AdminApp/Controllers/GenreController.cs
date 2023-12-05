@@ -18,6 +18,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         
         private readonly IGenreService _genreService;
         private readonly IBookService _bookService;
+        private readonly IAdminService _adminService;
 
         /// <summary>
         /// Constructor
@@ -29,6 +30,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// <param name="mapper"></param>
         public GenreController(IGenreService genreService,
                               IBookService bookService,
+                              IAdminService adminService,
                               IHttpContextAccessor httpContextAccessor,
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
@@ -37,7 +39,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
             
             _genreService = genreService;
             _bookService = bookService;
-
+            _adminService = adminService;
         }
         public IActionResult Index()
         {
@@ -68,7 +70,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 TempData["ErrorMessage"] = "Genre already exist.";
                 return RedirectToAction("ViewGenre");
             }
-            _genreService.AddGenre(genre, this.UserName);
+            _genreService.AddGenre(genre, Admin());
             TempData["SuccessMessage"] = "Genre Added Successfully";
             return RedirectToAction("ViewGenre");
         }
@@ -98,7 +100,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 return RedirectToAction("ViewGenre");
             }
 
-            _genreService.UpdateGenre(genre, this.UserName);
+            _genreService.UpdateGenre(genre, Admin());
             TempData["SuccessMessage"] = "Genre Updated Successfully";
             return RedirectToAction("ViewGenre");
         }
@@ -135,5 +137,13 @@ namespace NavOS.Basecode.AdminApp.Controllers
             TempData["ErrorMessage"] = "No Book was Deleted";
             return RedirectToAction("BooksGenre");
         }
+
+        #region Private Method
+        private string Admin()
+        {
+            var admin = _adminService.GetAdmin(this.UserId);
+            return admin.AdminName;
+        }
+        #endregion
     }
 }

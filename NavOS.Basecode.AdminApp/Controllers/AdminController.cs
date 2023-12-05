@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NavOS.Basecode.AdminApp.Mvc;
@@ -17,7 +18,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
     public class AdminController : ControllerBase<AdminController>
     {
         private readonly IAdminService _adminService;
-        		
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminController"/> class.
         /// </summary>
@@ -27,12 +28,12 @@ namespace NavOS.Basecode.AdminApp.Controllers
         /// <param name="configuration">The configuration.</param>
         /// <param name="mapper">The mapper.</param>
         public AdminController(IAdminService adminService,
-                               IHttpContextAccessor httpContextAccessor, 
-                               ILoggerFactory loggerFactory, 
-                               IConfiguration configuration, 
+                               IHttpContextAccessor httpContextAccessor,
+                               ILoggerFactory loggerFactory,
+                               IConfiguration configuration,
                                IMapper mapper = null) : base(httpContextAccessor, loggerFactory, configuration, mapper)
         {
-			_adminService = adminService;
+            _adminService = adminService;
         }
         /// <summary>
         /// List of Admin.
@@ -80,11 +81,11 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 var _isEmailValid = await _adminService.CheckEmailValidAsync(model.AdminEmail);
                 if (_isEmailValid)
                 {
-                    _adminService.AddAdmin(model, this.UserName);
+                    _adminService.AddAdmin(model, Admin());
                     TempData["SuccessMessage"] = "Admin added successfully.";
                     return RedirectToAction("AdminList");
                 }
-                TempData["ErrorMessage"] = "Invalid Email";
+                TempData["ErrorMessage"] = "Invalid Email!";
                 return View(model);
             }
             catch (InvalidDataException ex)
@@ -113,17 +114,17 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 TempData["SuccessMessage"] = "Admin deleted successfully.";
                 return RedirectToAction("AdminList");
             }
-			TempData["ErrorMessage"] = "No Admin was deleted.";
-			return RedirectToAction("AdminList");
-		}
+            TempData["ErrorMessage"] = "No Admin was deleted.";
+            return RedirectToAction("AdminList");
+        }
 
         /// <summary>
-        /// Edits the specified admin identifier.
+        /// Edits the specified admin.
         /// </summary>
         /// <param name="adminId">The admin identifier.</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult EditAdmin(string adminId) 
+        public IActionResult EditAdmin(string adminId)
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
@@ -133,19 +134,19 @@ namespace NavOS.Basecode.AdminApp.Controllers
             if (admin != null)
             {
                 return View(admin);
-			}
-			TempData["ErrorMessage"] = "Admin not found.";
-			return RedirectToAction("AdminList");
+            }
+            TempData["ErrorMessage"] = "Admin not found.";
+            return RedirectToAction("AdminList");
 
-		}
+        }
 
         /// <summary>
-        /// Edits the specified model.
+        /// Edits the specified admin.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> EditAdmin(AdminViewModel model) 
+        public async Task<IActionResult> EditAdmin(AdminViewModel model)
         {
             if (this._session.GetString("Role") != "Master Admin")
             {
@@ -158,7 +159,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 bool isEmailExisted = _adminService.CheckEmailExist(model);
                 if (!isEmailExisted)
                 {
-                    bool _isAdminUpdated = _adminService.EditAdmin(model, this.UserName);
+                    bool _isAdminUpdated = _adminService.EditAdmin(model, Admin());
                     if (_isAdminUpdated)
                     {
                         TempData["SuccessMessage"] = "Admin updated successfully.";
@@ -167,13 +168,14 @@ namespace NavOS.Basecode.AdminApp.Controllers
                     TempData["ErrorMessage"] = "No Admin was updated.";
                     return RedirectToAction("AdminList");
                 }
-                TempData["ErrorMessage"] = "Admin Email already existed!";
+                TempData["ErrorMessage"] = "Email already existed!";
                 return RedirectToAction("EditAdmin", "Admin", new { adminId = model.AdminId });
             }
             TempData["ErrorMessage"] = "Invalid Email!";
             return RedirectToAction("EditAdmin", "Admin", new { adminId = model.AdminId });
         }
 
+        #region Settings
         [HttpGet]
         public IActionResult AdminSetting()
         {
@@ -191,7 +193,7 @@ namespace NavOS.Basecode.AdminApp.Controllers
                 bool isEmailExisted = _adminService.CheckEmailExist(model);
                 if (!isEmailExisted)
                 {
-                    bool _isAdminUpdated = _adminService.EditAdmin(model, this.UserName);
+                    bool _isAdminUpdated = _adminService.EditAdmin(model, model.AdminName);
                     if (_isAdminUpdated)
                     {
                         TempData["SuccessMessage"] = "Admin updated successfully.";
@@ -200,12 +202,39 @@ namespace NavOS.Basecode.AdminApp.Controllers
                     TempData["ErrorMessage"] = "No Admin was updated.";
                     return RedirectToAction("AdminSetting");
                 }
-                TempData["ErrorMessage"] = "Admin Email already existed!";
+                TempData["ErrorMessage"] = "Email already existed!";
                 return RedirectToAction("AdminSetting");
             }
             TempData["ErrorMessage"] = "Invalid Email!";
             return RedirectToAction("AdminSetting");
         }
 
+        [HttpPost]
+        public IActionResult AdminChangePassword(AdminViewModel model)
+        {
+            var isPasswordCorrect = _adminService.CheckCurrentPassword(model);
+            if (isPasswordCorrect)
+            {
+                var newPassword = _adminService.NewPassword(model);
+                if (newPassword)
+                {
+                    TempData["SuccessMessage"] = "Successfully changed password.";
+                    return RedirectToAction("SignOutUser", "Account");
+                }
+                TempData["ErrorMessage"] = "Error changing password.";
+                return Redirect($"{Url.Action("AdminSetting")}#admin-change-password");
+            }
+            TempData["ErrorMessage"] = "Incorrect Password";
+            return Redirect($"{Url.Action("AdminSetting")}#admin-change-password");
+        }
+        #endregion
+
+        #region Private Method
+        private string Admin()
+        {
+            var admin = _adminService.GetAdmin(this.UserId);
+            return admin.AdminName;
+        } 
+        #endregion
     }
 }

@@ -33,6 +33,7 @@ namespace NavOS.Basecode.Services.ServiceModels
 
         public DateTime AddedTime { get; set; }
 
+        [Required(ErrorMessage = "Source is required")]
         public string Source { get; set; }
 
         public int ReviewCount { get; set; }

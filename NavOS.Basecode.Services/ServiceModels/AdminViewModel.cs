@@ -20,13 +20,14 @@ namespace NavOS.Basecode.Services.ServiceModels
         [Required(ErrorMessage = "Email is required.")]
         public string AdminEmail { get; set; }
 
+        [Required(ErrorMessage = "Current Password is required.")]
+        public string CurrentPassword { get; set; }
+
         [Required(ErrorMessage = "Password is required.")]
-        //[RegularExpression(@"^(?!\s*$).+", ErrorMessage = "Don't leave it blank.")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$", ErrorMessage = "Password is too weak.")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Confirmation Password is required.")]
-        //[RegularExpression(@"^(?!\s*$).+", ErrorMessage = "Don't leave it blank.")]
         [Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
         public string ConfirmPassword { get; set; }
 

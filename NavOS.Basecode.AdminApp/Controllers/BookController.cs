@@ -19,6 +19,7 @@ namespace NavOS.Basecode.BookApp.Controllers
         private readonly IBookService _bookService;
         private readonly IReviewService _reviewService;
         private readonly IGenreService _genreService;
+        private readonly IAdminService _adminService;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -30,6 +31,7 @@ namespace NavOS.Basecode.BookApp.Controllers
         public BookController(IBookService bookService,
                               IReviewService reviewService,
                               IGenreService genreService,
+                              IAdminService adminService,
                               IHttpContextAccessor httpContextAccessor,
                               ILoggerFactory loggerFactory,
                               IConfiguration configuration,
@@ -38,6 +40,7 @@ namespace NavOS.Basecode.BookApp.Controllers
             _bookService = bookService;
             _reviewService = reviewService;
             _genreService = genreService;
+            _adminService = adminService;
 
         }
         /// <summary>
@@ -147,7 +150,7 @@ namespace NavOS.Basecode.BookApp.Controllers
                 return View(book);
             }
 
-            _bookService.AddBook(book, this.UserName);
+            _bookService.AddBook(book, Admin());
             TempData["SuccessMessage"] = "Book Added Successfully";
             return RedirectToAction("BookList");
         }
@@ -190,7 +193,7 @@ namespace NavOS.Basecode.BookApp.Controllers
                 return RedirectToAction("EditBook", "Book", new { bookId = book.BookId });
             }
 
-            _bookService.UpdateBook(book, this.UserName);
+            _bookService.UpdateBook(book, Admin());
             TempData["SuccessMessage"] = "Book Updated Successfully";
             return RedirectToAction("BookList");
         }
@@ -212,5 +215,13 @@ namespace NavOS.Basecode.BookApp.Controllers
             TempData["ErrorMessage"] = "No Book was Deleted";
             return RedirectToAction("BookList");
         }
+
+        #region Private Method
+        private string Admin()
+        {
+            var admin = _adminService.GetAdmin(this.UserId);
+            return admin.AdminName;
+        }
+        #endregion
     }
 }
