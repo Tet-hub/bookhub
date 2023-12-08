@@ -120,6 +120,7 @@ namespace NavOS.Basecode.Services.Services
             var topRatedBooks = bookWithReviews.Books
                 .Where(book => book.AvgRatings >= 3 && book.ReviewCount > 5)
                 .OrderByDescending(book => book.ReviewCount)
+                .ThenByDescending(book => book.AvgRatings)
                 .Take(5)
                 .ToList();
             var topReviewedBooks = bookWithReviews.Books
@@ -399,9 +400,10 @@ namespace NavOS.Basecode.Services.Services
             };
 
             result.Books = result.Books
-            .Where(book => book.AvgRatings >= 3 && book.ReviewCount > 5)
-            .OrderByDescending(book => book.ReviewCount)
-            .ToList();
+                .Where(book => book.AvgRatings >= 3 && book.ReviewCount > 5)
+                .OrderByDescending(book => book.ReviewCount)
+                .ThenByDescending(book => book.AvgRatings)
+                .ToList();
 
 
             ApplyFilter(options, result);
