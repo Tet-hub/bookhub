@@ -27,7 +27,7 @@ namespace NavOS.Basecode.Services.Utilities
         public async Task<bool> IsEmailValidAsync(string email)
         {
             //iQdBTaJNRZCeLA7inmIHv
-            var accessKey = "sigQUTw6GL5TFGcxjOSeC";
+            var accessKey = "8iGroRNowC4DhHadup3tt";
             var request = new HttpRequestMessage
             {
 	            Method = HttpMethod.Get,

@@ -20,31 +20,16 @@ namespace NavOS.Basecode.Data.Repositories
         {
             return this.GetDbSet<Genre>();
         }
-        ////retrieve single genre
-        //public IQueryable<Genre> GetGenre(string GenreId)
-        //{
-        //    var genre = this.GetDbSet<Genre>().Where(x => x.GenreId == GenreId);
-        //    return genre;
-        //}
-
         ///retrieve single genre
         public Genre GetGenre(string Genreid)
         {
             var genre = this.GetDbSet<Genre>().FirstOrDefault(x => x.GenreId == Genreid);
             return genre;
         }
-        public List<Genre> GetGenres()
-        {
-            var genre = GetDbSet<Genre>().ToList();
-            return genre;
-            //This communicates the Db, it collects data in the Db to display the data in the Index.cshtml
-        }
-
-
         public void AddGenre(Genre genre)
         {
             this.GetDbSet<Genre>().Add(genre);
-            UnitOfWork.SaveChanges(); //Do not forget to include this line
+            UnitOfWork.SaveChanges();
         }
         public void UpdateGenre(Genre genre)
         {

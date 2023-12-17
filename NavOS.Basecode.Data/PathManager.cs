@@ -58,6 +58,11 @@ namespace NavOS.Basecode.Data
                 get { return GetFolderPath(SetupRootDirectory, "txtFiles"); }
             }
         }
+        public static string BaseURL
+        {
+            get { return "https://127.0.0.1:8080/"; }
+        }
+
 
         /// <summary>
         /// File Path

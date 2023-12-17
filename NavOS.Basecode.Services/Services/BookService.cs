@@ -13,7 +13,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using ZXing;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NavOS.Basecode.Services.Services
 {
@@ -24,7 +23,7 @@ namespace NavOS.Basecode.Services.Services
         private readonly IReviewService _reviewService;
         public BookService(IBookRepository bookRepository,
             IGenreService genreService,
-            IReviewService reviewService, NavosDBContext dbContext)
+            IReviewService reviewService)
         {
             _bookRepository = bookRepository;
             _genreService = genreService;
@@ -65,7 +64,8 @@ namespace NavOS.Basecode.Services.Services
         /// <returns></returns>
         public BookWithReviewViewModel GetBooksWithReviews()
         {
-            var url = "https://127.0.0.1:8080/";
+            var url = PathManager.BaseURL;
+            //var url = "https://127.0.0.1:8080/";
 
             var booksData = _bookRepository.GetBooks()
                 .Select(s => new BookViewModel
@@ -118,7 +118,7 @@ namespace NavOS.Basecode.Services.Services
                 .ToList();
 
             var topRatedBooks = bookWithReviews.Books
-                .Where(book => book.AvgRatings >= 3 && book.ReviewCount > 5)
+                .Where(book => book.AvgRatings >= 3 && book.ReviewCount > 1)
                 .OrderByDescending(book => book.ReviewCount)
                 .ThenByDescending(book => book.AvgRatings)
                 .Take(5)
@@ -126,6 +126,7 @@ namespace NavOS.Basecode.Services.Services
             var topReviewedBooks = bookWithReviews.Books
                 .Where(book => book.ReviewCount > 0)
                 .OrderByDescending(book => book.ReviewCount)
+                .ThenByDescending(book => book.AvgRatings)
                 .Take(10)
                 .ToList();
                 
@@ -146,7 +147,8 @@ namespace NavOS.Basecode.Services.Services
         /// <returns></returns>
         public BookViewModel GetBook(string BookId)
         {
-            var url = "https://127.0.0.1:8080/";
+            var url = PathManager.BaseURL;
+            //var url = "https://127.0.0.1:8080/";
             var book = _bookRepository.GetBooks().FirstOrDefault(s => s.BookId == BookId);
             var genres = _genreService.GetGenres();
             var bookViewModel = new BookViewModel
@@ -288,7 +290,8 @@ namespace NavOS.Basecode.Services.Services
 
             if (book != null)
             {
-                var url = "https://127.0.0.1:8080/";
+                var url = PathManager.BaseURL;
+                //var url = "https://127.0.0.1:8080/";
                 var reviews = _reviewService.GetReviews(bookId).OrderByDescending(r => r.DateReviewed).ToList();
 
                 var data = new BookWithReviewViewModel
@@ -400,7 +403,7 @@ namespace NavOS.Basecode.Services.Services
             };
 
             result.Books = result.Books
-                .Where(book => book.AvgRatings >= 3 && book.ReviewCount > 5)
+                .Where(book => book.AvgRatings >= 3 && book.ReviewCount > 1)
                 .OrderByDescending(book => book.ReviewCount)
                 .ThenByDescending(book => book.AvgRatings)
                 .ToList();

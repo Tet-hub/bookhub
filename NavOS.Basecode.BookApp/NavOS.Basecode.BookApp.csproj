@@ -34,8 +34,4 @@
     <ProjectReference Include="..\NavOS.Basecode.Resources\NavOS.Basecode.Resources.csproj" />
     <ProjectReference Include="..\NavOS.Basecode.Services\NavOS.Basecode.Services.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\img\" />
-  </ItemGroup>
 </Project>
