@@ -115,35 +115,3 @@
         </div>
     </div>
 </div>
-@section scripts {
-    <script>
-        $(document).ready(function () {
-            var typingTimer;
-            var doneTypingInterval = 300;
-
-            $('#liveSearchInput').keyup(function () {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(doneTyping, doneTypingInterval);
-            });
-
-            function doneTyping() {
-                var searchQuery = $('#liveSearchInput').val();
-                var currentFilter = '@requestQuery["filter"]';
-
-                //fetch results
-                $.ajax({
-                    url: '/Book/AllBooks',
-                    type: 'GET',
-                    data: { searchQuery: searchQuery, filter: currentFilter },
-                    success: function (data) {
-                        $('#bookListContainer').html($(data).find('#bookListContainer').html());
-                        $('.bookListContainer').html($(data).find('.bookListContainer').html());
-                    },
-                    error: function (error) {
-                        console.error('Error during live search:', error);
-                    }
-                });
-            }
-        });
-    </script>
-}
